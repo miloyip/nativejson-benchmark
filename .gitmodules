@@ -10,3 +10,6 @@
 [submodule "thirdparty/picojson"]
 	path = thirdparty/picojson
 	url = git@github.com:kazuho/picojson
+[submodule "thirdparty/jsonxx"]
+	path = thirdparty/jsonxx
+	url = git@github.com:hjiang/jsonxx
