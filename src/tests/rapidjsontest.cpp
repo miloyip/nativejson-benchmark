@@ -39,7 +39,7 @@ private:
 
 class RapidjsonTest : public TestBase {
 public:
-	RapidjsonTest() : TestBase("rapidjson") {
+	RapidjsonTest() : TestBase("RapidJSON") {
 	}
 	
     virtual void* Parse(const char* json) const {
