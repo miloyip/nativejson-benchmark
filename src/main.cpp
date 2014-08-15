@@ -268,7 +268,7 @@ static void BenchPrettify(const TestBase& test, FILE *fp) {
 
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
-        fprintf(fp, "Stringify,%s,%s,%f\n", test.GetName(), itr->filename, minDuration);
+        fprintf(fp, "Prettify,%s,%s,%f\n", test.GetName(), itr->filename, minDuration);
     }
 }
 
