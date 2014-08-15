@@ -116,7 +116,7 @@ $(function() {
 function drawTable(type, timeData) {
   var data = google.visualization.arrayToDataTable(timeData);
     data.addColumn('number', 'Speedup');
-    data.sort([{ column: 1, desc: true }]);
+    //data.sort([{ column: 1, desc: true }]);
     var formatter1 = new google.visualization.NumberFormat({ fractionDigits: 3 });
     formatter1.format(data, 1);
 
@@ -159,7 +159,7 @@ function drawBarChart(type, timeData) {
   for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
     data.setValue(rowIndex, 2, defaultColors[rowIndex]);
 
-    data.sort([{ column: 1, desc: true }]);
+    //data.sort([{ column: 1, desc: true }]);
   var options = { 
     title: type,
     chartArea: {'width': '70%', 'height': '70%'},
