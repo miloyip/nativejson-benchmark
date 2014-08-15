@@ -4,3 +4,6 @@
 [submodule "thirdparty/yajl"]
 	path = thirdparty/yajl
 	url = git@github.com:lloyd/yajl
+[submodule "thirdparty/jsoncpp"]
+	path = thirdparty/jsoncpp
+	url = git@github.com:open-source-parsers/jsoncpp

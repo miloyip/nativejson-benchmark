@@ -52,6 +52,7 @@ solution "benchmark"
 		
         includedirs {
             "../thirdparty/",
+            "../thirdparty/jsoncpp/include/",
             "../thirdparty/rapidjson/include/",
             "../thirdparty/include/",
         }
