@@ -101,7 +101,8 @@ public:
 	YajlTest() : TestBase("YAJL") {
 	}
 	
-    virtual void* Parse(const char* json) const {
+    virtual void* Parse(const char* json, size_t length) const {
+        (void)length;
         yajl_val root = yajl_tree_parse(json, NULL, 0);
     	return root;
     }

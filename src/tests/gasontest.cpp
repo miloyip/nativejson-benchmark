@@ -152,7 +152,8 @@ public:
 	GasonTest() : TestBase("gason") {
 	}
 	
-    virtual void* Parse(const char* json) const {
+    virtual void* Parse(const char* json, size_t length) const {
+        (void)length;
         GasonState* state = new GasonState;
         char* end = 0;
         state->json = strdup(json);

@@ -78,8 +78,9 @@ public:
 	RapidjsonTest() : TestBase("RapidJSON") {
 	}
 	
-    virtual void* Parse(const char* json) const {
-    	Document *doc = new Document;
+    virtual void* Parse(const char* json, size_t length) const {
+        (void)length;
+        Document *doc = new Document;
     	if (doc->Parse(json).HasParseError()) {
     		delete doc;
     		return 0;

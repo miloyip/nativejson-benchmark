@@ -61,8 +61,10 @@ public:
         return strcmp(name_, rhs.name_) < 0;
     }
 
-    virtual void* Parse(const char* json) const {
-        (void)json;  return 0;
+    virtual void* Parse(const char* json, size_t length) const {
+        (void)length;
+        (void)json;
+        return 0;
     }
 
     virtual char* Stringify(void* userdata) const {

@@ -75,7 +75,7 @@ static bool ReadFiles(const char* path) {
             fclose(fp2);
 
             // Generate reference statistics
-            void* dom = referenceTest->Parse(t.json);
+            void* dom = referenceTest->Parse(t.json, t.length);
             t.stat = referenceTest->Statistics(dom);
 
             printf("Read '%s' (%u bytes)\n", t.filename, (unsigned)t.length);
@@ -120,7 +120,7 @@ static void Verify(const TestBase& test) {
     bool failed = false;
 
     for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
-        void* dom1 = test.Parse(itr->json);
+        void* dom1 = test.Parse(itr->json, itr->length);
         if (!dom1) {
             printf("\nFailed to parse '%s'\n", itr->filename);
             failed = true;
@@ -138,7 +138,7 @@ static void Verify(const TestBase& test) {
             continue;
         }
 
-        void* dom2 = test.Parse(json1);
+        void* dom2 = test.Parse(json1, itr->length);
         if (!dom2) {
             printf("\nFailed to parse '%s' 2nd time\n", itr->filename);
             failed = true;
@@ -205,7 +205,7 @@ static void BenchParse(const TestBase& test, FILE *fp) {
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             timer.Start();
-            void* dom = test.Parse(itr->json);
+            void* dom = test.Parse(itr->json, itr->length);
             timer.Stop();
 
             test.Free(dom);
@@ -224,7 +224,7 @@ static void BenchStringify(const TestBase& test, FILE *fp) {
         fflush(stdout);
 
         double minDuration = DBL_MAX;
-        void* dom = test.Parse(itr->json);
+        void* dom = test.Parse(itr->json, itr->length);
 
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
@@ -251,7 +251,7 @@ static void BenchPrettify(const TestBase& test, FILE *fp) {
         fflush(stdout);
 
         double minDuration = DBL_MAX;
-        void* dom = test.Parse(itr->json);
+        void* dom = test.Parse(itr->json, itr->length);
 
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
@@ -278,7 +278,7 @@ static void BenchStatistics(const TestBase& test, FILE *fp) {
         fflush(stdout);
 
         double minDuration = DBL_MAX;
-        void* dom = test.Parse(itr->json);
+        void* dom = test.Parse(itr->json, itr->length);
 
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;

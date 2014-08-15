@@ -69,7 +69,8 @@ public:
     JsonxxTest() : TestBase("JSON++") {
 	}
 	
-    virtual void* Parse(const char* json) const {
+    virtual void* Parse(const char* json, size_t length) const {
+        (void)length;
 #if 0
         // Not working
         Value* v = new Value;

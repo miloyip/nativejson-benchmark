@@ -54,7 +54,8 @@ public:
 	JsoncppTest() : TestBase("JsonCpp") {
 	}
 	
-    virtual void* Parse(const char* json) const {
+    virtual void* Parse(const char* json, size_t length) const {
+        (void)length;
         Value* root = new Value;
         Reader reader;
         reader.parse(json, *root);

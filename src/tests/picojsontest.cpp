@@ -47,10 +47,10 @@ public:
 	PicojsonTest() : TestBase("PicoJSON") {
 	}
 	
-    virtual void* Parse(const char* json) const {
+    virtual void* Parse(const char* json, size_t length) const {
         value* v = new value;
         std::string err;
-        parse(*v, json, json + strlen(json), &err);
+        parse(*v, json, json + length, &err);
     	if (!err.empty()) {
     		delete v;
     		return 0;

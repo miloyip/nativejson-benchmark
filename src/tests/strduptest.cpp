@@ -6,8 +6,10 @@ public:
 	StrdupTest() : TestBase("strdup") {
 	}
 	
-    virtual void* Parse(const char* json) const {
-    	return strdup(json);
+    virtual void* Parse(const char* json, size_t length) const {
+        void* r = malloc(length);
+        memcpy(r, json, length + 1);
+    	return r;
     }
 
     virtual char* Stringify(void* userdata) const {
