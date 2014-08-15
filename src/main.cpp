@@ -7,6 +7,8 @@
 #include "timer.h"
 #include "resultfilename.h"
 
+static const unsigned cTrialCount = 10;
+
 struct TestJson {
     char* filename;
     char* json;
@@ -150,7 +152,7 @@ static void BenchParse(const TestBase& test, FILE *fp) {
         fflush(stdout);
 
         double minDuration = DBL_MAX;
-        for (int trial = 0; trial < 10; trial++) {
+        for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             timer.Start();
             void* dom = test.Parse(itr->json);
@@ -174,7 +176,7 @@ static void BenchStringify(const TestBase& test, FILE *fp) {
         double minDuration = DBL_MAX;
         void* dom = test.Parse(itr->json);
 
-        for (int trial = 0; trial < 10; trial++) {
+        for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             timer.Start();
             char* json = test.Stringify(dom);
@@ -201,7 +203,7 @@ static void BenchPrettify(const TestBase& test, FILE *fp) {
         double minDuration = DBL_MAX;
         void* dom = test.Parse(itr->json);
 
-        for (int trial = 0; trial < 10; trial++) {
+        for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             timer.Start();
             char* json = test.Prettify(dom);
@@ -220,11 +222,38 @@ static void BenchPrettify(const TestBase& test, FILE *fp) {
     }
 }
 
+static void BenchStatistics(const TestBase& test, FILE *fp) {
+    for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
+        printf("Statistics  %-20s ... ", itr->filename);
+        fflush(stdout);
+
+        double minDuration = DBL_MAX;
+        void* dom = test.Parse(itr->json);
+
+        for (unsigned trial = 0; trial < cTrialCount; trial++) {
+            Timer timer;
+            timer.Start();
+            test.Statistics(dom);
+            timer.Stop();
+
+            double duration = timer.GetElapsedMilliseconds();
+            minDuration = std::min(minDuration, duration);
+        }
+
+        test.Free(dom);
+
+        double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+        printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+        fprintf(fp, "Statistics,%s,%s,%f\n", test.GetName(), itr->filename, minDuration);
+    }
+}
+
 static void Bench(const TestBase& test, FILE *fp) {
     printf("Benchmarking %s\n", test.GetName());
     BenchParse(test, fp);
     BenchStringify(test, fp);
     BenchPrettify(test, fp);
+    BenchStatistics(test, fp);
     printf("\n");
 }
 
