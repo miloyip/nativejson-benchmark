@@ -1,4 +1,8 @@
 #include <algorithm>
+#include <cfloat>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include "test.h"
 #include "timer.h"
 #include "resultfilename.h"
@@ -30,7 +34,7 @@ static bool ReadFiles(const char* path) {
             }
             
             TestJson t;
-            t.filename = _strdup(filename);
+            t.filename = strdup(filename);
             fseek(fp2, 0, SEEK_END);
             t.length = (size_t)ftell(fp2);
             fseek(fp2, 0, SEEK_SET);
@@ -39,7 +43,7 @@ static bool ReadFiles(const char* path) {
             t.json[t.length] = '\0';
             fclose(fp2);
 
-            printf("Read '%s' (%d bytes)\n", t.filename, t.length);
+            printf("Read '%s' (%u bytes)\n", t.filename, (unsigned)t.length);
 
             gTestJsons.push_back(t);
         }

@@ -1,7 +1,11 @@
 #pragma once
 
 #include <vector>
-#include <string.h>
+#include <cstring>
+
+#ifdef _MSC_VER
+#define strdup _strdup
+#endif
 
 class TestBase;
 typedef std::vector<const TestBase *> TestList;

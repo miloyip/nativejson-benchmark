@@ -1,4 +1,5 @@
 #include "../test.h"
+#include <cstdlib>
 
 class StrdupTest : public TestBase {
 public:
@@ -6,15 +7,15 @@ public:
 	}
 	
     virtual void* Parse(const char* json) const {
-    	return _strdup(json);
+    	return strdup(json);
     }
 
     virtual char* Stringify(void* userdata) const {
-    	return _strdup((char*)userdata);
+    	return strdup((char*)userdata);
     }
 
     virtual char* Prettify(void* userdata) const {
-        return _strdup((char*)userdata);
+        return strdup((char*)userdata);
     }
 
     virtual void Free(void* userdata) const {

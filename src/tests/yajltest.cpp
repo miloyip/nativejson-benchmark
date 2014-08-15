@@ -1,4 +1,5 @@
 #include "../test.h"
+#include <cstdio>
 
 extern "C" {
 #include "yajl/yajl_common.h"
@@ -66,8 +67,9 @@ yajl_gen_status GenVal(yajl_gen g, yajl_val v) {
     case yajl_t_true: return yajl_gen_bool(g, 1);
     case yajl_t_false: return yajl_gen_bool(g, 0);
     case yajl_t_null: return yajl_gen_null(g);
+    default:
+        return yajl_gen_in_error_state;
     }
-    return yajl_gen_in_error_state;
 }
 
 } // extern "C"
@@ -95,7 +97,7 @@ public:
         const unsigned char * buf;
         size_t len;
         status = yajl_gen_get_buf(g, &buf, &len);
-        char* json = _strdup((const char*)buf);
+        char* json = strdup((const char*)buf);
 
         yajl_gen_free(g);
         return json;
@@ -115,7 +117,7 @@ public:
         const unsigned char * buf;
         size_t len;
         status = yajl_gen_get_buf(g, &buf, &len);
-        char* json = _strdup((const char*)buf);
+        char* json = strdup((const char*)buf);
 
         yajl_gen_free(g);
         return json;

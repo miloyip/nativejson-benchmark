@@ -31,7 +31,7 @@ public:
     	StringBuffer sb;
     	Writer<StringBuffer> writer(sb);
     	doc->Accept(writer);
-    	return _strdup(sb.GetString());
+    	return strdup(sb.GetString());
     }
 
     virtual char* Prettify(void* userdata) const {
@@ -39,7 +39,7 @@ public:
     	StringBuffer sb;
     	PrettyWriter<StringBuffer> writer(sb);
     	doc->Accept(writer);
-    	return _strdup(sb.GetString());
+    	return strdup(sb.GetString());
     }
 
     virtual void Free(void* userdata) const {
