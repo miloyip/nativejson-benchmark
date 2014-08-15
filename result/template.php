@@ -10,60 +10,60 @@
 $(function() {
   google.load("visualization", "1", {packages:["corechart"]});
 
-    var csv = $('#textInput').val();
-    var data = $.csv.toArrays(csv, {
-        onParseValue: $.csv.hooks.castToScalar
-    });
+  var csv = $('#textInput').val();
+  var data = $.csv.toArrays(csv, {
+      onParseValue: $.csv.hooks.castToScalar
+  });
 
-    // Convert data for bar chart (summing all json)
-    var timeData = {};  // type -> table
-    var libraryRowMap = {}; // type -> library -> row
+  // Convert data for bar chart (summing all json)
+  var timeData = {};  // type -> table
+  var libraryRowMap = {}; // type -> library -> row
 
-    for (var i = 1; i < data.length; i++) {
-      var type = data[i][0];
-      var library = data[i][1];
-      var json = data[i][2];
-      var time = data[i][3];
-      if (timeData[type] == null) {
-        timeData[type] = [["Library", "Time (ms)"]];
-        libraryRowMap[type] = {};
-      }
-
-      var table = timeData[type];
-      
-      if (libraryRowMap[type][library] == null)
-        libraryRowMap[type][library] = table.push([library, 0]) - 1;
-        
-      table[libraryRowMap[type][library]][1] += time;
+  for (var i = 1; i < data.length; i++) {
+    var type = data[i][0];
+    var library = data[i][1];
+    var json = data[i][2];
+    var time = data[i][3];
+    if (timeData[type] == null) {
+      timeData[type] = [["Library", "Time (ms)"]];
+      libraryRowMap[type] = {};
     }
 
-    // Convert data for drawing bar chart per json
-    var timeJsonData = {}; // type -> table
-    var libraryColumnMap = {}; // type -> library -> column
+    var table = timeData[type];
+    
+    if (libraryRowMap[type][library] == null)
+      libraryRowMap[type][library] = table.push([library, 0]) - 1;
+      
+    table[libraryRowMap[type][library]][1] += time;
+  }
 
-    for (var i = 1; i < data.length; i++) {
-      var type = data[i][0];
-      var library = data[i][1];
-      var json = data[i][2];
-      var time = data[i][3];
+  // Convert data for drawing bar chart per json
+  var timeJsonData = {}; // type -> table
+  var libraryColumnMap = {}; // type -> library -> column
 
-      if (timeJsonData[type] == null) {
-        timeJsonData[type] = [["JSON"]];
-        libraryColumnMap[type] = {};
-      }
+  for (var i = 1; i < data.length; i++) {
+    var type = data[i][0];
+    var library = data[i][1];
+    var json = data[i][2];
+    var time = data[i][3];
 
-      var table = timeJsonData[type];
+    if (timeJsonData[type] == null) {
+      timeJsonData[type] = [["JSON"]];
+      libraryColumnMap[type] = {};
+    }
 
-      if (libraryColumnMap[type][library] == null)
-        libraryColumnMap[type][library] = table[0].push(library) - 1;
+    var table = timeJsonData[type];
 
-      var row;
-      for (row = 1; row < table.length; row++)
-        if (table[row][0] == json)
-          break;
+    if (libraryColumnMap[type][library] == null)
+      libraryColumnMap[type][library] = table[0].push(library) - 1;
 
-      if (row == table.length)
-        table.push([json]);
+    var row;
+    for (row = 1; row < table.length; row++)
+      if (table[row][0] == json)
+        break;
+
+    if (row == table.length)
+      table.push([json]);
 
     table[row][libraryColumnMap[type][library]] = time;
   }
