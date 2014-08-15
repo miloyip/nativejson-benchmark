@@ -87,9 +87,9 @@ void GenStat(Stat* s, yajl_val v) {
         s->elementCount += v->u.array.len;
         break;
 
-    case yajl_t_true: s->trueCount++;
-    case yajl_t_false: s->falseCount++;
-    case yajl_t_null: s->nullCount++;
+    case yajl_t_true: s->trueCount++; break;
+    case yajl_t_false: s->falseCount++; break;
+    case yajl_t_null: s->nullCount++; break;
     default:;
     }
 }

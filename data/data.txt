@@ -1,3 +1,2 @@
 canada.json
-sample.json
 citm_catalog.json

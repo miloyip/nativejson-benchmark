@@ -13,10 +13,24 @@ struct TestJson {
     char* filename;
     char* json;
     size_t length;
+    Stat stat;      // Reference statistics
 };
 
 typedef std::vector<TestJson> TestJsonList;
 static TestJsonList gTestJsons;
+
+static void PrintStat(const Stat& stat) {
+    printf("objectCount:  %10u\n", (unsigned)stat.objectCount);
+    printf("arrayCount:   %10u\n", (unsigned)stat.arrayCount);
+    printf("numberCount:  %10u\n", (unsigned)stat.numberCount);
+    printf("stringCount:  %10u\n", (unsigned)stat.stringCount);
+    printf("trueCount:    %10u\n", (unsigned)stat.trueCount);
+    printf("falseCount:   %10u\n", (unsigned)stat.falseCount);
+    printf("nullCount:    %10u\n", (unsigned)stat.nullCount);
+    printf("memberCount:  %10u\n", (unsigned)stat.memberCount);
+    printf("elementCount: %10u\n", (unsigned)stat.elementCount);
+    printf("stringLength: %10u\n", (unsigned)stat.stringLength);
+}
 
 static bool ReadFiles(const char* path) {
     char fullpath[FILENAME_MAX];
@@ -25,13 +39,28 @@ static bool ReadFiles(const char* path) {
     if (!fp)
         return false;
 
+    // Currently use RapidJSON to generate reference statistics
+    TestList& tests = TestManager::Instance().GetTests();
+    const TestBase* referenceTest = 0;
+    for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr) {
+        if (strcmp((*itr)->GetName(), "RapidJSON") == 0) {
+            referenceTest = *itr;
+            break;
+        }
+    }
+
+    if (!referenceTest) {
+        printf("Error: Cannot find RapidJSON as refernce test. Not reading any files.\n");
+        return false;
+    }
+
     while (!feof(fp)) {
         char filename[FILENAME_MAX];
         if (fscanf(fp, "%s", filename) == 1) {
             sprintf(fullpath, path, filename);
             FILE *fp2 = fopen(fullpath, "rb");
             if (!fp2) {
-                printf("Cannot read '%s'\n", filename);
+                printf("Error: Cannot read '%s'\n", filename);
                 continue;
             }
             
@@ -45,7 +74,28 @@ static bool ReadFiles(const char* path) {
             t.json[t.length] = '\0';
             fclose(fp2);
 
+            // Generate reference statistics
+            void* dom = referenceTest->Parse(t.json);
+            t.stat = referenceTest->Statistics(dom);
+
             printf("Read '%s' (%u bytes)\n", t.filename, (unsigned)t.length);
+            PrintStat(t.stat);
+            printf("\n");
+
+            // Write out reference JSON
+#if 0
+            {
+                char* json = referenceTest->Stringify(dom);
+                char jsonfilename[FILENAME_MAX];
+                sprintf(jsonfilename, "%s_%s", referenceTest->GetName(), filename);
+                FILE* fp = fopen(jsonfilename, "wb");
+                fwrite(json, strlen(json), 1, fp);
+                fclose(fp);
+                free(json);
+            }
+#endif
+
+            referenceTest->Free(dom);
 
             gTestJsons.push_back(t);
         }
@@ -63,19 +113,6 @@ static void FreeFiles() {
         itr->filename = 0;
         itr->json = 0;
     }
-}
-
-static void PrintStat(const Stat& stat) {
-    printf("objectCount:  %10u\n", (unsigned)stat.objectCount);
-    printf("arrayCount:   %10u\n", (unsigned)stat.arrayCount);
-    printf("numberCount:  %10u\n", (unsigned)stat.numberCount);
-    printf("stringCount:  %10u\n", (unsigned)stat.stringCount);
-    printf("trueCount:    %10u\n", (unsigned)stat.trueCount);
-    printf("falseCount:   %10u\n", (unsigned)stat.falseCount);
-    printf("nullCount:    %10u\n", (unsigned)stat.nullCount);
-    printf("memberCount:  %10u\n", (unsigned)stat.memberCount);
-    printf("elementCount: %10u\n", (unsigned)stat.elementCount);
-    printf("stringLength: %10u\n", (unsigned)stat.stringLength);
 }
 
 static void Verify(const TestBase& test) {
@@ -113,12 +150,23 @@ static void Verify(const TestBase& test) {
         char* json2 = test.Stringify(dom2);
         test.Free(dom2);
 
-        if (memcmp(&stat1, &stat2, sizeof(Stat)) != 0) {
-            printf("\nFailed to rountrip '%s' (stats are different)\n", itr->filename);
-            printf("1st time\n--------\n");
-            PrintStat(stat1);
-            printf("\n2nd time\n--------\n");
-            PrintStat(stat2);
+        Stat* statProblem = 0;
+        int statProblemWhich = 0;
+        if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0) {
+            statProblem = &stat1;
+            statProblemWhich = 1;
+        }
+        else if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0) {
+            statProblem = &stat2;
+            statProblemWhich = 2;
+        }
+
+        if (statProblem != 0) {
+            printf("\nStatistics of '%s' is different from reference.\n\n", itr->filename);
+            printf("Reference\n---------\n");
+            PrintStat(itr->stat);
+            printf("\nStat #%d\n--------\n", statProblemWhich);
+            PrintStat(*statProblem);
             printf("\n");
 
             // Write out json1 for diagnosis
@@ -140,15 +188,17 @@ static void Verify(const TestBase& test) {
 
 static void VerifyAll() {
     TestList& tests = TestManager::Instance().GetTests();
-    for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr)
-        Verify(**itr);    
+    for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr) {
+        if (strcmp((*itr)->GetName(), "strdup") != 0)   // skip strdup
+            Verify(**itr);
+    }
 
     printf("\n");
 }
 
 static void BenchParse(const TestBase& test, FILE *fp) {
     for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
-        printf("Parse     %-20s ... ", itr->filename);
+        printf("%15s %-20s ... ", "Parse", itr->filename);
         fflush(stdout);
 
         double minDuration = DBL_MAX;
@@ -170,7 +220,7 @@ static void BenchParse(const TestBase& test, FILE *fp) {
 
 static void BenchStringify(const TestBase& test, FILE *fp) {
     for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
-        printf("Stringify %-20s ... ", itr->filename);
+        printf("%15s %-20s ... ", "Stringify", itr->filename);
         fflush(stdout);
 
         double minDuration = DBL_MAX;
@@ -197,7 +247,7 @@ static void BenchStringify(const TestBase& test, FILE *fp) {
 
 static void BenchPrettify(const TestBase& test, FILE *fp) {
     for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
-        printf("Prettify  %-20s ... ", itr->filename);
+        printf("%15s %-20s ... ", "Prettify", itr->filename);
         fflush(stdout);
 
         double minDuration = DBL_MAX;
@@ -224,7 +274,7 @@ static void BenchPrettify(const TestBase& test, FILE *fp) {
 
 static void BenchStatistics(const TestBase& test, FILE *fp) {
     for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
-        printf("Statistics  %-20s ... ", itr->filename);
+        printf("%15s %-20s ... ", "Statistics", itr->filename);
         fflush(stdout);
 
         double minDuration = DBL_MAX;
