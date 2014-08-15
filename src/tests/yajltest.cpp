@@ -19,21 +19,15 @@ yajl_gen_status GenVal(yajl_gen g, yajl_val v) {
             char buffer[100];
             char *num = buffer;
             size_t len;
-            //if (YAJL_IS_INTEGER(v)) // buggy
-            if (v->u.number.flags & YAJL_NUMBER_INT_VALID)
-#if _MSC_VER
-                len = sprintf(num, "%I64d", YAJL_GET_INTEGER(v));
-#else
-                len = sprintf(num, "%lld", YAJL_GET_INTEGER(v));
-#endif
-            //else if (YAJL_IS_DOUBLE(v))   // buggy
-            else if (v->u.number.flags & YAJL_NUMBER_DOUBLE_VALID)
-                len = sprintf(num, "%g", YAJL_GET_DOUBLE(v));
+            if (YAJL_IS_INTEGER(v))
+                return yajl_gen_integer(g, YAJL_GET_INTEGER(v));
+            else if (YAJL_IS_DOUBLE(v))
+                return yajl_gen_double(g, YAJL_GET_DOUBLE(v));
             else {
                 num = YAJL_GET_NUMBER(v);
                 len = strlen(buffer);
+                return yajl_gen_number(g, num, len);
             }
-            return yajl_gen_number(g, num, len);
         }
 
     case yajl_t_object:
