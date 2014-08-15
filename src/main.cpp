@@ -73,6 +73,13 @@ static void Verify(const TestBase& test) {
             
         char* json1 = test.Stringify(dom1);
         test.Free(dom1);
+
+        if (!json1) {
+            printf("\nFailed to strinify '%s'\n", itr->filename);
+            failed = true;
+            continue;
+        }
+
         void* dom2 = test.Parse(json1);
         char* json2 = test.Stringify(dom2);
         test.Free(dom2);

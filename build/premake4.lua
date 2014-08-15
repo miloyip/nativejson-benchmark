@@ -51,12 +51,22 @@ solution "benchmark"
 		kind "ConsoleApp"
 		
         includedirs {
+            "../thirdparty/",
             "../thirdparty/rapidjson/include/",
+            "../thirdparty/yajl/include/",
         }
 
 		files { 
 			"../src/**.h",
+			"../src/**.c",
 			"../src/**.cpp",
 		}
 
 		setTargetObjDir("../bin")
+
+		os.mkdir("../thirdparty/yajl/include/yajl")
+		local matches = os.matchfiles("../thirdparty/yajl/src/api/*.h")
+		for _, f in ipairs(matches) do 
+			local filename = string.match(f, ".-([^\\/]-%.?[^%.\\/]*)$")
+			os.copyfile(f, "../thirdparty/yajl/include/yajl/" .. filename)
+		end
