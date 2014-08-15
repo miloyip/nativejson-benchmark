@@ -2,3 +2,4 @@
 /build/gmake
 /build/vs*/
 /intermediate
+/thirdparty/include

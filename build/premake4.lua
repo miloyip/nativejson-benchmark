@@ -53,7 +53,7 @@ solution "benchmark"
         includedirs {
             "../thirdparty/",
             "../thirdparty/rapidjson/include/",
-            "../thirdparty/yajl/include/",
+            "../thirdparty/include/",
         }
 
 		files { 
@@ -64,9 +64,9 @@ solution "benchmark"
 
 		setTargetObjDir("../bin")
 
-		os.mkdir("../thirdparty/yajl/include/yajl")
+		os.mkdir("../thirdparty/include/yajl")
 		local matches = os.matchfiles("../thirdparty/yajl/src/api/*.h")
 		for _, f in ipairs(matches) do 
 			local filename = string.match(f, ".-([^\\/]-%.?[^%.\\/]*)$")
-			os.copyfile(f, "../thirdparty/yajl/include/yajl/" .. filename)
+			os.copyfile(f, "../thirdparty/include/yajl/" .. filename)
 		end
