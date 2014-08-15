@@ -1,0 +1,4 @@
+/bin/*
+/build/gmake
+/build/vs*/
+/intermediate
