@@ -13,3 +13,6 @@
 [submodule "thirdparty/jsonxx"]
 	path = thirdparty/jsonxx
 	url = git@github.com:hjiang/jsonxx
+[submodule "thirdparty/gason"]
+	path = thirdparty/gason
+	url = git@github.com:vivkin/gason
