@@ -12,6 +12,7 @@
 
 using namespace rapidjson;
 
+#if SLOWER_STAT
 class StatHandler {
 public:
     typedef char Ch;
@@ -36,6 +37,41 @@ private:
 
     Stat& stat_;
 };
+#else
+void GenStat(Stat& stat, const Value& v) {
+    switch(v.GetType()) {
+    case kNullType:  stat.nullCount++; break;
+    case kFalseType: stat.falseCount++; break;
+    case kTrueType:  stat.trueCount++; break;
+
+    case kObjectType:
+        for (Value::ConstMemberIterator m = v.MemberBegin(); m != v.MemberEnd(); ++m) {
+            stat.stringLength += m->name.GetStringLength();
+            GenStat(stat, m->value);
+        }
+        stat.objectCount++;
+        stat.memberCount += (v.MemberEnd() - v.MemberBegin());
+        stat.stringCount += (v.MemberEnd() - v.MemberBegin()); // Key
+        break;
+
+    case kArrayType:
+        for (Value::ConstValueIterator i = v.Begin(); i != v.End(); ++i)
+            GenStat(stat, *i);
+        stat.arrayCount++;
+        stat.elementCount += v.Size();
+        break;
+
+    case kStringType:
+        stat.stringCount++;
+        stat.stringLength += v.GetStringLength();
+        break;
+
+    case kNumberType:
+        stat.numberCount++;
+        break;
+    }
+}
+#endif
 
 class RapidjsonTest : public TestBase {
 public:
@@ -71,8 +107,12 @@ public:
         Document* doc = reinterpret_cast<Document*>(userdata);
         Stat s;
         memset(&s, 0, sizeof(s));
+#if SLOWER_STAT
         StatHandler h(s);
         doc->Accept(h);
+#else
+        GenStat(s, *doc);
+#endif
         return s;
     }
 
