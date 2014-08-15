@@ -1,9 +1,13 @@
+#if (defined(_MSC_VER) && _MSC_VER >= 1700) || (__cplusplus >= 201103L)
+
 #include "../test.h"
 #ifdef _MSC_VER
 #pragma warning (disable:4244) // conversion from 'int' to 'char', possible loss of data
 #pragma warning (disable:4800) // 'uint64_t' : forcing value to bool 'true' or 'false' (performance warning)
 #endif
 #include "gason/gason.cpp"
+#include <cstdio>
+#include <cstdlib>
 #include <iomanip>
 #include <sstream>
 
@@ -193,3 +197,5 @@ public:
 };
 
 REGISTER_TEST(GasonTest);
+
+#endif
