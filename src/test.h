@@ -33,6 +33,20 @@ private:
     TestList mTests;
 };
 
+struct Stat {
+    size_t objectCount;
+    size_t arrayCount;
+    size_t numberCount;
+    size_t stringCount;
+    size_t trueCount;
+    size_t falseCount;
+    size_t nullCount;
+
+    size_t memberCount;   // Number of members in all objects
+    size_t elementCount;  // Number of elements in all arrays
+    size_t stringLength;  // Number of code units in all strings
+};
+
 class TestBase {
 public:
     TestBase(const char* name) : name_(name) {
@@ -59,6 +73,13 @@ public:
     virtual char* Prettify(void* userdata) const {
         (void)userdata;
         return 0;
+    }
+
+    virtual Stat Statistics(void* userdata) const {
+        (void)userdata;
+        Stat s;
+        memset(&s, 0, sizeof(s));
+        return s;
     }
 
     virtual void Free(void* userdata) const {

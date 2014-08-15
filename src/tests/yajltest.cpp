@@ -66,6 +66,34 @@ yajl_gen_status GenVal(yajl_gen g, yajl_val v) {
     }
 }
 
+void GenStat(Stat* s, yajl_val v) {
+    switch (v->type) {
+    case yajl_t_string: s->stringCount++;  s->stringLength += strlen(v->u.string); break;
+    case yajl_t_number: s->numberCount++;  break;
+    case yajl_t_object: 
+        for (size_t i = 0; i < v->u.object.len; i++) {
+            s->stringCount++;
+            s->stringLength += strlen(v->u.object.keys[i]);
+            GenStat(s, v->u.object.values[i]);
+        }
+        s->objectCount++;
+        s->memberCount += v->u.object.len;
+        break;
+
+    case yajl_t_array:
+        for (size_t i = 0; i < v->u.array.len; i++)
+            GenStat(s, v->u.array.values[i]);
+        s->arrayCount++;
+        s->elementCount += v->u.array.len;
+        break;
+
+    case yajl_t_true: s->trueCount++;
+    case yajl_t_false: s->falseCount++;
+    case yajl_t_null: s->nullCount++;
+    default:;
+    }
+}
+
 } // extern "C"
 
 class YajlTest : public TestBase {
@@ -115,6 +143,14 @@ public:
 
         yajl_gen_free(g);
         return json;
+    }
+
+    virtual Stat Statistics(void* userdata) const {
+        yajl_val root = (yajl_val)userdata;
+        Stat s;
+        memset(&s, 0, sizeof(s));
+        GenStat(&s, root);
+        return s;
     }
 
     virtual void Free(void* userdata) const {

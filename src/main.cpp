@@ -63,6 +63,19 @@ static void FreeFiles() {
     }
 }
 
+static void PrintStat(const Stat& stat) {
+    printf("objectCount:  %10u\n", (unsigned)stat.objectCount);
+    printf("arrayCount:   %10u\n", (unsigned)stat.arrayCount);
+    printf("numberCount:  %10u\n", (unsigned)stat.numberCount);
+    printf("stringCount:  %10u\n", (unsigned)stat.stringCount);
+    printf("trueCount:    %10u\n", (unsigned)stat.trueCount);
+    printf("falseCount:   %10u\n", (unsigned)stat.falseCount);
+    printf("nullCount:    %10u\n", (unsigned)stat.nullCount);
+    printf("memberCount:  %10u\n", (unsigned)stat.memberCount);
+    printf("elementCount: %10u\n", (unsigned)stat.elementCount);
+    printf("stringLength: %10u\n", (unsigned)stat.stringLength);
+}
+
 static void Verify(const TestBase& test) {
     printf("Verifying %s ... ", test.GetName());
     bool failed = false;
@@ -74,7 +87,9 @@ static void Verify(const TestBase& test) {
             failed = true;
             continue;
         }
-            
+
+        Stat stat1 = test.Statistics(dom1);
+
         char* json1 = test.Stringify(dom1);
         test.Free(dom1);
 
@@ -85,8 +100,34 @@ static void Verify(const TestBase& test) {
         }
 
         void* dom2 = test.Parse(json1);
+        if (!dom2) {
+            printf("\nFailed to parse '%s' 2nd time\n", itr->filename);
+            failed = true;
+            continue;
+        }
+
+        Stat stat2 = test.Statistics(dom2);
+
         char* json2 = test.Stringify(dom2);
         test.Free(dom2);
+
+        if (memcmp(&stat1, &stat2, sizeof(Stat)) != 0) {
+            printf("\nFailed to rountrip '%s' (stats are different)\n", itr->filename);
+            printf("1st time\n--------\n");
+            PrintStat(stat1);
+            printf("\n2nd time\n--------\n");
+            PrintStat(stat2);
+            printf("\n");
+
+            // Write out json1 for diagnosis
+            char filename[FILENAME_MAX];
+            sprintf(filename, "%s_%s", test.GetName(), itr->filename);
+            FILE* fp = fopen(filename, "wb");
+            fwrite(json1, strlen(json1), 1, fp);
+            fclose(fp);
+
+            failed = true;
+        }
 
         free(json1);
         free(json2);
