@@ -15,9 +15,67 @@ $(function() {
       onParseValue: $.csv.hooks.castToScalar
   });
 
-  // Convert data for bar chart (summing all json)
   var timeData = {};  // type -> table
+  var timeGroupData = {}; // type -> table
   var libraryRowMap = {}; // type -> library -> row
+  var libraryColumnMap = {}; // type -> library -> column
+
+  // Generate overall data for table
+  // select library, sum(time) from data group by library, type
+
+  for (var i = 1; i < data.length; i++) {
+    var type = "Overall";
+    var library = data[i][1];
+    var json = data[i][2];
+    var time = data[i][3];
+    if (timeData[type] == null) {
+      timeData[type] = [["Library", "Time (ms)"]];
+      libraryRowMap[type] = {};
+    }
+
+    var table = timeData[type];
+    
+    if (libraryRowMap[type][library] == null)
+      libraryRowMap[type][library] = table.push([library, 0]) - 1;
+      
+    table[libraryRowMap[type][library]][1] += time;
+  }
+
+  // Generate overall data for chart
+  // For each type, select library, sum(time) from data group by library
+
+  for (var i = 1; i < data.length; i++) {
+    var type = "Overall";
+    var library = data[i][1];
+    var json = data[i][0];
+    var time = data[i][3];
+
+    if (timeGroupData[type] == null) {
+      timeGroupData[type] = [["Operation"]];
+      libraryColumnMap[type] = {};
+    }
+
+    var table = timeGroupData[type];
+
+    if (libraryColumnMap[type][library] == null)
+      libraryColumnMap[type][library] = table[0].push(library) - 1;
+
+    var row;
+    for (row = 1; row < table.length; row++)
+      if (table[row][0] == json)
+        break;
+
+    if (row == table.length)
+      table.push([json]);
+
+    if (typeof table[row][libraryColumnMap[type][library]] == 'undefined')
+      table[row][libraryColumnMap[type][library]] = time;
+    else
+      table[row][libraryColumnMap[type][library]] += time;
+  }
+
+  // Convert data for bar chart (summing all json)
+  // For each type, select library, sum(time) from data group by library
 
   for (var i = 1; i < data.length; i++) {
     var type = data[i][0];
@@ -38,8 +96,7 @@ $(function() {
   }
 
   // Convert data for drawing bar chart per json
-  var timeJsonData = {}; // type -> table
-  var libraryColumnMap = {}; // type -> library -> column
+  // For each type, select library, json, time from data
 
   for (var i = 1; i < data.length; i++) {
     var type = data[i][0];
@@ -47,12 +104,12 @@ $(function() {
     var json = data[i][2];
     var time = data[i][3];
 
-    if (timeJsonData[type] == null) {
-      timeJsonData[type] = [["JSON"]];
+    if (timeGroupData[type] == null) {
+      timeGroupData[type] = [["JSON"]];
       libraryColumnMap[type] = {};
     }
 
-    var table = timeJsonData[type];
+    var table = timeGroupData[type];
 
     if (libraryColumnMap[type][library] == null)
       libraryColumnMap[type][library] = table[0].push(library) - 1;
@@ -78,7 +135,7 @@ $(function() {
 
     drawTable(type, timeData[type]);
     drawBarChart(type, timeData[type]);
-    drawJsonChart(type, timeJsonData[type]);
+    drawGroupChart(type, timeGroupData[type]);
   }
 
   $(".chart").each(function() {
@@ -177,17 +234,18 @@ function drawBarChart(type, timeData) {
   chart.draw(data, options);
 }
 
-function drawJsonChart(type, timeJsonData) {
-  var data = google.visualization.arrayToDataTable(timeJsonData);
+function drawGroupChart(type, timeGroupData) {
+  var data = google.visualization.arrayToDataTable(timeGroupData);
+  var group = timeGroupData[0][0];
 
   var options = { 
-    title: type + " per JSON",
+    title: type + " per " + group,
     chartArea: {'width': '70%', 'height': '80%'},
     hAxis: {
       title: "Time (ms)"
     },
     vAxis: {
-      title: "JSON"
+      title: group
     },
     width: 800,
     height: 600
