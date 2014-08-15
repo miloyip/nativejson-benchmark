@@ -7,3 +7,6 @@
 [submodule "thirdparty/jsoncpp"]
 	path = thirdparty/jsoncpp
 	url = git@github.com:open-source-parsers/jsoncpp
+[submodule "thirdparty/picojson"]
+	path = thirdparty/picojson
+	url = git@github.com:kazuho/picojson
