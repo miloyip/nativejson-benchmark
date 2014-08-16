@@ -3,7 +3,7 @@
 
 class StrdupTest : public TestBase {
 public:
-	StrdupTest() : TestBase("strdup") {
+	StrdupTest() : TestBase("Strdup") {
 	}
 	
     virtual void* Parse(const char* json, size_t length) const {

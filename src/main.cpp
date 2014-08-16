@@ -189,7 +189,7 @@ static void Verify(const TestBase& test) {
 static void VerifyAll() {
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr) {
-        if (strcmp((*itr)->GetName(), "strdup") != 0)   // skip strdup
+        if (strcmp((*itr)->GetName(), "Strdup") != 0)   // skip Strdup
             Verify(**itr);
     }
 

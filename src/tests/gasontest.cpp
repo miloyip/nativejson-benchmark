@@ -153,7 +153,7 @@ struct GasonState {
 
 class GasonTest : public TestBase {
 public:
-	GasonTest() : TestBase("gason") {
+	GasonTest() : TestBase("Gason") {
 	}
 	
     virtual void* Parse(const char* json, size_t length) const {
