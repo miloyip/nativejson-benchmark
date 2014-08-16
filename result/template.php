@@ -11,131 +11,65 @@ $(function() {
   google.load("visualization", "1", {packages:["corechart"]});
 
   var csv = $('#textInput').val();
-  var data = $.csv.toArrays(csv, {
-      onParseValue: $.csv.hooks.castToScalar
-  });
+  var dt = google.visualization.arrayToDataTable($.csv.toArrays(csv, {onParseValue: $.csv.hooks.castToScalar}));
 
-  var timeData = {};  // type -> table
-  var timeGroupData = {}; // type -> table
-  var libraryRowMap = {}; // type -> library -> row
-  var libraryColumnMap = {}; // type -> library -> column
+  // Overall
+  addSection("Overall");
 
-  // Generate overall data for table
-  // select library, sum(time) from data group by library, type
+  drawTable(
+    "Overall",
+    google.visualization.data.group(
+      dt,
+      [1],
+      [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+    )
+  );
 
-  for (var i = 1; i < data.length; i++) {
-    var type = "Overall";
-    var library = data[i][1];
-    var json = data[i][2];
-    var time = data[i][3];
-    if (timeData[type] == null) {
-      timeData[type] = [["Library", "Time (ms)"]];
-      libraryRowMap[type] = {};
-    }
+  drawStackedChart(
+    "Overall", 
+    pivotTable(google.visualization.data.group(
+      dt,
+      [1, 0],
+      [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+    ))
+  );
 
-    var table = timeData[type];
-    
-    if (libraryRowMap[type][library] == null)
-      libraryRowMap[type][library] = table.push([library, 0]) - 1;
-      
-    table[libraryRowMap[type][library]][1] += time;
-  }
+  // Per type sections
+  var types = dt.getDistinctValues(0);
+  for (var i in types) {
+    var type = types[i];
+    addSection(type);
 
-  // Generate overall data for chart
-  // For each type, select library, sum(time) from data group by library
+    var view = new google.visualization.DataView(dt);
+    view.setRows(view.getFilteredRows([{column: 0, value: type}]));
 
-  for (var i = 1; i < data.length; i++) {
-    var type = "Overall";
-    var library = data[i][1];
-    var json = data[i][0];
-    var time = data[i][3];
-
-    if (timeGroupData[type] == null) {
-      timeGroupData[type] = [["Operation"]];
-      libraryColumnMap[type] = {};
-    }
-
-    var table = timeGroupData[type];
-
-    if (libraryColumnMap[type][library] == null)
-      libraryColumnMap[type][library] = table[0].push(library) - 1;
-
-    var row;
-    for (row = 1; row < table.length; row++)
-      if (table[row][0] == json)
-        break;
-
-    if (row == table.length)
-      table.push([json]);
-
-    if (typeof table[row][libraryColumnMap[type][library]] == 'undefined')
-      table[row][libraryColumnMap[type][library]] = time;
-    else
-      table[row][libraryColumnMap[type][library]] += time;
-  }
-
-  // Convert data for bar chart (summing all json)
-  // For each type, select library, sum(time) from data group by library
-
-  for (var i = 1; i < data.length; i++) {
-    var type = data[i][0];
-    var library = data[i][1];
-    var json = data[i][2];
-    var time = data[i][3];
-    if (timeData[type] == null) {
-      timeData[type] = [["Library", "Time (ms)"]];
-      libraryRowMap[type] = {};
-    }
-
-    var table = timeData[type];
-    
-    if (libraryRowMap[type][library] == null)
-      libraryRowMap[type][library] = table.push([library, 0]) - 1;
-      
-    table[libraryRowMap[type][library]][1] += time;
-  }
-
-  // Convert data for drawing bar chart per json
-  // For each type, select library, json, time from data
-
-  for (var i = 1; i < data.length; i++) {
-    var type = data[i][0];
-    var library = data[i][1];
-    var json = data[i][2];
-    var time = data[i][3];
-
-    if (timeGroupData[type] == null) {
-      timeGroupData[type] = [["JSON"]];
-      libraryColumnMap[type] = {};
-    }
-
-    var table = timeGroupData[type];
-
-    if (libraryColumnMap[type][library] == null)
-      libraryColumnMap[type][library] = table[0].push(library) - 1;
-
-    var row;
-    for (row = 1; row < table.length; row++)
-      if (table[row][0] == json)
-        break;
-
-    if (row == table.length)
-      table.push([json]);
-
-    table[row][libraryColumnMap[type][library]] = time;
-  }
-
-  for (var type in timeData) {
-    $("#main").append(
-      $("<a>", {name: type}),
-      $("<h2>", {style: "padding-top: 70px; margin-top: -70px;"}).append(type)
+    drawTable(
+      type,
+      google.visualization.data.group(
+        view,
+        [1], 
+        [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+      )
     );
 
-    $("#section").append($("<li>").append($("<a>", {href: "#" + type}).append(type)));
+    drawBarChart(
+      type,
+      google.visualization.data.group(
+        view,
+        [1],
+        [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+      )
+    );
 
-    drawTable(type, timeData[type]);
-    drawBarChart(type, timeData[type]);
-    drawGroupChart(type, timeGroupData[type]);
+    // Per JSON
+    drawPivotBarChart(
+      type + " per JSON",
+      pivotTable(google.visualization.data.group(
+        view,
+        [2, 1],
+        [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+      ))
+    );
   }
 
   $(".chart").each(function() {
@@ -170,12 +104,45 @@ $(function() {
   }
 });
 
-function drawTable(type, timeData) {
-  var data = google.visualization.arrayToDataTable(timeData);
-    data.addColumn('number', 'Speedup');
-    //data.sort([{ column: 1, desc: true }]);
-    var formatter1 = new google.visualization.NumberFormat({ fractionDigits: 3 });
-    formatter1.format(data, 1);
+function pivotTable(src) {
+  var dst = new google.visualization.DataTable();
+  
+  // Add columns
+  var key = src.getDistinctValues(1);
+  var keyColumnMap = {};
+  dst.addColumn(src.getColumnType(0), src.getColumnLabel(0));  
+  for (var k in key)
+    keyColumnMap[key[k]] = dst.addColumn(src.getColumnType(2), key[k]);
+
+  // Add rows
+  var pivot = src.getDistinctValues(0);
+  var pivotRowMap = {};  
+  for (var p in pivot)
+    dst.setValue(pivotRowMap[[pivot[p]]] = dst.addRow(), 0, pivot[p]);
+
+  // Fill cells
+  for (var row = 0; row < src.getNumberOfRows(); row++)
+    dst.setValue(
+      pivotRowMap[src.getValue(row, 0)],
+      keyColumnMap[src.getValue(row, 1)],
+      src.getValue(row, 2));
+
+  return dst;
+}
+
+function addSection(type) {
+  $("#main").append(
+    $("<a>", {name: type}),
+    $("<h2>", {style: "padding-top: 70px; margin-top: -70px;"}).append(type)
+  );
+  $("#section").append($("<li>").append($("<a>", {href: "#" + type}).append(type)));
+}
+
+function drawTable(type, data) {
+  data.addColumn('number', 'Speedup');
+  //data.sort([{ column: 1, desc: true }]);
+  var formatter1 = new google.visualization.NumberFormat({ fractionDigits: 3 });
+  formatter1.format(data, 1);
 
   var div = document.createElement("div");
   div.className = "tablechart";
@@ -205,26 +172,24 @@ function drawTable(type, timeData) {
                 redrawTable(item.row);
         }
     });
-
 }
 
-function drawBarChart(type, timeData) {
-    var defaultColors = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
-
-  var data = google.visualization.arrayToDataTable(timeData);
-  data.addColumn({ type: "string", role: "style" })
-  for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
-    data.setValue(rowIndex, 2, defaultColors[rowIndex]);
-
-    //data.sort([{ column: 1, desc: true }]);
+function drawStackedChart(type, data) {
+  // User another set of color for series
+  var colors = ['rgb(166,206,227)','rgb(31,120,180)','rgb(178,223,138)','rgb(51,160,44)','rgb(251,154,153)','rgb(227,26,28)','rgb(253,191,111)','rgb(255,127,0)','rgb(202,178,214)','rgb(106,61,154)','rgb(255,255,153)','rgb(177,89,40)'];
   var options = { 
     title: type,
     chartArea: {'width': '70%', 'height': '70%'},
     width: 800,
     height: 300,
-    legend: { position: "none" },
-    hAxis: { title: "Time (ms)" }
+    hAxis: { title: "Time (ms)" },
+    isStacked: true,
+    series: []
   };
+
+  for (var i = 0; i < data.getNumberOfRows(); i++)
+    options.series.push({"color": colors[i]});
+
   var div = document.createElement("div");
   div.className = "chart";
   $(div).data("filename", type + "_time");
@@ -234,25 +199,43 @@ function drawBarChart(type, timeData) {
   chart.draw(data, options);
 }
 
-function drawGroupChart(type, timeGroupData) {
-  var data = google.visualization.arrayToDataTable(timeGroupData);
-  var group = timeGroupData[0][0];
-
+function drawBarChart(type, data) {
+  // Using same colors as in series
+  var colors = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
   var options = { 
-    title: type + " per " + group,
-    chartArea: {'width': '70%', 'height': '80%'},
-    hAxis: {
-      title: "Time (ms)"
-    },
-    vAxis: {
-      title: group
-    },
+    title: type,
+    chartArea: {'width': '70%', 'height': '70%'},
     width: 800,
-    height: 600
+    height: 300,
+    hAxis: { title: "Time (ms)" },
+    legend: { position: "none" },
+  };
+
+  data.addColumn({ type: "string", role: "style" })
+  for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
+    data.setValue(rowIndex, 2, colors[rowIndex]);
+
+  var div = document.createElement("div");
+  div.className = "chart";
+  $(div).data("filename", type + "_time");
+  $("#main").append(div);
+  var chart = new google.visualization.BarChart(div);
+
+  chart.draw(data, options);
+}
+
+
+function drawPivotBarChart(type, data) {
+  var options = { 
+    title: type,
+    chartArea: {'width': '70%', 'height': '70%'},
+    width: 800,
+    height: 600,
+    hAxis: { title: "Time (ms)" }
   };
   var div = document.createElement("div");
   div.className = "chart";
-  $(div).data("filename", type + "_timejson");
+  $(div).data("filename", type + "_time");
   $("#main").append(div);
   var chart = new google.visualization.BarChart(div);
 
@@ -312,7 +295,7 @@ textarea {
   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
 .tablechart {
-  width: 700px;
+  width: 500px;
   margin: auto;
   padding-top: 20px;
   padding-bottom: 20px;
