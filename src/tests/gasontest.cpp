@@ -170,7 +170,9 @@ public:
         (void)length;
         GasonParseResult* pr = new GasonParseResult;
         char* end = 0;
-        pr->json = strdup(json);
+        // gason uses insitu parsing, the source json must make a copy.
+        pr->json = (char*)malloc(length + 1);
+        memcpy(pr->json, json, length + 1);
         if (jsonParse(pr->json, &end, &pr->value, pr->allocator) != JSON_PARSE_OK) {
             delete pr;
             return 0;
@@ -182,18 +184,18 @@ public:
         const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         std::ostringstream os;
         dumpValue(os, pr->value, 0);
-        GasonStringResult* sr = new GasonStringResult;
-        sr->s = os.str();
-        return sr;
+        GasonStringResult* result = new GasonStringResult;
+        result->s = os.str();
+        return result;
     }
 
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         std::ostringstream os;
         dumpValue(os, pr->value, 4);
-        GasonStringResult* sr = new GasonStringResult;
-        sr->s = os.str();
-        return sr;
+        GasonStringResult* result = new GasonStringResult;
+        result->s = os.str();
+        return result;
     }
 
     virtual Stat Statistics(const ParseResultBase* parseResult) const {

@@ -17,7 +17,6 @@ struct TestJson {
 };
 
 typedef std::vector<TestJson> TestJsonList;
-static TestJsonList gTestJsons;
 
 static void PrintStat(const Stat& stat) {
     printf("objectCount:  %10u\n", (unsigned)stat.objectCount);
@@ -32,7 +31,32 @@ static void PrintStat(const Stat& stat) {
     printf("stringLength: %10u\n", (unsigned)stat.stringLength);
 }
 
-static bool ReadFiles(const char* path) {
+#ifdef USE_MEMORYSTAT
+static void PrintMemoryStat() {
+    const MemoryStat& stat = Memory::Instance().GetStat();
+    printf(
+        "Memory stats:\n"
+        " mallocCount = %u\n"
+        "reallocCount = %u\n"
+        "   freeCount = %u\n"
+        " currentSize = %u\n"
+        "    peakSize = %u\n",
+        (unsigned)stat.mallocCount,
+        (unsigned)stat.reallocCount,
+        (unsigned)stat.freeCount,
+        (unsigned)stat.currentSize,
+        (unsigned)stat.peakSize);
+}
+#endif
+
+static char* Strdup(const char* s) {
+    size_t length = strlen(s);
+    char* r = (char*)malloc(length + 1);
+    memcpy(r, s, length + 1);
+    return r;
+}
+
+static bool ReadFiles(const char* path, TestJsonList& testJsons) {
     char fullpath[FILENAME_MAX];
     sprintf(fullpath, path, "data.txt");
     FILE* fp = fopen(fullpath, "r");
@@ -65,7 +89,7 @@ static bool ReadFiles(const char* path) {
             }
             
             TestJson t;
-            t.filename = strdup(filename);
+            t.filename = Strdup(filename);
             fseek(fp2, 0, SEEK_END);
             t.length = (size_t)ftell(fp2);
             fseek(fp2, 0, SEEK_SET);
@@ -97,7 +121,7 @@ static bool ReadFiles(const char* path) {
 
             delete dom;
 
-            gTestJsons.push_back(t);
+            testJsons.push_back(t);
         }
     }
 
@@ -106,8 +130,8 @@ static bool ReadFiles(const char* path) {
     return true;
 }
 
-static void FreeFiles() {
-    for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
+static void FreeFiles(TestJsonList& testJsons) {
+    for (TestJsonList::iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         free(itr->filename);
         free(itr->json);
         itr->filename = 0;
@@ -115,11 +139,15 @@ static void FreeFiles() {
     }
 }
 
-static void Verify(const TestBase& test) {
+static void Verify(const TestBase& test, const TestJsonList& testJsons) {
     printf("Verifying %s ... ", test.GetName());
     bool failed = false;
 
-    for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
+#ifdef USE_MEMORYSTAT
+        MemoryContext context;
+#endif
+
         ParseResultBase* dom1 = test.Parse(itr->json, itr->length);
         if (!dom1) {
             printf("\nFailed to parse '%s'\n", itr->filename);
@@ -138,7 +166,7 @@ static void Verify(const TestBase& test) {
             continue;
         }
 
-        ParseResultBase* dom2 = test.Parse(json1->c_str(), itr->length);
+        ParseResultBase* dom2 = test.Parse(json1->c_str(), strlen(json1->c_str()));
         if (!dom2) {
             printf("\nFailed to parse '%s' 2nd time\n", itr->filename);
             failed = true;
@@ -181,23 +209,35 @@ static void Verify(const TestBase& test) {
 
         delete json1;
         delete json2;
+
+#ifdef USE_MEMORYSTAT
+        const MemoryStat& stat = Memory::Instance().GetStat();
+        if (stat.currentSize != 0) {
+            printf("\nWarning: potential memory leak (%d allocations for %d bytes)\n",
+                (int)stat.mallocCount + (int)stat.reallocCount - (int)stat.freeCount,
+                (int)stat.currentSize);
+
+            PrintMemoryStat();
+            printf("\n");
+        }
+#endif
     }
 
     printf(failed ? "Failed\n" : "OK\n");
 }
 
-static void VerifyAll() {
+static void VerifyAll(const TestJsonList& testJsons) {
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr) {
         if (strcmp((*itr)->GetName(), "Strdup") != 0)   // skip Strdup
-            Verify(**itr);
+            Verify(**itr, testJsons);
     }
 
     printf("\n");
 }
 
-static void BenchParse(const TestBase& test, FILE *fp) {
-    for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
+static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         printf("%15s %-20s ... ", "Parse", itr->filename);
         fflush(stdout);
 
@@ -218,8 +258,8 @@ static void BenchParse(const TestBase& test, FILE *fp) {
     }
 }
 
-static void BenchStringify(const TestBase& test, FILE *fp) {
-    for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
+static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         printf("%15s %-20s ... ", "Stringify", itr->filename);
         fflush(stdout);
 
@@ -245,8 +285,8 @@ static void BenchStringify(const TestBase& test, FILE *fp) {
     }
 }
 
-static void BenchPrettify(const TestBase& test, FILE *fp) {
-    for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
+static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         printf("%15s %-20s ... ", "Prettify", itr->filename);
         fflush(stdout);
 
@@ -272,8 +312,8 @@ static void BenchPrettify(const TestBase& test, FILE *fp) {
     }
 }
 
-static void BenchStatistics(const TestBase& test, FILE *fp) {
-    for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
+static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         printf("%15s %-20s ... ", "Statistics", itr->filename);
         fflush(stdout);
 
@@ -298,16 +338,16 @@ static void BenchStatistics(const TestBase& test, FILE *fp) {
     }
 }
 
-static void Bench(const TestBase& test, FILE *fp) {
+static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     printf("Benchmarking %s\n", test.GetName());
-    BenchParse(test, fp);
-    BenchStringify(test, fp);
-    BenchPrettify(test, fp);
-    BenchStatistics(test, fp);
+    BenchParse(test, testJsons, fp);
+    BenchStringify(test, testJsons, fp);
+    BenchPrettify(test, testJsons, fp);
+    BenchStatistics(test, testJsons, fp);
     printf("\n");
 }
 
-static void BenchAll() {
+static void BenchAll(const TestJsonList& testJsons) {
     // Try to write to /result path, where template.php exists
     FILE *fp;
     if ((fp = fopen("../../result/template.php", "r")) != NULL) {
@@ -325,7 +365,7 @@ static void BenchAll() {
 
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr)
-        Bench(**itr, fp);
+        Bench(**itr, testJsons, fp);
 
     fclose(fp);
 
@@ -333,16 +373,29 @@ static void BenchAll() {
 }
 
 int main() {
-    // Read files
-    if (!ReadFiles("../data/%s"))
-        ReadFiles("../../data/%s");
+#if _MSC_VER
+    //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //void *testWhetherMemoryLeakDetectionWorks = malloc(1);
+#endif
+    {
+        // Read files
+        TestJsonList testJsons;
+        if (!ReadFiles("../data/%s", testJsons))
+            ReadFiles("../../data/%s", testJsons);
 
-    // sort tests
-    TestList& tests = TestManager::Instance().GetTests();
-    std::sort(tests.begin(), tests.end());
+        // sort tests
+        TestList& tests = TestManager::Instance().GetTests();
+        std::sort(tests.begin(), tests.end());
 
-    VerifyAll();
-    BenchAll();
+        VerifyAll(testJsons);
+        BenchAll(testJsons);
 
-    FreeFiles();
+        FreeFiles(testJsons);
+    }
+
+    TestManager::DestroyInstance();
+
+#ifdef USE_MEMORYSTAT
+    PrintMemoryStat();
+#endif
 }

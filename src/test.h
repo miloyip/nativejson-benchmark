@@ -1,11 +1,9 @@
 #pragma once
+#include "memorystat.h"
 
 #include <vector>
 #include <cstring>
-
-#ifdef _MSC_VER
-#define strdup _strdup
-#endif
+#include <cstdlib>
 
 class TestBase;
 typedef std::vector<const TestBase *> TestList;
@@ -13,8 +11,12 @@ typedef std::vector<const TestBase *> TestList;
 class TestManager {
 public:
     static TestManager& Instance() {
-        static TestManager singleton;
-        return singleton;
+        static TestManager* singleton = new TestManager;
+        return *singleton;
+    }
+
+    static void DestroyInstance() {
+        delete &Instance();
     }
 
     void AddTest(const TestBase* test) {
@@ -28,7 +30,7 @@ public:
     TestList& GetTests() {
         return mTests;
     }
-
+    
 private:
     TestList mTests;
 };

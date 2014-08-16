@@ -1,3 +1,5 @@
+#include "../memorystat.h"
+
 #include "yajl/yajl_common.h"
 #undef YAJL_MAX_DEPTH 
 #define YAJL_MAX_DEPTH 1024

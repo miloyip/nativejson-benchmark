@@ -86,6 +86,7 @@ public:
         JsonxxParseResult* pr = new JsonxxParseResult;
         if (!pr->o.parse(json)) {
             delete pr;
+            return 0;
         }
         return pr;
     }
