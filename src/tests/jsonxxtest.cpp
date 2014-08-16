@@ -64,73 +64,52 @@ void GenObjectStat(Stat& s, const Object& o) {
     s.stringCount += o.size();  // Key
 }
 
+class JsonxxParseResult : public ParseResultBase {
+public:
+    Object o;
+};
+
+class JsonxxStringResult : public StringResultBase {
+public:
+    virtual const char* c_str() const { return s.c_str(); }
+
+    std::string s;
+};
+
 class JsonxxTest : public TestBase {
 public:
     JsonxxTest() : TestBase("JSON++") {
 	}
 	
-    virtual void* Parse(const char* json, size_t length) const {
+    virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
-#if 0
-        // Not working
-        Value* v = new Value;
-        std::string err;
-        if (!v->parse(json)) {
-    		delete v;
-    		return 0;
-    	}
-    	return v;
-#else
-        Object* o = new Object;
-        if (!o->parse(json)) {
-            delete o;
-            return 0;
+        JsonxxParseResult* pr = new JsonxxParseResult;
+        if (!pr->o.parse(json)) {
+            delete pr;
         }
-        return o;
-#endif
+        return pr;
     }
 
-    virtual char* Stringify(void* userdata) const {
-#if 0
-        // Not working
-        Value* v = reinterpret_cast<Value*>(userdata);
-        std::string s = v->is<Object>() ? v->get<Object>().json() : v->get<Array>().json();
-        return strdup(s.c_str());
-#else
-        Object *o = reinterpret_cast<Object*>(userdata);
-        return strdup(o->json().c_str());
-#endif
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
+        JsonxxStringResult* sr = new JsonxxStringResult;
+        sr->s = pr->o.json();
+        return sr;
     }
 
-    virtual char* Prettify(void* userdata) const {
-#if 0
-        // Not working
-        Value* v = reinterpret_cast<Value*>(userdata);
-        std::string s = v->is<Object>() ? v->get<Object>().json() : v->get<Array>().json();
-        return strdup(s.c_str());
-#else
-        Object *o = reinterpret_cast<Object*>(userdata);
-        return strdup(o->json().c_str());
-#endif
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+        const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
+        JsonxxStringResult* sr = new JsonxxStringResult;
+        sr->s = pr->o.json();
+        return sr;
     }
 
-    virtual Stat Statistics(void* userdata) const {
+    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+        const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
         Stat s;
         memset(&s, 0, sizeof(s));
-#if 0
-        // Not working
-        Value* v = reinterpret_cast<Value*>(userdata);
-        GenStat(s, *v);
+        GenObjectStat(s, pr->o);
         return s;
-#else
-        Object* o = reinterpret_cast<Object*>(userdata);
-        GenObjectStat(s, *o);
-        return s;
-#endif
-    }
-
-    virtual void Free(void* userdata) const {
-    	delete reinterpret_cast<Value*>(userdata);
     }
 };
 

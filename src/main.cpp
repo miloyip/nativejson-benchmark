@@ -75,7 +75,7 @@ static bool ReadFiles(const char* path) {
             fclose(fp2);
 
             // Generate reference statistics
-            void* dom = referenceTest->Parse(t.json, t.length);
+            ParseResultBase* dom = referenceTest->Parse(t.json, t.length);
             t.stat = referenceTest->Statistics(dom);
 
             printf("Read '%s' (%u bytes)\n", t.filename, (unsigned)t.length);
@@ -95,7 +95,7 @@ static bool ReadFiles(const char* path) {
             }
 #endif
 
-            referenceTest->Free(dom);
+            delete dom;
 
             gTestJsons.push_back(t);
         }
@@ -120,7 +120,7 @@ static void Verify(const TestBase& test) {
     bool failed = false;
 
     for (TestJsonList::iterator itr = gTestJsons.begin(); itr != gTestJsons.end(); ++itr) {
-        void* dom1 = test.Parse(itr->json, itr->length);
+        ParseResultBase* dom1 = test.Parse(itr->json, itr->length);
         if (!dom1) {
             printf("\nFailed to parse '%s'\n", itr->filename);
             failed = true;
@@ -129,8 +129,8 @@ static void Verify(const TestBase& test) {
 
         Stat stat1 = test.Statistics(dom1);
 
-        char* json1 = test.Stringify(dom1);
-        test.Free(dom1);
+        StringResultBase* json1 = test.Stringify(dom1);
+        delete dom1;
 
         if (!json1) {
             printf("\nFailed to strinify '%s'\n", itr->filename);
@@ -138,7 +138,7 @@ static void Verify(const TestBase& test) {
             continue;
         }
 
-        void* dom2 = test.Parse(json1, itr->length);
+        ParseResultBase* dom2 = test.Parse(json1->c_str(), itr->length);
         if (!dom2) {
             printf("\nFailed to parse '%s' 2nd time\n", itr->filename);
             failed = true;
@@ -147,8 +147,8 @@ static void Verify(const TestBase& test) {
 
         Stat stat2 = test.Statistics(dom2);
 
-        char* json2 = test.Stringify(dom2);
-        test.Free(dom2);
+        StringResultBase* json2 = test.Stringify(dom2);
+        delete dom2;
 
         Stat* statProblem = 0;
         int statProblemWhich = 0;
@@ -173,14 +173,14 @@ static void Verify(const TestBase& test) {
             char filename[FILENAME_MAX];
             sprintf(filename, "%s_%s", test.GetName(), itr->filename);
             FILE* fp = fopen(filename, "wb");
-            fwrite(json1, strlen(json1), 1, fp);
+            fwrite(json1->c_str(), strlen(json1->c_str()), 1, fp);
             fclose(fp);
 
             failed = true;
         }
 
-        free(json1);
-        free(json2);
+        delete json1;
+        delete json2;
     }
 
     printf(failed ? "Failed\n" : "OK\n");
@@ -205,10 +205,10 @@ static void BenchParse(const TestBase& test, FILE *fp) {
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             timer.Start();
-            void* dom = test.Parse(itr->json, itr->length);
+            ParseResultBase* dom = test.Parse(itr->json, itr->length);
             timer.Stop();
 
-            test.Free(dom);
+            delete dom;
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
         }
@@ -224,20 +224,20 @@ static void BenchStringify(const TestBase& test, FILE *fp) {
         fflush(stdout);
 
         double minDuration = DBL_MAX;
-        void* dom = test.Parse(itr->json, itr->length);
+        ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             timer.Start();
-            char* json = test.Stringify(dom);
+            StringResultBase* json = test.Stringify(dom);
             timer.Stop();
 
-            free(json);
+            delete json;
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
         }
 
-        test.Free(dom);
+        delete dom;
 
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
@@ -251,20 +251,20 @@ static void BenchPrettify(const TestBase& test, FILE *fp) {
         fflush(stdout);
 
         double minDuration = DBL_MAX;
-        void* dom = test.Parse(itr->json, itr->length);
+        ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             timer.Start();
-            char* json = test.Prettify(dom);
+            StringResultBase* json = test.Prettify(dom);
             timer.Stop();
 
-            free(json);
+            delete json;
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
         }
 
-        test.Free(dom);
+        delete dom;
 
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
@@ -278,7 +278,7 @@ static void BenchStatistics(const TestBase& test, FILE *fp) {
         fflush(stdout);
 
         double minDuration = DBL_MAX;
-        void* dom = test.Parse(itr->json, itr->length);
+        ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
@@ -290,7 +290,7 @@ static void BenchStatistics(const TestBase& test, FILE *fp) {
             minDuration = std::min(minDuration, duration);
         }
 
-        test.Free(dom);
+        delete dom;
 
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);

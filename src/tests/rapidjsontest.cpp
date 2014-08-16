@@ -73,52 +73,60 @@ void GenStat(Stat& stat, const Value& v) {
 }
 #endif
 
+class RapidjsonParseResult : public ParseResultBase {
+public:
+    Document document;
+};
+
+class RapidjsonStringResult : public StringResultBase {
+public:
+    virtual const char* c_str() const { return sb.GetString(); }
+
+    StringBuffer sb;
+};
+
 class RapidjsonTest : public TestBase {
 public:
 	RapidjsonTest() : TestBase("RapidJSON") {
 	}
 	
-    virtual void* Parse(const char* json, size_t length) const {
+    virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
-        Document *doc = new Document;
-    	if (doc->Parse(json).HasParseError()) {
-    		delete doc;
+        RapidjsonParseResult* pr = new RapidjsonParseResult;
+    	if (pr->document.Parse(json).HasParseError()) {
+            delete pr;
     		return 0;
     	}
-    	return doc;
+    	return pr;
     }
 
-    virtual char* Stringify(void* userdata) const {
-    	Document* doc = reinterpret_cast<Document*>(userdata);
-    	StringBuffer sb;
-    	Writer<StringBuffer> writer(sb);
-    	doc->Accept(writer);
-    	return strdup(sb.GetString());
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
+        RapidjsonStringResult* sr = new RapidjsonStringResult;
+    	Writer<StringBuffer> writer(sr->sb);
+    	pr->document.Accept(writer);
+    	return sr;
     }
 
-    virtual char* Prettify(void* userdata) const {
-    	Document* doc = reinterpret_cast<Document*>(userdata);
-    	StringBuffer sb;
-    	PrettyWriter<StringBuffer> writer(sb);
-    	doc->Accept(writer);
-    	return strdup(sb.GetString());
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+        const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
+        RapidjsonStringResult* sr = new RapidjsonStringResult;
+    	PrettyWriter<StringBuffer> writer(sr->sb);
+        pr->document.Accept(writer);
+        return sr;
     }
 
-    virtual Stat Statistics(void* userdata) const {
-        Document* doc = reinterpret_cast<Document*>(userdata);
+    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+        const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
         Stat s;
         memset(&s, 0, sizeof(s));
 #if SLOWER_STAT
         StatHandler h(s);
         doc->Accept(h);
 #else
-        GenStat(s, *doc);
+        GenStat(s, pr->document);
 #endif
         return s;
-    }
-
-    virtual void Free(void* userdata) const {
-    	delete reinterpret_cast<Document*>(userdata);
     }
 };
 

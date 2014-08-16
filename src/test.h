@@ -47,6 +47,23 @@ struct Stat {
     size_t stringLength;  // Number of code units in all strings
 };
 
+// Each test can customize what to be stored in parse result, 
+// which will be passed to Stringify()/Prettify()/Statistics()
+class ParseResultBase {
+public:
+    virtual ~ParseResultBase() {}
+};
+
+// Stringify()/Prettify() returns object derived from this class.
+// So that it can prevents unncessary strdup().
+class StringResultBase {
+public:
+    virtual ~StringResultBase() {}
+
+    // The test framework call this function to get a null-terminated string.
+    virtual const char* c_str() const = 0;
+};
+
 class TestBase {
 public:
     TestBase(const char* name) : name_(name) {
@@ -61,31 +78,27 @@ public:
         return strcmp(name_, rhs.name_) < 0;
     }
 
-    virtual void* Parse(const char* json, size_t length) const {
+    virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         (void)json;
         return 0;
     }
 
-    virtual char* Stringify(void* userdata) const {
-        (void)userdata;
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        (void)parseResult;
         return 0; 
     }
 
-    virtual char* Prettify(void* userdata) const {
-        (void)userdata;
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+        (void)parseResult;
         return 0;
     }
 
-    virtual Stat Statistics(void* userdata) const {
-        (void)userdata;
+    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+        (void)parseResult;
         Stat s;
         memset(&s, 0, sizeof(s));
         return s;
-    }
-
-    virtual void Free(void* userdata) const {
-        (void)userdata;
     }
 
 protected:

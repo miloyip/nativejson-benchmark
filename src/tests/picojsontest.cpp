@@ -42,43 +42,55 @@ void GenStat(Stat& s, const value& v) {
         s.nullCount++;
 }
 
+class PicojsonParseResult : public ParseResultBase {
+public:
+    value v;
+};
+
+class PicojsonStringResult : public StringResultBase {
+public:
+    virtual const char* c_str() const { return s.c_str(); }
+
+    std::string s;
+};
+
 class PicojsonTest : public TestBase {
 public:
 	PicojsonTest() : TestBase("PicoJSON") {
 	}
 	
-    virtual void* Parse(const char* json, size_t length) const {
-        value* v = new value;
+    virtual ParseResultBase* Parse(const char* json, size_t length) const {
+        PicojsonParseResult* pr = new PicojsonParseResult;
         std::string err;
-        parse(*v, json, json + length, &err);
+        parse(pr->v, json, json + length, &err);
     	if (!err.empty()) {
-    		delete v;
+    		delete pr;
     		return 0;
     	}
-    	return v;
+    	return pr;
     }
 
-    virtual char* Stringify(void* userdata) const {
-        value* v = reinterpret_cast<value*>(userdata);
-        return strdup(v->serialize().c_str());
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        const PicojsonParseResult* pr = static_cast<const PicojsonParseResult*>(parseResult);
+        PicojsonStringResult* sr = new PicojsonStringResult;
+        sr->s = pr->v.serialize();
+        return sr;
     }
 
-    virtual char* Prettify(void* userdata) const {
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         // Note: no prettify functionality
-        value* v = reinterpret_cast<value*>(userdata);
-        return strdup(v->serialize().c_str());
+        const PicojsonParseResult* pr = static_cast<const PicojsonParseResult*>(parseResult);
+        PicojsonStringResult* sr = new PicojsonStringResult;
+        sr->s = pr->v.serialize();
+        return sr;
     }
 
-    virtual Stat Statistics(void* userdata) const {
-        value* v = reinterpret_cast<value*>(userdata);
+    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+        const PicojsonParseResult* pr = static_cast<const PicojsonParseResult*>(parseResult);
         Stat s;
         memset(&s, 0, sizeof(s));
-        GenStat(s, *v);
+        GenStat(s, pr->v);
         return s;
-    }
-
-    virtual void Free(void* userdata) const {
-    	delete reinterpret_cast<value*>(userdata);
     }
 };
 

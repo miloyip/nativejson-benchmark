@@ -142,13 +142,23 @@ static void dumpValue(std::ostringstream& os, const JsonValue& o, int shiftWidth
     }
 }
 
-struct GasonState {
-    GasonState() : json() {}
-    ~GasonState() { free(json); }
+class GasonParseResult : public ParseResultBase {
+public:
+    GasonParseResult() : json() {}
+    ~GasonParseResult() { free(json); }
 
     JsonAllocator allocator;
     JsonValue value;
     char *json;
+};
+
+class GasonStringResult : public StringResultBase {
+public:
+    virtual const char* c_str() const {
+        return s.c_str();
+    }
+
+    std::string s;
 };
 
 class GasonTest : public TestBase {
@@ -156,44 +166,43 @@ public:
 	GasonTest() : TestBase("Gason") {
 	}
 	
-    virtual void* Parse(const char* json, size_t length) const {
+    virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
-        GasonState* state = new GasonState;
+        GasonParseResult* pr = new GasonParseResult;
         char* end = 0;
-        state->json = strdup(json);
-        if (jsonParse(state->json, &end, &state->value, state->allocator) != JSON_PARSE_OK) {
-            delete state;
+        pr->json = strdup(json);
+        if (jsonParse(pr->json, &end, &pr->value, pr->allocator) != JSON_PARSE_OK) {
+            delete pr;
             return 0;
         }
-    	return state;
+    	return pr;
     }
 
-    virtual char* Stringify(void* userdata) const {
-        GasonState* state = reinterpret_cast<GasonState*>(userdata);
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         std::ostringstream os;
-        dumpValue(os, state->value, 0);
-        return strdup(os.str().c_str());
+        dumpValue(os, pr->value, 0);
+        GasonStringResult* sr = new GasonStringResult;
+        sr->s = os.str();
+        return sr;
     }
 
-    virtual char* Prettify(void* userdata) const {
-        GasonState* state = reinterpret_cast<GasonState*>(userdata);
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+        const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         std::ostringstream os;
-        dumpValue(os, state->value, 4);
-        return strdup(os.str().c_str());
+        dumpValue(os, pr->value, 4);
+        GasonStringResult* sr = new GasonStringResult;
+        sr->s = os.str();
+        return sr;
     }
 
-    virtual Stat Statistics(void* userdata) const {
-        GasonState* state = reinterpret_cast<GasonState*>(userdata);
+    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+        const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         Stat s;
         memset(&s, 0, sizeof(s));
-        GenStat(s, state->value);
+        GenStat(s, pr->value);
         return s;
     }
-
-    virtual void Free(void* userdata) const {
-        JsonValue* root = reinterpret_cast<JsonValue*>(userdata);
-        delete root;
-    }    
 };
 
 REGISTER_TEST(GasonTest);

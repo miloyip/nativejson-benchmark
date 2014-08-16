@@ -96,67 +96,79 @@ void GenStat(Stat* s, yajl_val v) {
 
 } // extern "C"
 
+class YajlParseResult : public ParseResultBase {
+public:
+    YajlParseResult() : root() {}
+    ~YajlParseResult() { yajl_tree_free(root); }
+
+    yajl_val root;
+};
+
+class YajlStringResult : public StringResultBase {
+public:
+    YajlStringResult() : g(), s() {}
+    ~YajlStringResult() { yajl_gen_free(g); }
+
+    virtual const char* c_str() const { return s; }
+
+    yajl_gen g;
+    const char* s;
+};
+
 class YajlTest : public TestBase {
 public:
 	YajlTest() : TestBase("YAJL") {
 	}
 	
-    virtual void* Parse(const char* json, size_t length) const {
+    virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
-        yajl_val root = yajl_tree_parse(json, NULL, 0);
-    	return root;
+        YajlParseResult* pr = new YajlParseResult;
+        pr->root = yajl_tree_parse(json, NULL, 0);
+    	return pr;
     }
 
-    virtual char* Stringify(void* userdata) const {
-        yajl_val root = (yajl_val)userdata;
-
-        yajl_gen g = yajl_gen_alloc(NULL);
-        yajl_gen_status status = GenVal(g, root);
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        const YajlParseResult* pr = static_cast<const YajlParseResult*>(parseResult);
+        YajlStringResult* sr = new YajlStringResult;
+        sr->g = yajl_gen_alloc(NULL);
+        yajl_gen_status status = GenVal(sr->g, pr->root);
         if (status != yajl_gen_status_ok) {
             printf("yajl Strinify error %d\n", status);
+            delete sr;
             return 0;
         }
 
-        const unsigned char * buf;
         size_t len;
-        status = yajl_gen_get_buf(g, &buf, &len);
-        char* json = strdup((const char*)buf);
+        status = yajl_gen_get_buf(sr->g, (const unsigned char**)&sr->s, &len);
 
-        yajl_gen_free(g);
-        return json;
+        return sr;
     }
 
-    virtual char* Prettify(void* userdata) const {
-        yajl_val root = (yajl_val)userdata;
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+        const YajlParseResult* pr = static_cast<const YajlParseResult*>(parseResult);
+        YajlStringResult* sr = new YajlStringResult;
+        sr->g = yajl_gen_alloc(NULL);
+        yajl_gen_config(sr->g, yajl_gen_beautify, 1);
+        yajl_gen_config(sr->g, yajl_gen_indent_string, "    ");
 
-        yajl_gen g = yajl_gen_alloc(NULL);
-        yajl_gen_config(g, yajl_gen_beautify, 1);
-        yajl_gen_config(g, yajl_gen_indent_string, "    ");
-
-        yajl_gen_status status = GenVal(g, root);
-        if (status != yajl_gen_status_ok)
+        yajl_gen_status status = GenVal(sr->g, pr->root);
+        if (status != yajl_gen_status_ok) {
+            delete sr;
             return 0;
+        }
 
-        const unsigned char * buf;
         size_t len;
-        status = yajl_gen_get_buf(g, &buf, &len);
-        char* json = strdup((const char*)buf);
+        status = yajl_gen_get_buf(sr->g, (const unsigned char**)&sr->s, &len);
 
-        yajl_gen_free(g);
-        return json;
+        return sr;
     }
 
-    virtual Stat Statistics(void* userdata) const {
-        yajl_val root = (yajl_val)userdata;
+    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+        const YajlParseResult* pr = static_cast<const YajlParseResult*>(parseResult);
         Stat s;
         memset(&s, 0, sizeof(s));
-        GenStat(&s, root);
+        GenStat(&s, pr->root);
         return s;
-    }
-
-    virtual void Free(void* userdata) const {
-        yajl_val root = (yajl_val)userdata;
-    	yajl_tree_free(root);
     }
 };
 

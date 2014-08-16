@@ -49,43 +49,53 @@ void GenStat(Stat& stat, const Value& v) {
     }
 }
 
+class JsoncppParseResult : public ParseResultBase {
+public:
+    Value root;
+};
+
+class JsoncppStringResult : public StringResultBase {
+public:
+    virtual const char* c_str() const { return s.c_str(); }
+
+    std::string s;
+};
 class JsoncppTest : public TestBase {
 public:
 	JsoncppTest() : TestBase("JsonCpp") {
 	}
 	
-    virtual void* Parse(const char* json, size_t length) const {
+    virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
-        Value* root = new Value;
+        JsoncppParseResult* pr = new JsoncppParseResult;
         Reader reader;
-        reader.parse(json, *root);
-    	return root;
+        reader.parse(json, pr->root);
+    	return pr;
     }
 
-    virtual char* Stringify(void* userdata) const {
-        Value* root = reinterpret_cast<Value*>(userdata);
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        const JsoncppParseResult* pr = static_cast<const JsoncppParseResult*>(parseResult);
         FastWriter writer;
-        return strdup(writer.write(*root).c_str());
+        JsoncppStringResult* sr = new JsoncppStringResult;
+        sr->s = writer.write(pr->root);
+        return sr;
     }
 
-    virtual char* Prettify(void* userdata) const {
-        Value* root = reinterpret_cast<Value*>(userdata);
-        StyledWriter writer;
-        return strdup(writer.write(*root).c_str());
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+        const JsoncppParseResult* pr = static_cast<const JsoncppParseResult*>(parseResult);
+        FastWriter writer;
+        JsoncppStringResult* sr = new JsoncppStringResult;
+        sr->s = writer.write(pr->root);
+        return sr;
     }
 
-    virtual Stat Statistics(void* userdata) const {
-        Value* root = reinterpret_cast<Value*>(userdata);
+    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+        const JsoncppParseResult* pr = static_cast<const JsoncppParseResult*>(parseResult);
         Stat s;
         memset(&s, 0, sizeof(s));
-        GenStat(s, *root);
+        GenStat(s, pr->root);
         return s;
     }
-
-    virtual void Free(void* userdata) const {
-        Value* root = reinterpret_cast<Value*>(userdata);
-        delete root;
-    }    
 };
 
 REGISTER_TEST(JsoncppTest);
