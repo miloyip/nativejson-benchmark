@@ -141,12 +141,12 @@ static void FreeFiles(TestJsonList& testJsons) {
 
 static void Verify(const TestBase& test, const TestJsonList& testJsons) {
     printf("Verifying %s ... ", test.GetName());
+    fflush(stdout);
+
     bool failed = false;
 
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
-#ifdef USE_MEMORYSTAT
-        MemoryContext context;
-#endif
+        MEMORYSTAT_SCOPE();
 
         ParseResultBase* dom1 = test.Parse(itr->json, itr->length);
         if (!dom1) {
@@ -236,17 +236,40 @@ static void VerifyAll(const TestJsonList& testJsons) {
     printf("\n");
 }
 
+#ifdef USE_MEMORYSTAT
+#define BENCH_MEMORYSTAT_INIT()             MemoryStat stat = MemoryStat()
+#define BENCH_MEMORYSTAT_ITERATION(trial)   if (trial == 0) stat = Memory::Instance().GetStat()
+#ifdef _MSC_VER
+#define BENCH_MEMORYSTAT_OUTPUT(fp)         fprintf(fp, ",%Iu,%Iu,%Iu", stat.currentSize, stat.peakSize, stat.mallocCount + stat.reallocCount)
+#else
+#define BENCH_MEMORYSTAT_OUTPUT(fp)         fprintf(fp, ",%zu,%zu,%zu", stat.currentSize, stat.peakSize, stat.mallocCount + stat.reallocCount)
+#endif
+#else
+#define BENCH_MEMORYSTAT_INIT()
+#define BENCH_MEMORYSTAT_ITERATION(trial)
+#define BENCH_MEMORYSTAT_OUTPUT(fp)
+#endif
+
 static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         printf("%15s %-20s ... ", "Parse", itr->filename);
         fflush(stdout);
 
         double minDuration = DBL_MAX;
+
+        BENCH_MEMORYSTAT_INIT();
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
-            timer.Start();
-            ParseResultBase* dom = test.Parse(itr->json, itr->length);
-            timer.Stop();
+            ParseResultBase* dom;
+            {
+                MEMORYSTAT_SCOPE();
+
+                timer.Start();
+                dom = test.Parse(itr->json, itr->length);
+                timer.Stop();
+
+                BENCH_MEMORYSTAT_ITERATION(trial);
+            }
 
             delete dom;
             double duration = timer.GetElapsedMilliseconds();
@@ -254,7 +277,10 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
         }
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
-        fprintf(fp, "Parse,%s,%s,%f\n", test.GetName(), itr->filename, minDuration);
+
+        fprintf(fp, "Parse,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+        BENCH_MEMORYSTAT_OUTPUT(fp);
+        fputc('\n', fp);
     }
 }
 
@@ -266,12 +292,19 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
         double minDuration = DBL_MAX;
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
+        BENCH_MEMORYSTAT_INIT();
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
-            timer.Start();
-            StringResultBase* json = test.Stringify(dom);
-            timer.Stop();
+            StringResultBase* json;
+            {
+                MEMORYSTAT_SCOPE();
 
+                timer.Start();
+                json = test.Stringify(dom);
+                timer.Stop();
+
+                BENCH_MEMORYSTAT_ITERATION(trial);
+            }
             delete json;
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
@@ -281,7 +314,10 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
 
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
-        fprintf(fp, "Stringify,%s,%s,%f\n", test.GetName(), itr->filename, minDuration);
+
+        fprintf(fp, "Stringify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+        BENCH_MEMORYSTAT_OUTPUT(fp);
+        fputc('\n', fp);
     }
 }
 
@@ -293,12 +329,19 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
         double minDuration = DBL_MAX;
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
+        BENCH_MEMORYSTAT_INIT();
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
-            timer.Start();
-            StringResultBase* json = test.Prettify(dom);
-            timer.Stop();
+            StringResultBase* json;
+            {
+                MEMORYSTAT_SCOPE();
 
+                timer.Start();
+                json = test.Prettify(dom);
+                timer.Stop();
+
+                BENCH_MEMORYSTAT_ITERATION(trial);
+            }
             delete json;
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
@@ -308,7 +351,10 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
 
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
-        fprintf(fp, "Prettify,%s,%s,%f\n", test.GetName(), itr->filename, minDuration);
+
+        fprintf(fp, "Prettify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+        BENCH_MEMORYSTAT_OUTPUT(fp);
+        fputc('\n', fp);
     }
 }
 
@@ -320,11 +366,18 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
         double minDuration = DBL_MAX;
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
+        BENCH_MEMORYSTAT_INIT();
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
-            timer.Start();
-            test.Statistics(dom);
-            timer.Stop();
+            {
+                MEMORYSTAT_SCOPE();
+
+                timer.Start();
+                test.Statistics(dom);
+                timer.Stop();
+
+                BENCH_MEMORYSTAT_ITERATION(trial);
+            }
 
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
@@ -334,7 +387,10 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
 
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
-        fprintf(fp, "Statistics,%s,%s,%f\n", test.GetName(), itr->filename, minDuration);
+
+        fprintf(fp, "Statistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+        BENCH_MEMORYSTAT_OUTPUT(fp);
+        fputc('\n', fp);
     }
 }
 
@@ -361,7 +417,7 @@ static void BenchAll(const TestJsonList& testJsons) {
     else
         fp = fopen(RESULT_FILENAME, "w");
 
-    fprintf(fp, "Type,Library,Filename,Time(ms)\n");
+    fprintf(fp, "Type,Library,Filename,Time(ms),MemoryUsage,MemoryPeak,AllocCount\n");
 
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr)

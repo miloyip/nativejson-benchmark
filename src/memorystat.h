@@ -1,5 +1,7 @@
 #pragma once
 
+#define USE_MEMORYSTAT
+
 #ifdef USE_MEMORYSTAT
 
 #ifdef __cplusplus
@@ -89,13 +91,13 @@ private:
     MemoryStat* stat_;
 };
 
-class MemoryContext {
+class MemoryStatScope {
 public:
-    MemoryContext() : old_(Memory::Instance().SetStat(&local_)) {
+    MemoryStatScope() : old_(Memory::Instance().SetStat(&local_)) {
         memset(&local_, 0, sizeof(local_));        
     }
 
-    ~MemoryContext() {
+    ~MemoryStatScope() {
         old_->mallocCount += local_.mallocCount;
         old_->reallocCount += local_.reallocCount;
         old_->freeCount += local_.freeCount;
@@ -108,6 +110,8 @@ private:
     MemoryStat local_;
     MemoryStat* old_;
 };
+
+#define MEMORYSTAT_SCOPE() MemoryStatScope scope##__LINE__
 
 inline void* operator new (std::size_t size) /*throw (std::bad_alloc) */{
     return Memory::Instance().Malloc(size);
@@ -160,5 +164,9 @@ extern void MemoryStatFree(void* ptr);
 #define malloc MemoryStatMalloc
 #define realloc MemoryStatRealloc
 #define free MemoryStatFree
+
+#else
+
+#define MEMORYSTAT_SCOPE()
 
 #endif
