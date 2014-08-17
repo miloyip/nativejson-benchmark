@@ -278,7 +278,7 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-        fprintf(fp, "Parse,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+        fprintf(fp, "2. Parse,%s,%s,%f", test.GetName(), itr->filename, minDuration);
         BENCH_MEMORYSTAT_OUTPUT(fp);
         fputc('\n', fp);
     }
@@ -315,7 +315,7 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-        fprintf(fp, "Stringify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+        fprintf(fp, "3. Stringify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
         BENCH_MEMORYSTAT_OUTPUT(fp);
         fputc('\n', fp);
     }
@@ -352,7 +352,7 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-        fprintf(fp, "Prettify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+        fprintf(fp, "4. Prettify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
         BENCH_MEMORYSTAT_OUTPUT(fp);
         fputc('\n', fp);
     }
@@ -388,7 +388,7 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
         double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
         printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-        fprintf(fp, "Statistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+        fprintf(fp, "5. Statistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
         BENCH_MEMORYSTAT_OUTPUT(fp);
         fputc('\n', fp);
     }
@@ -417,7 +417,7 @@ static void BenchAll(const TestJsonList& testJsons) {
     else
         fp = fopen(RESULT_FILENAME, "w");
 
-    fprintf(fp, "Type,Library,Filename,Time(ms),MemoryUsage,MemoryPeak,AllocCount\n");
+    fprintf(fp, "Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount\n");
 
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr)

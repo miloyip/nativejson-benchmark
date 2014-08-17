@@ -14,52 +14,70 @@ $(function() {
   var dt = google.visualization.arrayToDataTable($.csv.toArrays(csv, {onParseValue: $.csv.hooks.castToScalar}));
 
   // Overall
-  addSection("Overall");
+  addSection("1. Overall");
+
+  addSubsection("Time");
 
   drawTable(
-    "Overall",
+    "Overall Time",
     google.visualization.data.group(
       dt,
       [1],
       [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-    )
+    ),
+    true
   );
 
   drawStackedChart(
-    "Overall", 
+    "Overall Time", 
     pivotTable(google.visualization.data.group(
       dt,
       [1, 0],
       [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-    ))
+    )),
+    dt.getColumnLabel(3)
   );
+
+  // addSubsection("Memory");
+
+  // drawTable(
+  //   "Overall Memory",
+  //   google.visualization.data.group(
+  //     dt,
+  //     [1],
+  //     [{"column": 4, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+  //   ),
+  //   false
+  // );
+
+  // drawStackedChart(
+  //   "Overall Memory", 
+  //   pivotTable(google.visualization.data.group(
+  //     dt,
+  //     [1, 0],
+  //     [{"column": 4, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+  //   )),
+  //   dt.getColumnLabel(4)
+  // );
 
   // Per type sections
   var types = dt.getDistinctValues(0);
   for (var i in types) {
     var type = types[i];
     addSection(type);
+    addSubsection("Time");
 
     var view = new google.visualization.DataView(dt);
     view.setRows(view.getFilteredRows([{column: 0, value: type}]));
 
-    drawTable(
-      type,
-      google.visualization.data.group(
-        view,
-        [1], 
-        [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-      )
+    var timedt = google.visualization.data.group(
+      view,
+      [1], 
+      [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
     );
 
-    drawBarChart(
-      type,
-      google.visualization.data.group(
-        view,
-        [1],
-        [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-      )
-    );
+    drawTable(type, timedt.clone(), true);
+    drawBarChart(type, timedt);
 
     // Per JSON
     drawPivotBarChart(
@@ -68,8 +86,35 @@ $(function() {
         view,
         [2, 1],
         [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-      ))
+      )),
+      dt.getColumnLabel(3)
     );
+
+    // Only show memory of Parse
+    if (type.search("Parse") != -1) {
+      addSubsection("Memory");
+
+      for (var column = 4; column <= 6; column++) {
+        var memorydt = google.visualization.data.group(
+          view,
+          [1], 
+          [{"column": column, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+        );
+        drawTable(type, memorydt.clone(), false);
+        drawBarChart(type, memorydt);
+      }
+
+      // Per JSON
+      drawPivotBarChart(
+        type + " per JSON",
+        pivotTable(google.visualization.data.group(
+          view,
+          [2, 1],
+          [{"column": 4, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+        )),
+        dt.getColumnLabel(4)
+      );
+    }
   }
 
   $(".chart").each(function() {
@@ -130,18 +175,27 @@ function pivotTable(src) {
   return dst;
 }
 
-function addSection(type) {
+function addSection(name) {
   $("#main").append(
-    $("<a>", {name: type}),
-    $("<h2>", {style: "padding-top: 70px; margin-top: -70px;"}).append(type)
+    $("<a>", {"name": name}),
+    $("<h2>", {style: "padding-top: 70px; margin-top: -70px;"}).append(name)
   );
-  $("#section").append($("<li>").append($("<a>", {href: "#" + type}).append(type)));
+  $("#section").append($("<li>").append($("<a>", {href: "#" + name}).append(name)));
 }
 
-function drawTable(type, data) {
-  data.addColumn('number', 'Speedup');
+function addSubsection(name) {
+  $("#main").append(
+    $("<h3>", {style: "padding-top: 70px; margin-top: -70px;"}).append(name)
+  );
+}
+
+function drawTable(type, data, isSpeedup) {
+  if (isSpeedup)
+    data.addColumn('number', 'Speedup');
+  else
+    data.addColumn('number', 'Multiple');
   //data.sort([{ column: 1, desc: true }]);
-  var formatter1 = new google.visualization.NumberFormat({ fractionDigits: 3 });
+  var formatter1 = new google.visualization.NumberFormat({ fractionDigits: 0 });
   formatter1.format(data, 1);
 
   var div = document.createElement("div");
@@ -155,7 +209,7 @@ function drawTable(type, data) {
         // Compute relative time using the first row as basis
         var basis = data.getValue(selectedRow, 1);
         for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
-            data.setValue(rowIndex, 2, basis / data.getValue(rowIndex, 1));
+          data.setValue(rowIndex, 2, isSpeedup ? basis / data.getValue(rowIndex, 1) : data.getValue(rowIndex, 1) / basis);
 
         var formatter = new google.visualization.NumberFormat({suffix: 'x'});
         formatter.format(data, 2); // Apply formatter to second column
@@ -174,7 +228,7 @@ function drawTable(type, data) {
     });
 }
 
-function drawStackedChart(type, data) {
+function drawStackedChart(type, data, title) {
   // User another set of color for series
   var colors = ['rgb(166,206,227)','rgb(31,120,180)','rgb(178,223,138)','rgb(51,160,44)','rgb(251,154,153)','rgb(227,26,28)','rgb(253,191,111)','rgb(255,127,0)','rgb(202,178,214)','rgb(106,61,154)','rgb(255,255,153)','rgb(177,89,40)'];
   var options = { 
@@ -182,7 +236,7 @@ function drawStackedChart(type, data) {
     chartArea: {'width': '70%', 'height': '70%'},
     width: 800,
     height: 300,
-    hAxis: { title: "Time (ms)" },
+    hAxis: { "title": title },
     isStacked: true,
     series: []
   };
@@ -192,7 +246,7 @@ function drawStackedChart(type, data) {
 
   var div = document.createElement("div");
   div.className = "chart";
-  $(div).data("filename", type + "_time");
+  $(div).data("filename", type);
   $("#main").append(div);
   var chart = new google.visualization.BarChart(div);
 
@@ -207,7 +261,7 @@ function drawBarChart(type, data) {
     chartArea: {'width': '70%', 'height': '70%'},
     width: 800,
     height: 300,
-    hAxis: { title: "Time (ms)" },
+    hAxis: { title: data.getColumnLabel(1) },
     legend: { position: "none" },
   };
 
@@ -217,7 +271,7 @@ function drawBarChart(type, data) {
 
   var div = document.createElement("div");
   div.className = "chart";
-  $(div).data("filename", type + "_time");
+  $(div).data("filename", type + "_" + data.getColumnLabel(1));
   $("#main").append(div);
   var chart = new google.visualization.BarChart(div);
 
@@ -225,17 +279,17 @@ function drawBarChart(type, data) {
 }
 
 
-function drawPivotBarChart(type, data) {
+function drawPivotBarChart(type, data, title) {
   var options = { 
     title: type,
     chartArea: {'width': '70%', 'height': '70%'},
     width: 800,
     height: 600,
-    hAxis: { title: "Time (ms)" }
+    hAxis: { "title": title }
   };
   var div = document.createElement("div");
   div.className = "chart";
-  $(div).data("filename", type + "_time");
+  $(div).data("filename", type + "_" + title);
   $("#main").append(div);
   var chart = new google.visualization.BarChart(div);
 
