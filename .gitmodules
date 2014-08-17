@@ -16,3 +16,6 @@
 [submodule "thirdparty/gason"]
 	path = thirdparty/gason
 	url = git@github.com:vivkin/gason
+[submodule "thirdparty/jansson"]
+	path = thirdparty/jansson
+	url = git@github.com:akheron/jansson
