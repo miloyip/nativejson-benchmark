@@ -19,3 +19,6 @@
 [submodule "thirdparty/jansson"]
 	path = thirdparty/jansson
 	url = https://github.com/akheron/jansson.git
+[submodule "thirdparty/casablanca"]
+	path = thirdparty/casablanca
+	url = https://git01.codeplex.com/casablanca
