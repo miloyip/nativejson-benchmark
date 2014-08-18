@@ -107,5 +107,4 @@ protected:
     const char* name_;
 };
 
-#define STRINGIFY(x) #x
 #define REGISTER_TEST(cls) static cls gRegister##cls
