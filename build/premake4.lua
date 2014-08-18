@@ -24,6 +24,28 @@ function setTargetObjDir(outDir)
 	end
 end
 
+function linkLib(libBaseName)
+	local action = _ACTION or ""
+
+	for _, cfg in ipairs(configurations()) do
+		for _, plat in ipairs(platforms()) do			
+			--"_debug_win32_vs2008"
+			local suffix = "_" .. cfg .. "_" .. plat .. "_" .. action
+			
+			suffix = string.lower(suffix)
+			
+			local libFullName = libBaseName or ""
+			libFullName = libFullName .. suffix
+			
+			-- print(libFullName)
+			
+			configuration {cfg, plat}
+				links(libFullName)
+		end
+	end
+end
+
+
 solution "benchmark"
 	configurations { "debug", "release" }
 	platforms { "x32", "x64" }
@@ -47,21 +69,16 @@ solution "benchmark"
 	configuration "gmake"
 		buildoptions "-msse4.2 -Wall -Wextra"
 
-	project "nativejson"
-		kind "ConsoleApp"
-		
+	project "jsonclibs"
+		kind "StaticLib"
+
         includedirs {
             "../thirdparty/",
-            "../thirdparty/casablanca/Release/include/",
-            "../thirdparty/jsoncpp/include/",
-            "../thirdparty/rapidjson/include/",
             "../thirdparty/include/",
         }
 
 		files { 
-			"../src/**.h",
 			"../src/**.c",
-			"../src/**.cpp",
 		}
 
 		setTargetObjDir("../bin")
@@ -72,3 +89,28 @@ solution "benchmark"
 			local filename = string.match(f, ".-([^\\/]-%.?[^%.\\/]*)$")
 			os.copyfile(f, "../thirdparty/include/yajl/" .. filename)
 		end
+
+	project "nativejson"
+		kind "ConsoleApp"
+
+		configuration "gmake"
+			buildoptions "-std=c++11"
+
+        includedirs {
+            "../thirdparty/",
+            "../thirdparty/casablanca/Release/include/",
+            "../thirdparty/jsoncpp/include/",
+            "../thirdparty/rapidjson/include/",
+            "../thirdparty/include/",
+        }
+
+		files { 
+			"../src/**.h",
+			"../src/**.cpp",
+		}
+
+		libdirs { "../bin" }
+
+		setTargetObjDir("../bin")
+
+		linkLib("jsonclibs")
