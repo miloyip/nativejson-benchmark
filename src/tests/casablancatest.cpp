@@ -24,14 +24,14 @@ using namespace utility::conversions;
 void GenStat(Stat& stat, const value& v) {
     switch (v.type()) {
 	case value::value_type::Array:
-        for (auto element : v.as_array())
+        for (auto const& element : v.as_array())
             GenStat(stat, element);
         stat.arrayCount++;
         stat.elementCount += v.size();
         break;
 
 	case value::value_type::Object:
-        for (auto kv : v.as_object()) {
+		for (auto const& kv : v.as_object()) {
             GenStat(stat, kv.second);
             stat.stringLength += kv.first.size();
         }
