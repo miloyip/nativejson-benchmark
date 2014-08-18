@@ -163,12 +163,11 @@ public:
         return sr;
     }
 
-    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const YajlParseResult* pr = static_cast<const YajlParseResult*>(parseResult);
-        Stat s;
-        memset(&s, 0, sizeof(s));
-        GenStat(&s, pr->root);
-        return s;
+        memset(stat, 0, sizeof(Stat));
+        GenStat(stat, pr->root);
+        return true;
     }
 };
 

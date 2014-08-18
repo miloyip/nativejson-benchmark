@@ -94,19 +94,11 @@ public:
         return sr;
     }
 
-    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const CasablancaParseResult* pr = static_cast<const CasablancaParseResult*>(parseResult);
-		CasablancaStringResult* sr = new CasablancaStringResult;
-		sr->s = to_utf8string(pr->root.serialize());
-        return sr;
-    }
-
-    virtual Stat Statistics(const ParseResultBase* parseResult) const {
-        const CasablancaParseResult* pr = static_cast<const CasablancaParseResult*>(parseResult);
-        Stat s;
-        memset(&s, 0, sizeof(s));
-        GenStat(s, pr->root);
-        return s;
+        memset(stat, 0, sizeof(Stat));
+        GenStat(*stat, pr->root);
+        return true;
     }
 };
 

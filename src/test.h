@@ -96,11 +96,10 @@ public:
         return 0;
     }
 
-    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         (void)parseResult;
-        Stat s;
-        memset(&s, 0, sizeof(s));
-        return s;
+        memset(stat, 0, sizeof(Stat));
+        return false;
     }
 
 protected:

@@ -198,12 +198,11 @@ public:
         return result;
     }
 
-    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
-        Stat s;
-        memset(&s, 0, sizeof(s));
-        GenStat(s, pr->value);
-        return s;
+        memset(stat, 0, sizeof(Stat));
+        GenStat(*stat, pr->value);
+        return true;
     }
 };
 

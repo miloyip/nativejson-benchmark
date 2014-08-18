@@ -77,20 +77,11 @@ public:
         return sr;
     }
 
-    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
-        // Note: no prettify functionality
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const PicojsonParseResult* pr = static_cast<const PicojsonParseResult*>(parseResult);
-        PicojsonStringResult* sr = new PicojsonStringResult;
-        sr->s = pr->v.serialize();
-        return sr;
-    }
-
-    virtual Stat Statistics(const ParseResultBase* parseResult) const {
-        const PicojsonParseResult* pr = static_cast<const PicojsonParseResult*>(parseResult);
-        Stat s;
-        memset(&s, 0, sizeof(s));
-        GenStat(s, pr->v);
-        return s;
+        memset(stat, 0, sizeof(Stat));
+        GenStat(*stat, pr->v);
+        return true;
     }
 };
 

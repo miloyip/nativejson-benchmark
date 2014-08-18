@@ -13,53 +13,6 @@ $(function() {
   var csv = $('#textInput').val();
   var dt = google.visualization.arrayToDataTable($.csv.toArrays(csv, {onParseValue: $.csv.hooks.castToScalar}));
 
-  // Overall
-  addSection("1. Overall");
-
-  addSubsection("Time");
-
-  drawTable(
-    "Overall Time",
-    google.visualization.data.group(
-      dt,
-      [1],
-      [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-    ),
-    true
-  );
-
-  drawStackedChart(
-    "Overall Time", 
-    pivotTable(google.visualization.data.group(
-      dt,
-      [1, 0],
-      [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-    )),
-    dt.getColumnLabel(3)
-  );
-
-  // addSubsection("Memory");
-
-  // drawTable(
-  //   "Overall Memory",
-  //   google.visualization.data.group(
-  //     dt,
-  //     [1],
-  //     [{"column": 4, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-  //   ),
-  //   false
-  // );
-
-  // drawStackedChart(
-  //   "Overall Memory", 
-  //   pivotTable(google.visualization.data.group(
-  //     dt,
-  //     [1, 0],
-  //     [{"column": 4, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-  //   )),
-  //   dt.getColumnLabel(4)
-  // );
-
   // Per type sections
   var types = dt.getDistinctValues(0);
   for (var i in types) {
@@ -92,28 +45,16 @@ $(function() {
 
     // Only show memory of Parse
     if (type.search("Parse") != -1) {
-      addSubsection("Memory");
-
       for (var column = 4; column <= 6; column++) {
         var memorydt = google.visualization.data.group(
           view,
           [1], 
           [{"column": column, "aggregation": google.visualization.data.sum, 'type': 'number' }]
         );
+        addSubsection(memorydt.getColumnLabel(1));
         drawTable(type, memorydt.clone(), false);
         drawBarChart(type, memorydt);
       }
-
-      // Per JSON
-      drawPivotBarChart(
-        type + " per JSON",
-        pivotTable(google.visualization.data.group(
-          view,
-          [2, 1],
-          [{"column": 4, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-        )),
-        dt.getColumnLabel(4)
-      );
     }
   }
 
@@ -193,7 +134,7 @@ function drawTable(type, data, isSpeedup) {
   if (isSpeedup)
     data.addColumn('number', 'Speedup');
   else
-    data.addColumn('number', 'Multiple');
+    data.addColumn('number', 'Ratio');
   //data.sort([{ column: 1, desc: true }]);
   var formatter1 = new google.visualization.NumberFormat({ fractionDigits: 0 });
   formatter1.format(data, 1);

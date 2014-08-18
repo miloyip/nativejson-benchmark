@@ -38,7 +38,7 @@ private:
     Stat& stat_;
 };
 #else
-void GenStat(Stat& stat, const Value& v) {
+static void GenStat(Stat& stat, const Value& v) {
     switch(v.GetType()) {
     case kNullType:  stat.nullCount++; break;
     case kFalseType: stat.falseCount++; break;
@@ -116,17 +116,16 @@ public:
         return sr;
     }
 
-    virtual Stat Statistics(const ParseResultBase* parseResult) const {
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
-        Stat s;
-        memset(&s, 0, sizeof(s));
+        memset(stat, 0, sizeof(Stat));
 #if SLOWER_STAT
-        StatHandler h(s);
+        StatHandler h(*stat);
         doc->Accept(h);
 #else
-        GenStat(s, pr->document);
+        GenStat(*stat, pr->document);
 #endif
-        return s;
+        return true;
     }
 };
 

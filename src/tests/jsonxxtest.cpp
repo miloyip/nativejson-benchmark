@@ -98,19 +98,11 @@ public:
         return sr;
     }
 
-    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
-        JsonxxStringResult* sr = new JsonxxStringResult;
-        sr->s = pr->o.json();
-        return sr;
-    }
-
-    virtual Stat Statistics(const ParseResultBase* parseResult) const {
-        const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
-        Stat s;
-        memset(&s, 0, sizeof(s));
-        GenObjectStat(s, pr->o);
-        return s;
+        memset(stat, 0, sizeof(Stat));
+        GenStat(*stat, pr->o);
+        return true;
     }
 };
 

@@ -7,7 +7,7 @@
 #include "timer.h"
 #include "resultfilename.h"
 
-static const unsigned cTrialCount = 10;
+static const unsigned cTrialCount = 1;
 
 struct TestJson {
     char* filename;
@@ -75,6 +75,7 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
 
     if (!referenceTest) {
         printf("Error: Cannot find RapidJSON as refernce test. Not reading any files.\n");
+        fclose(fp);
         return false;
     }
 
@@ -100,7 +101,8 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
 
             // Generate reference statistics
             ParseResultBase* dom = referenceTest->Parse(t.json, t.length);
-            t.stat = referenceTest->Statistics(dom);
+            if (!referenceTest->Statistics(dom, &t.stat))
+                printf("Failed to generate reference statistics\n");
 
             printf("Read '%s' (%u bytes)\n", t.filename, (unsigned)t.length);
             PrintStat(t.stat);
@@ -139,6 +141,24 @@ static void FreeFiles(TestJsonList& testJsons) {
     }
 }
 
+// Normally use this at the end of MEMORYSTAT_SCOPE()
+#ifdef USE_MEMORYSTAT
+void CheckMemoryLeak() {
+    const MemoryStat& stat = Memory::Instance().GetStat();
+    if (stat.currentSize != 0) {
+        printf("\nWarning: potential memory leak (%d allocations for %d bytes)\n",
+            (int)stat.mallocCount + (int)stat.reallocCount - (int)stat.freeCount,
+            (int)stat.currentSize);
+
+        PrintMemoryStat();
+        printf("\n");
+    }
+}
+#define MEMORYSTAT_CHECKMEMORYLEAK() CheckMemoryLeak()
+#else
+#define MEMORYSTAT_CHECKMEMORYLEAK()
+#endif
+
 static void Verify(const TestBase& test, const TestJsonList& testJsons) {
     printf("Verifying %s ... ", test.GetName());
     fflush(stdout);
@@ -155,7 +175,13 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
             continue;
         }
 
-        Stat stat1 = test.Statistics(dom1);
+        Stat stat1;
+        if (!test.Statistics(dom1, &stat1)) {
+            printf("\nNot support Statistics\n", itr->filename);
+            failed = true;
+            delete dom1;
+            break;
+        }
 
         StringResultBase* json1 = test.Stringify(dom1);
         delete dom1;
@@ -170,10 +196,12 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
         if (!dom2) {
             printf("\nFailed to parse '%s' 2nd time\n", itr->filename);
             failed = true;
+            delete json1;
             continue;
         }
 
-        Stat stat2 = test.Statistics(dom2);
+        Stat stat2;
+        test.Statistics(dom2, &stat2);
 
         StringResultBase* json2 = test.Stringify(dom2);
         delete dom2;
@@ -210,17 +238,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
         delete json1;
         delete json2;
 
-#ifdef USE_MEMORYSTAT
-        const MemoryStat& stat = Memory::Instance().GetStat();
-        if (stat.currentSize != 0) {
-            printf("\nWarning: potential memory leak (%d allocations for %d bytes)\n",
-                (int)stat.mallocCount + (int)stat.reallocCount - (int)stat.freeCount,
-                (int)stat.currentSize);
-
-            PrintMemoryStat();
-            printf("\n");
-        }
-#endif
+        MEMORYSTAT_CHECKMEMORYLEAK();
     }
 
     printf(failed ? "Failed\n" : "OK\n");
@@ -228,21 +246,19 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
 
 static void VerifyAll(const TestJsonList& testJsons) {
     TestList& tests = TestManager::Instance().GetTests();
-    for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr) {
-        if (strcmp((*itr)->GetName(), "Strdup") != 0)   // skip Strdup
-            Verify(**itr, testJsons);
-    }
+    for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr)
+        Verify(**itr, testJsons);
 
     printf("\n");
 }
 
 #ifdef USE_MEMORYSTAT
-#define BENCH_MEMORYSTAT_INIT()             MemoryStat stat = MemoryStat()
-#define BENCH_MEMORYSTAT_ITERATION(trial)   if (trial == 0) stat = Memory::Instance().GetStat()
+#define BENCH_MEMORYSTAT_INIT()             MemoryStat memoryStat = MemoryStat()
+#define BENCH_MEMORYSTAT_ITERATION(trial)   if (trial == 0) memoryStat = Memory::Instance().GetStat()
 #ifdef _MSC_VER
-#define BENCH_MEMORYSTAT_OUTPUT(fp)         fprintf(fp, ",%Iu,%Iu,%Iu", stat.currentSize, stat.peakSize, stat.mallocCount + stat.reallocCount)
+#define BENCH_MEMORYSTAT_OUTPUT(fp)         fprintf(fp, ",%Iu,%Iu,%Iu", memoryStat.currentSize, memoryStat.peakSize, memoryStat.mallocCount + memoryStat.reallocCount)
 #else
-#define BENCH_MEMORYSTAT_OUTPUT(fp)         fprintf(fp, ",%zu,%zu,%zu", stat.currentSize, stat.peakSize, stat.mallocCount + stat.reallocCount)
+#define BENCH_MEMORYSTAT_OUTPUT(fp)         fprintf(fp, ",%zu,%zu,%zu", memoryStat.currentSize, memoryStat.peakSize, memoryStat.mallocCount + memoryStat.reallocCount)
 #endif
 #else
 #define BENCH_MEMORYSTAT_INIT()
@@ -251,6 +267,7 @@ static void VerifyAll(const TestJsonList& testJsons) {
 #endif
 
 static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         printf("%15s %-20s ... ", "Parse", itr->filename);
         fflush(stdout);
@@ -258,6 +275,7 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
         double minDuration = DBL_MAX;
 
         BENCH_MEMORYSTAT_INIT();
+        bool supported = true;
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             ParseResultBase* dom;
@@ -272,19 +290,32 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
             }
 
             delete dom;
+
+            if (!dom) {
+                supported = false;
+                break;
+            }
+
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
         }
-        double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
-        printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-        fprintf(fp, "2. Parse,%s,%s,%f", test.GetName(), itr->filename, minDuration);
-        BENCH_MEMORYSTAT_OUTPUT(fp);
-        fputc('\n', fp);
+         if (!supported)
+            printf("Not support\n");
+        else {
+            double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+            printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+
+            fprintf(fp, "1. Parse,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+            BENCH_MEMORYSTAT_OUTPUT(fp);
+            fputc('\n', fp);
+        }
     }
+    MEMORYSTAT_CHECKMEMORYLEAK();
 }
 
 static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         printf("%15s %-20s ... ", "Stringify", itr->filename);
         fflush(stdout);
@@ -293,6 +324,7 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
         BENCH_MEMORYSTAT_INIT();
+        bool supported = true;
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             StringResultBase* json;
@@ -305,23 +337,36 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
 
                 BENCH_MEMORYSTAT_ITERATION(trial);
             }
+
             delete json;
+
+            if (!json) {
+                supported = false;
+                break;
+            }
+
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
         }
 
         delete dom;
 
-        double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
-        printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+        if (!supported)
+            printf("Not support\n");
+        else {
+            double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+            printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-        fprintf(fp, "3. Stringify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
-        BENCH_MEMORYSTAT_OUTPUT(fp);
-        fputc('\n', fp);
+            fprintf(fp, "2. Stringify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+            BENCH_MEMORYSTAT_OUTPUT(fp);
+            fputc('\n', fp);
+        }
     }
+    MEMORYSTAT_CHECKMEMORYLEAK();
 }
 
 static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         printf("%15s %-20s ... ", "Prettify", itr->filename);
         fflush(stdout);
@@ -330,6 +375,7 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
         BENCH_MEMORYSTAT_INIT();
+        bool supported = true;
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
             Timer timer;
             StringResultBase* json;
@@ -342,41 +388,12 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
 
                 BENCH_MEMORYSTAT_ITERATION(trial);
             }
+
             delete json;
-            double duration = timer.GetElapsedMilliseconds();
-            minDuration = std::min(minDuration, duration);
-        }
 
-        delete dom;
-
-        double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
-        printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
-
-        fprintf(fp, "4. Prettify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
-        BENCH_MEMORYSTAT_OUTPUT(fp);
-        fputc('\n', fp);
-    }
-}
-
-static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
-    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
-        printf("%15s %-20s ... ", "Statistics", itr->filename);
-        fflush(stdout);
-
-        double minDuration = DBL_MAX;
-        ParseResultBase* dom = test.Parse(itr->json, itr->length);
-
-        BENCH_MEMORYSTAT_INIT();
-        for (unsigned trial = 0; trial < cTrialCount; trial++) {
-            Timer timer;
-            {
-                MEMORYSTAT_SCOPE();
-
-                timer.Start();
-                test.Statistics(dom);
-                timer.Stop();
-
-                BENCH_MEMORYSTAT_ITERATION(trial);
+            if (!json) {
+                supported = false;
+                break;
             }
 
             double duration = timer.GetElapsedMilliseconds();
@@ -385,13 +402,65 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
 
         delete dom;
 
-        double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
-        printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+        if (!supported)
+            printf("Not support\n");
+        else {
+            double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+            printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-        fprintf(fp, "5. Statistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
-        BENCH_MEMORYSTAT_OUTPUT(fp);
-        fputc('\n', fp);
+            fprintf(fp, "3. Prettify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+            BENCH_MEMORYSTAT_OUTPUT(fp);
+            fputc('\n', fp);
+        }
     }
+    MEMORYSTAT_CHECKMEMORYLEAK();
+}
+
+static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    MEMORYSTAT_SCOPE();
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
+        printf("%15s %-20s ... ", "Statistics", itr->filename);
+        fflush(stdout);
+
+        double minDuration = DBL_MAX;
+        ParseResultBase* dom = test.Parse(itr->json, itr->length);
+
+        BENCH_MEMORYSTAT_INIT();
+        bool supported = true;
+        for (unsigned trial = 0; trial < cTrialCount; trial++) {
+            Timer timer;
+            {
+                MEMORYSTAT_SCOPE();
+
+                timer.Start();
+                Stat stat;
+                supported = test.Statistics(dom, &stat);
+                timer.Stop();                
+
+                BENCH_MEMORYSTAT_ITERATION(trial);
+            }
+
+            if (!supported)
+                break;
+
+            double duration = timer.GetElapsedMilliseconds();
+            minDuration = std::min(minDuration, duration);
+        }
+
+        delete dom;
+
+        if (!supported)
+            printf("Not support\n");
+        else {
+            double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+            printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+
+            fprintf(fp, "4. Statistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+            BENCH_MEMORYSTAT_OUTPUT(fp);
+            fputc('\n', fp);
+        }
+    }
+    MEMORYSTAT_CHECKMEMORYLEAK();
 }
 
 static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
