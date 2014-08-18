@@ -2,4 +2,4 @@
 /build/gmake
 /build/vs*/
 /intermediate
-/thirdparty/include
+/thirdparty/include/yajl

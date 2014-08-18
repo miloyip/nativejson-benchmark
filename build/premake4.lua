@@ -93,12 +93,10 @@ solution "benchmark"
 	project "nativejson"
 		kind "ConsoleApp"
 
-		configuration "gmake"
-			buildoptions "-std=c++11"
-
         includedirs {
             "../thirdparty/",
             "../thirdparty/casablanca/Release/include/",
+            "../thirdparty/casablanca/Release/src/pch",
             "../thirdparty/jsoncpp/include/",
             "../thirdparty/rapidjson/include/",
             "../thirdparty/include/",
@@ -114,3 +112,7 @@ solution "benchmark"
 		setTargetObjDir("../bin")
 
 		linkLib("jsonclibs")
+
+		configuration "gmake"
+			buildoptions "-std=c++11"
+
