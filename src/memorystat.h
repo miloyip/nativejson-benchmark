@@ -167,6 +167,20 @@ extern void MemoryStatFree(void* ptr);
 #define realloc MemoryStatRealloc
 #define free MemoryStatFree
 
+#ifdef __cplusplus
+namespace std {
+    inline void* MemoryStatMalloc(size_t size) {
+        return ::MemoryStatMalloc(size);
+    }
+    inline void* MemoryStatRealloc(void* ptr, size_t size) {
+        return ::MemoryStatRealloc(ptr, size);
+    }
+    inline void MemoryStatFree(void* ptr) {
+        return ::MemoryStatFree(ptr);
+    }
+};
+#endif
+
 #else
 
 #define MEMORYSTAT_SCOPE()
