@@ -25,3 +25,9 @@
 [submodule "thirdparty/ujson4c"]
 	path = thirdparty/ujson4c
 	url = https://github.com/esnme/ujson4c.git
+[submodule "thirdparty/udp-json-parser"]
+	path = thirdparty/udp-json-parser
+	url = https://github.com/udp/json-parser.git
+[submodule "thirdparty/udp-json-builder"]
+	path = thirdparty/udp-json-builder
+	url = https://github.com/udp/json-builder.git

@@ -154,6 +154,7 @@ extern "C" {
 #endif
 
 extern void* MemoryStatMalloc(size_t size);
+extern void* MemoryStatCalloc(size_t num, size_t size);
 extern void* MemoryStatRealloc(void* ptr, size_t size);
 extern void MemoryStatFree(void* ptr);
 
@@ -162,6 +163,7 @@ extern void MemoryStatFree(void* ptr);
 #endif
 
 #define malloc MemoryStatMalloc
+#define calloc MemoryStatCalloc
 #define realloc MemoryStatRealloc
 #define free MemoryStatFree
 

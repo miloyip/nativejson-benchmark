@@ -45,6 +45,14 @@ function linkLib(libBaseName)
 	end
 end
 
+function copyfiles(dstDir, srcWildcard)
+	os.mkdir(dstDir)
+	local matches = os.matchfiles(srcWildcard)
+	for _, f in ipairs(matches) do 
+		local filename = string.match(f, ".-([^\\/]-%.?[^%.\\/]*)$")
+		os.copyfile(f, dstDir .. "/" .. filename)
+	end
+end
 
 solution "benchmark"
 	configurations { "debug", "release" }
@@ -76,6 +84,7 @@ solution "benchmark"
             "../thirdparty/",
             "../thirdparty/include/",
             "../thirdparty/ujson4c/3rdparty/",
+			"../thirdparty/udp-json-parser/"
         }
 
 		files { 
@@ -84,12 +93,7 @@ solution "benchmark"
 
 		setTargetObjDir("../bin")
 
-		os.mkdir("../thirdparty/include/yajl")
-		local matches = os.matchfiles("../thirdparty/yajl/src/api/*.h")
-		for _, f in ipairs(matches) do 
-			local filename = string.match(f, ".-([^\\/]-%.?[^%.\\/]*)$")
-			os.copyfile(f, "../thirdparty/include/yajl/" .. filename)
-		end
+		copyfiles("../thirdparty/include/yajl", "../thirdparty/yajl/src/api/*.h")
 
 	project "nativejson"
 		kind "ConsoleApp"
@@ -100,6 +104,7 @@ solution "benchmark"
             "../thirdparty/casablanca/Release/src/pch",
             "../thirdparty/jsoncpp/include/",
             "../thirdparty/rapidjson/include/",
+            "../thirdparty/udp-json-parser/",
             "../thirdparty/include/",
         }
 
@@ -113,6 +118,7 @@ solution "benchmark"
 		setTargetObjDir("../bin")
 
 		linkLib("jsonclibs")
+		links "jsonclibs"
 
 		configuration "gmake"
 			buildoptions "-std=c++11"
