@@ -10,10 +10,13 @@
 static const unsigned cTrialCount = 1;
 
 struct TestJson {
+    TestJson() : filename(), json(), length(), stat(), statUTF16() {}
+
     char* filename;
     char* json;
     size_t length;
-    Stat stat;      // Reference statistics
+    Stat stat;           // Reference statistics
+    Stat statUTF16;      // Reference statistics
 };
 
 typedef std::vector<TestJson> TestJsonList;
@@ -88,7 +91,7 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
                 printf("Error: Cannot read '%s'\n", filename);
                 continue;
             }
-            
+
             TestJson t;
             t.filename = Strdup(filename);
             fseek(fp2, 0, SEEK_END);
@@ -100,28 +103,15 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
             fclose(fp2);
 
             // Generate reference statistics
-            ParseResultBase* dom = referenceTest->Parse(t.json, t.length);
-            if (!referenceTest->Statistics(dom, &t.stat))
+            if (!referenceTest->SaxStatistics(t.json, t.length, &t.stat))
                 printf("Failed to generate reference statistics\n");
+
+            if (!referenceTest->SaxStatisticsUTF16(t.json, t.length, &t.statUTF16))
+                printf("Failed to generate reference UTF16 statistics\n");
 
             printf("Read '%s' (%u bytes)\n", t.filename, (unsigned)t.length);
             PrintStat(t.stat);
             printf("\n");
-
-            // Write out reference JSON
-#if 0
-            {
-                char* json = referenceTest->Stringify(dom);
-                char jsonfilename[FILENAME_MAX];
-                sprintf(jsonfilename, "%s_%s", referenceTest->GetName(), filename);
-                FILE* fp = fopen(jsonfilename, "wb");
-                fwrite(json, strlen(json), 1, fp);
-                fclose(fp);
-                free(json);
-            }
-#endif
-
-            delete dom;
 
             testJsons.push_back(t);
         }
@@ -177,8 +167,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
 
         Stat stat1;
         if (!test.Statistics(dom1, &stat1)) {
-            printf("\nNot support Statistics\n", itr->filename);
-            failed = true;
+            printf("Not support Statistics\n", itr->filename);
             delete dom1;
             continue;
         }
@@ -187,16 +176,18 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
         delete dom1;
 
         if (!json1) {
-			// Some libraries may not support stringify, but still check statistics
-			if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0) {
-				printf("\nStatistics of '%s' is different from reference.\n\n", itr->filename);
-				printf("Reference\n---------\n");
-				PrintStat(itr->stat);
-				printf("\nStat 1\n--------\n");
-				PrintStat(stat1);
-				printf("\n");
-				failed = true;
-			}
+            // Some libraries may not support stringify, but still check statistics
+            if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0 &&
+                memcmp(&stat1, &itr->statUTF16, sizeof(Stat)) != 0)
+            {
+                printf("\nStatistics of '%s' is different from reference.\n\n", itr->filename);
+                printf("Reference\n---------\n");
+                PrintStat(itr->stat);
+                printf("\nStat 1\n--------\n");
+                PrintStat(stat1);
+                printf("\n");
+                failed = true;
+            }
             continue;
         }
 
@@ -216,11 +207,15 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
 
         Stat* statProblem = 0;
         int statProblemWhich = 0;
-        if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0) {
+        if (memcmp(&stat1, &itr->stat,      sizeof(Stat)) != 0 &&
+            memcmp(&stat1, &itr->statUTF16, sizeof(Stat)) != 0)
+        {
             statProblem = &stat1;
             statProblemWhich = 1;
         }
-        else if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0) {
+        else if (memcmp(&stat1, &itr->stat,      sizeof(Stat)) != 0 &&
+                 memcmp(&stat1, &itr->statUTF16, sizeof(Stat)) != 0)
+        {
             statProblem = &stat2;
             statProblemWhich = 2;
         }
@@ -308,7 +303,7 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
             minDuration = std::min(minDuration, duration);
         }
 
-         if (!supported)
+        if (!supported)
             printf("Not support\n");
         else {
             double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
@@ -443,7 +438,7 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
                 timer.Start();
                 Stat stat;
                 supported = test.Statistics(dom, &stat);
-                timer.Stop();                
+                timer.Stop();
 
                 BENCH_MEMORYSTAT_ITERATION(trial);
             }
@@ -472,95 +467,95 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
 }
 
 static void BenchSaxRoundtrip(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
-	MEMORYSTAT_SCOPE();
-	for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
-		printf("%15s %-20s ... ", "SaxRoundtrip", itr->filename);
-		fflush(stdout);
+    MEMORYSTAT_SCOPE();
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
+        printf("%15s %-20s ... ", "SaxRoundtrip", itr->filename);
+        fflush(stdout);
 
-		double minDuration = DBL_MAX;
+        double minDuration = DBL_MAX;
 
-		BENCH_MEMORYSTAT_INIT();
-		bool supported = true;
-		for (unsigned trial = 0; trial < cTrialCount; trial++) {
-			Timer timer;
-			StringResultBase* json;
-			{
-				MEMORYSTAT_SCOPE();
+        BENCH_MEMORYSTAT_INIT();
+        bool supported = true;
+        for (unsigned trial = 0; trial < cTrialCount; trial++) {
+            Timer timer;
+            StringResultBase* json;
+            {
+                MEMORYSTAT_SCOPE();
 
-				timer.Start();
-				json = test.SaxRoundtrip(itr->json, itr->length);
-				timer.Stop();
+                timer.Start();
+                json = test.SaxRoundtrip(itr->json, itr->length);
+                timer.Stop();
 
-				BENCH_MEMORYSTAT_ITERATION(trial);
-			}
+                BENCH_MEMORYSTAT_ITERATION(trial);
+            }
 
-			delete json;
+            delete json;
 
-			if (!json) {
-				supported = false;
-				break;
-			}
+            if (!json) {
+                supported = false;
+                break;
+            }
 
-			double duration = timer.GetElapsedMilliseconds();
-			minDuration = std::min(minDuration, duration);
-		}
+            double duration = timer.GetElapsedMilliseconds();
+            minDuration = std::min(minDuration, duration);
+        }
 
-		if (!supported)
-			printf("Not support\n");
-		else {
-			double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
-			printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+        if (!supported)
+            printf("Not support\n");
+        else {
+            double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+            printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-			fprintf(fp, "5. Sax Round-trip,%s,%s,%f", test.GetName(), itr->filename, minDuration);
-			BENCH_MEMORYSTAT_OUTPUT(fp);
-			fputc('\n', fp);
-		}
-	}
-	MEMORYSTAT_CHECKMEMORYLEAK();
+            fprintf(fp, "5. Sax Round-trip,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+            BENCH_MEMORYSTAT_OUTPUT(fp);
+            fputc('\n', fp);
+        }
+    }
+    MEMORYSTAT_CHECKMEMORYLEAK();
 }
 
 static void BenchSaxStatistics(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
-	MEMORYSTAT_SCOPE();
-	for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
-		printf("%15s %-20s ... ", "Sax Statistics", itr->filename);
-		fflush(stdout);
+    MEMORYSTAT_SCOPE();
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
+        printf("%15s %-20s ... ", "Sax Statistics", itr->filename);
+        fflush(stdout);
 
-		double minDuration = DBL_MAX;
+        double minDuration = DBL_MAX;
 
-		BENCH_MEMORYSTAT_INIT();
-		bool supported = true;
-		for (unsigned trial = 0; trial < cTrialCount; trial++) {
-			Timer timer;
-			{
-				MEMORYSTAT_SCOPE();
+        BENCH_MEMORYSTAT_INIT();
+        bool supported = true;
+        for (unsigned trial = 0; trial < cTrialCount; trial++) {
+            Timer timer;
+            {
+                MEMORYSTAT_SCOPE();
 
-				timer.Start();
-				Stat stat;
-				supported = test.SaxStatistics(itr->json, itr->length, &stat);
-				timer.Stop();                
+                timer.Start();
+                Stat stat;
+                supported = test.SaxStatistics(itr->json, itr->length, &stat);
+                timer.Stop();
 
-				BENCH_MEMORYSTAT_ITERATION(trial);
-			}
+                BENCH_MEMORYSTAT_ITERATION(trial);
+            }
 
-			if (!supported)
-				break;
+            if (!supported)
+                break;
 
-			double duration = timer.GetElapsedMilliseconds();
-			minDuration = std::min(minDuration, duration);
-		}
+            double duration = timer.GetElapsedMilliseconds();
+            minDuration = std::min(minDuration, duration);
+        }
 
-		if (!supported)
-			printf("Not support\n");
-		else {
-			double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
-			printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+        if (!supported)
+            printf("Not support\n");
+        else {
+            double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+            printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
 
-			fprintf(fp, "6. SaxStatistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
-			BENCH_MEMORYSTAT_OUTPUT(fp);
-			fputc('\n', fp);
-		}
-	}
-	MEMORYSTAT_CHECKMEMORYLEAK();
+            fprintf(fp, "6. SaxStatistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+            BENCH_MEMORYSTAT_OUTPUT(fp);
+            fputc('\n', fp);
+        }
+    }
+    MEMORYSTAT_CHECKMEMORYLEAK();
 }
 
 static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
@@ -569,8 +564,8 @@ static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp)
     BenchStringify(test, testJsons, fp);
     BenchPrettify(test, testJsons, fp);
     BenchStatistics(test, testJsons, fp);
-	BenchSaxRoundtrip(test, testJsons, fp);
-	BenchSaxStatistics(test, testJsons, fp);
+    BenchSaxRoundtrip(test, testJsons, fp);
+    BenchSaxStatistics(test, testJsons, fp);
     printf("\n");
 }
 

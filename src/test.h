@@ -30,7 +30,7 @@ public:
     TestList& GetTests() {
         return mTests;
     }
-    
+
 private:
     TestList mTests;
 };
@@ -88,7 +88,7 @@ public:
 
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         (void)parseResult;
-        return 0; 
+        return 0;
     }
 
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
@@ -98,7 +98,7 @@ public:
 
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         (void)parseResult;
-		(void)stat;
+        (void)stat;
         return false;
     }
 
@@ -111,7 +111,14 @@ public:
     virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
         (void)json;
         (void)length;
-		(void)stat;
+        (void)stat;
+        return false;
+    }
+
+    virtual bool SaxStatisticsUTF16(const char* json, size_t length, Stat* stat) const {
+        (void)json;
+        (void)length;
+        (void)stat;
         return false;
     }
 

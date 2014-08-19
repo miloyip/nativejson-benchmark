@@ -12,13 +12,14 @@
 
 using namespace rapidjson;
 
+template <typename Encoding = UTF8<> >
 class StatHandler {
 public:
-    typedef char Ch;
+    typedef typename Encoding::Ch Ch;
 
     StatHandler(Stat& stat) : stat_(stat) {}
 
-    bool Null() { stat_.nullCount++; return true;  }
+    bool Null() { stat_.nullCount++; return true; }
     bool Bool(bool b) { if (b) stat_.trueCount++; else stat_.falseCount++; return true; }
     bool Int(int) { stat_.numberCount++; return true; }
     bool Uint(unsigned) { stat_.numberCount++; return true; }
@@ -38,7 +39,7 @@ private:
 };
 
 static void GenStat(Stat& stat, const Value& v) {
-    switch(v.GetType()) {
+    switch (v.GetType()) {
     case kNullType:  stat.nullCount++; break;
     case kFalseType: stat.falseCount++; break;
     case kTrueType:  stat.trueCount++; break;
@@ -85,31 +86,31 @@ public:
 
 class RapidjsonTest : public TestBase {
 public:
-	RapidjsonTest() : TestBase("RapidJSON") {
-	}
-	
+    RapidjsonTest() : TestBase("RapidJSON") {
+    }
+
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         RapidjsonParseResult* pr = new RapidjsonParseResult;
-    	if (pr->document.Parse(json).HasParseError()) {
+        if (pr->document.Parse(json).HasParseError()) {
             delete pr;
-    		return 0;
-    	}
-    	return pr;
+            return 0;
+        }
+        return pr;
     }
 
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
         RapidjsonStringResult* sr = new RapidjsonStringResult;
-    	Writer<StringBuffer> writer(sr->sb);
-    	pr->document.Accept(writer);
-    	return sr;
+        Writer<StringBuffer> writer(sr->sb);
+        pr->document.Accept(writer);
+        return sr;
     }
 
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
         RapidjsonStringResult* sr = new RapidjsonStringResult;
-    	PrettyWriter<StringBuffer> writer(sr->sb);
+        PrettyWriter<StringBuffer> writer(sr->sb);
         pr->document.Accept(writer);
         return sr;
     }
@@ -118,7 +119,7 @@ public:
         const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
 #if SLOWER_STAT
-        StatHandler h(*stat);
+        StatHandler<> h(*stat);
         doc->Accept(h);
 #else
         GenStat(*stat, pr->document);
@@ -127,26 +128,33 @@ public:
     }
 
     virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
-        (void)length;    
+        (void)length;
         Reader reader;
         RapidjsonStringResult* sr = new RapidjsonStringResult;
-		StringStream is(json);
+        StringStream is(json);
         Writer<StringBuffer> writer(sr->sb);
         if (!reader.Parse(is, writer)) {
-			delete sr;
-			return 0;
-		}
+            delete sr;
+            return 0;
+        }
         return sr;
     }
 
     virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
         (void)length;
         Reader reader;
-		StringStream is(json);
-        StatHandler handler(*stat);
+        StringStream is(json);
+        StatHandler<> handler(*stat);
         return reader.Parse(is, handler);
     }
 
+    virtual bool SaxStatisticsUTF16(const char* json, size_t length, Stat* stat) const {
+        (void)length;
+        GenericReader<UTF8<>, UTF16<> > reader;
+        StringStream is(json);
+        StatHandler<UTF16<> > handler(*stat);
+        return reader.Parse(is, handler);
+    }
 };
 
 REGISTER_TEST(RapidjsonTest);
