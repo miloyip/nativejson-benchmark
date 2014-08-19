@@ -12,7 +12,6 @@
 
 using namespace rapidjson;
 
-#if SLOWER_STAT
 class StatHandler {
 public:
     typedef char Ch;
@@ -37,7 +36,7 @@ private:
 
     Stat& stat_;
 };
-#else
+
 static void GenStat(Stat& stat, const Value& v) {
     switch(v.GetType()) {
     case kNullType:  stat.nullCount++; break;
@@ -71,7 +70,6 @@ static void GenStat(Stat& stat, const Value& v) {
         break;
     }
 }
-#endif
 
 class RapidjsonParseResult : public ParseResultBase {
 public:
@@ -127,6 +125,28 @@ public:
 #endif
         return true;
     }
+
+    virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
+        (void)length;    
+        Reader reader;
+        RapidjsonStringResult* sr = new RapidjsonStringResult;
+		StringStream is(json);
+        Writer<StringBuffer> writer(sr->sb);
+        if (!reader.Parse(is, writer)) {
+			delete sr;
+			return 0;
+		}
+        return sr;
+    }
+
+    virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
+        (void)length;
+        Reader reader;
+		StringStream is(json);
+        StatHandler handler(*stat);
+        return reader.Parse(is, handler);
+    }
+
 };
 
 REGISTER_TEST(RapidjsonTest);

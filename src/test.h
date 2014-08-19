@@ -81,8 +81,8 @@ public:
     }
 
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
-        (void)length;
         (void)json;
+        (void)length;
         return 0;
     }
 
@@ -98,7 +98,20 @@ public:
 
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         (void)parseResult;
-        memset(stat, 0, sizeof(Stat));
+		(void)stat;
+        return false;
+    }
+
+    virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
+        (void)json;
+        (void)length;
+        return 0;
+    }
+
+    virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
+        (void)json;
+        (void)length;
+		(void)stat;
         return false;
     }
 

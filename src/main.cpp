@@ -463,12 +463,106 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
     MEMORYSTAT_CHECKMEMORYLEAK();
 }
 
+static void BenchSaxRoundtrip(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+	MEMORYSTAT_SCOPE();
+	for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
+		printf("%15s %-20s ... ", "SaxRoundtrip", itr->filename);
+		fflush(stdout);
+
+		double minDuration = DBL_MAX;
+
+		BENCH_MEMORYSTAT_INIT();
+		bool supported = true;
+		for (unsigned trial = 0; trial < cTrialCount; trial++) {
+			Timer timer;
+			StringResultBase* json;
+			{
+				MEMORYSTAT_SCOPE();
+
+				timer.Start();
+				json = test.SaxRoundtrip(itr->json, itr->length);
+				timer.Stop();
+
+				BENCH_MEMORYSTAT_ITERATION(trial);
+			}
+
+			delete json;
+
+			if (!json) {
+				supported = false;
+				break;
+			}
+
+			double duration = timer.GetElapsedMilliseconds();
+			minDuration = std::min(minDuration, duration);
+		}
+
+		if (!supported)
+			printf("Not support\n");
+		else {
+			double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+			printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+
+			fprintf(fp, "5. Sax Round-trip,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+			BENCH_MEMORYSTAT_OUTPUT(fp);
+			fputc('\n', fp);
+		}
+	}
+	MEMORYSTAT_CHECKMEMORYLEAK();
+}
+
+static void BenchSaxStatistics(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+	MEMORYSTAT_SCOPE();
+	for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
+		printf("%15s %-20s ... ", "Sax Statistics", itr->filename);
+		fflush(stdout);
+
+		double minDuration = DBL_MAX;
+
+		BENCH_MEMORYSTAT_INIT();
+		bool supported = true;
+		for (unsigned trial = 0; trial < cTrialCount; trial++) {
+			Timer timer;
+			{
+				MEMORYSTAT_SCOPE();
+
+				timer.Start();
+				Stat stat;
+				supported = test.SaxStatistics(itr->json, itr->length, &stat);
+				timer.Stop();                
+
+				BENCH_MEMORYSTAT_ITERATION(trial);
+			}
+
+			if (!supported)
+				break;
+
+			double duration = timer.GetElapsedMilliseconds();
+			minDuration = std::min(minDuration, duration);
+		}
+
+		if (!supported)
+			printf("Not support\n");
+		else {
+			double throughput = itr->length / (1024.0 * 1024.0) / (minDuration * 0.001);
+			printf("%6.3f ms  %3.3f MB/s\n", minDuration, throughput);
+
+			fprintf(fp, "6. SaxStatistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
+			BENCH_MEMORYSTAT_OUTPUT(fp);
+			fputc('\n', fp);
+		}
+	}
+	MEMORYSTAT_CHECKMEMORYLEAK();
+}
+
 static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     printf("Benchmarking %s\n", test.GetName());
     BenchParse(test, testJsons, fp);
     BenchStringify(test, testJsons, fp);
     BenchPrettify(test, testJsons, fp);
     BenchStatistics(test, testJsons, fp);
+	BenchSaxRoundtrip(test, testJsons, fp);
+	BenchSaxStatistics(test, testJsons, fp);
     printf("\n");
 }
 
