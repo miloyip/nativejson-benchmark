@@ -1,5 +1,4 @@
 #include "../test.h"
-#include <cstdio>
 
 extern "C" {
 
