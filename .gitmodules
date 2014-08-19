@@ -25,3 +25,6 @@
 [submodule "thirdparty/ujson4c"]
 	path = thirdparty/ujson4c
 	url = https://github.com/esnme/ujson4c.git
+[submodule "thirdparty/stix-json"]
+	path = thirdparty/stix-json
+	url = https://bitbucket.org/StiX/stix-json.git

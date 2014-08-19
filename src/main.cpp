@@ -177,6 +177,8 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
 
         if (!json1) {
             // Some libraries may not support stringify, but still check statistics
+            int a = memcmp(&stat1, &itr->stat, sizeof(Stat));
+            int b = memcmp(&stat1, &itr->statUTF16, sizeof(Stat));
             if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0 &&
                 memcmp(&stat1, &itr->statUTF16, sizeof(Stat)) != 0)
             {
@@ -427,6 +429,8 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
 
         double minDuration = DBL_MAX;
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
+        if (!dom)
+            continue;
 
         BENCH_MEMORYSTAT_INIT();
         bool supported = true;
