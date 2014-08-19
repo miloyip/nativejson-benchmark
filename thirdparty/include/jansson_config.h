@@ -52,11 +52,12 @@
 
 
 #define json_int_t long long
-#define json_strtoint strtoll
 #ifdef _MSC_VER
 #define JSON_INTEGER_FORMAT "I64d"	
+#define json_strtoint _strtoi64   
 #else	
 #define JSON_INTEGER_FORMAT "lld"
+#define json_strtoint strtoll
 #endif
 
 /* If locale.h and localeconv() are available, define to 1, otherwise to 0. */
