@@ -47,6 +47,9 @@ static void GenStat(Stat* s, const json_value* v) {
     case json_null:
         s->nullCount++;
         break;
+
+    default:
+        break;
     }
 }
 
@@ -75,7 +78,7 @@ public:
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         UdpjsonParseResult* pr = new UdpjsonParseResult;
-        json_settings settings = {};
+        json_settings settings = json_settings();
         settings.value_extra = json_builder_extra;  /* space for json-builder state */
         char error[128];
         pr->root = json_parse_ex(&settings, json, length, error);

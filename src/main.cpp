@@ -167,7 +167,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
 
         Stat stat1;
         if (!test.Statistics(dom1, &stat1)) {
-            printf("Not support Statistics\n", itr->filename);
+            printf("Not support Statistics\n");
             delete dom1;
             continue;
         }

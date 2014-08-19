@@ -132,7 +132,6 @@ public:
         sr->g = yajl_gen_alloc(NULL);
         yajl_gen_status status = GenVal(sr->g, pr->root);
         if (status != yajl_gen_status_ok) {
-            printf("yajl Strinify error %d\n", status);
             delete sr;
             return 0;
         }
