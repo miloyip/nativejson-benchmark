@@ -1,5 +1,4 @@
 #include "../test.h"
-#include <cstdlib>
 
 class StrdupParseResult : public ParseResultBase {
 public:
