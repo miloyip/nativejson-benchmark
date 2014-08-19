@@ -66,7 +66,7 @@ yajl_gen_status GenVal(yajl_gen g, yajl_val v) {
     }
 }
 
-void GenStat(Stat* s, yajl_val v) {
+static void GenStat(Stat* s, yajl_val v) {
     switch (v->type) {
     case yajl_t_string: s->stringCount++;  s->stringLength += strlen(v->u.string); break;
     case yajl_t_number: s->numberCount++;  break;

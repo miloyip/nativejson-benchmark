@@ -6,7 +6,7 @@
 
 using namespace Json;
 
-void GenStat(Stat& stat, const Value& v) {
+static void GenStat(Stat& stat, const Value& v) {
     switch (v.type()) {
     case arrayValue:
         for (ValueConstIterator itr = v.begin(); itr != v.end(); ++itr)

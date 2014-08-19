@@ -21,7 +21,7 @@
 using namespace web::json;
 using namespace utility::conversions;
 
-void GenStat(Stat& stat, const value& v) {
+static void GenStat(Stat& stat, const value& v) {
     switch (v.type()) {
 	case value::value_type::Array:
         for (auto const& element : v.as_array())

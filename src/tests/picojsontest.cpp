@@ -7,7 +7,7 @@
 
 using namespace picojson;
 
-void GenStat(Stat& s, const value& v) {
+static void GenStat(Stat& s, const value& v) {
     // Note: No public API to get value::_type
     if (v.is<object>()) {
         const object& o = v.get<object>();

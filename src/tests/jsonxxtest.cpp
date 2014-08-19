@@ -9,7 +9,7 @@ using namespace jsonxx;
 
 void GenObjectStat(Stat& s, const Object& o);
 
-void GenStat(Stat& s, const Value& v) {
+static void GenStat(Stat& s, const Value& v) {
     switch (v.type_) {
     case Value::OBJECT_:
         GenObjectStat(s, v.get<Object>());
