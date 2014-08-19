@@ -110,7 +110,7 @@ public:
 
 class CajunTest : public TestBase {
 public:
-    CajunTest() : TestBase("Cajun") {
+    CajunTest() : TestBase("CAJUN") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
