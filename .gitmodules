@@ -31,3 +31,6 @@
 [submodule "thirdparty/udp-json-builder"]
 	path = thirdparty/udp-json-builder
 	url = https://github.com/udp/json-builder.git
+[submodule "thirdparty/cajun-jsonapi"]
+	path = thirdparty/cajun-jsonapi
+	url = https://github.com/cajun-jsonapi/cajun-jsonapi.git
