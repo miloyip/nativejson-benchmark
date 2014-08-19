@@ -75,6 +75,7 @@ solution "benchmark"
         includedirs {
             "../thirdparty/",
             "../thirdparty/include/",
+            "../thirdparty/ujson4c/3rdparty/",
         }
 
 		files { 

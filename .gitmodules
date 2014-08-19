@@ -22,3 +22,6 @@
 [submodule "thirdparty/casablanca"]
 	path = thirdparty/casablanca
 	url = https://git01.codeplex.com/casablanca
+[submodule "thirdparty/ujson4c"]
+	path = thirdparty/ujson4c
+	url = https://github.com/esnme/ujson4c.git

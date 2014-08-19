@@ -180,15 +180,23 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
             printf("\nNot support Statistics\n", itr->filename);
             failed = true;
             delete dom1;
-            break;
+            continue;
         }
 
         StringResultBase* json1 = test.Stringify(dom1);
         delete dom1;
 
         if (!json1) {
-            printf("\nFailed to strinify '%s'\n", itr->filename);
-            failed = true;
+			// Some libraries may not support stringify, but still check statistics
+			if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0) {
+				printf("\nStatistics of '%s' is different from reference.\n\n", itr->filename);
+				printf("Reference\n---------\n");
+				PrintStat(itr->stat);
+				printf("\nStat 1\n--------\n");
+				PrintStat(stat1);
+				printf("\n");
+				failed = true;
+			}
             continue;
         }
 
