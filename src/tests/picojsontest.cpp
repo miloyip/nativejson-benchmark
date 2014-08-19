@@ -56,7 +56,7 @@ public:
 
 class PicojsonTest : public TestBase {
 public:
-	PicojsonTest() : TestBase("PicoJSON") {
+	PicojsonTest() : TestBase("PicoJSON (C++)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

@@ -76,7 +76,7 @@ public:
 
 class CasablancaTest : public TestBase {
 public:
-	CasablancaTest() : TestBase("Casablanca") {
+	CasablancaTest() : TestBase("Casablanca (C++11)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

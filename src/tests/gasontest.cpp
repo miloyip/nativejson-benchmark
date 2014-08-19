@@ -163,7 +163,7 @@ public:
 
 class GasonTest : public TestBase {
 public:
-	GasonTest() : TestBase("Gason") {
+	GasonTest() : TestBase("gason (C++11)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

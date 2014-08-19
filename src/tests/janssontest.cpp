@@ -68,7 +68,7 @@ static void GenStat(Stat* s, json_t* v) {
 
 class JanssonTest : public TestBase {
 public:
-    JanssonTest() : TestBase("Jansson") {
+    JanssonTest() : TestBase("Jansson (C)") {
 #ifdef USE_MEMORYSTAT
         json_set_alloc_funcs(MemoryStatMalloc, MemoryStatFree);
 #endif

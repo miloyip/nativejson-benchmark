@@ -70,7 +70,7 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
     TestList& tests = TestManager::Instance().GetTests();
     const TestBase* referenceTest = 0;
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr) {
-        if (strcmp((*itr)->GetName(), "RapidJSON") == 0) {
+        if (strcmp((*itr)->GetName(), "RapidJSON (C++)") == 0) {
             referenceTest = *itr;
             break;
         }

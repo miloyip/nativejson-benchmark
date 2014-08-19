@@ -78,7 +78,7 @@ public:
 
 class JsonxxTest : public TestBase {
 public:
-    JsonxxTest() : TestBase("JSON++") {
+    JsonxxTest() : TestBase("hjiang/JSON++ (C++)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

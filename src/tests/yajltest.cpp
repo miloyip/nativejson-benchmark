@@ -116,7 +116,7 @@ public:
 
 class YajlTest : public TestBase {
 public:
-	YajlTest() : TestBase("YAJL") {
+	YajlTest() : TestBase("YAJL (C)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

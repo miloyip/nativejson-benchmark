@@ -13,6 +13,15 @@ $(function() {
   var csv = $('#textInput').val();
   var dt = google.visualization.arrayToDataTable($.csv.toArrays(csv, {onParseValue: $.csv.hooks.castToScalar}));
 
+  function sortCaseInsensitive(dt, column) {
+    for (var row = 0; row < timedt.getNumberOfRows(); row++) {
+      var s = dt.getValue(row, column);
+      dt.setValue(row, column, s.toUpperCase());
+      dt.setFormattedValue(row, column, s);
+    }
+    dt.sort(column);
+  }
+
   // Per type sections
   var types = dt.getDistinctValues(0);
   for (var i in types) {
@@ -28,6 +37,8 @@ $(function() {
       [1], 
       [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
     );
+
+    sortCaseInsensitive(timedt, 0);
 
     drawTable(type, timedt.clone(), true);
     drawBarChart(type, timedt);
@@ -51,6 +62,7 @@ $(function() {
           [1], 
           [{"column": column, "aggregation": google.visualization.data.sum, 'type': 'number' }]
         );
+        sortCaseInsensitive(memorydt, 0);
         addSubsection(memorydt.getColumnLabel(1));
         drawTable(type, memorydt.clone(), false);
         drawBarChart(type, memorydt);
@@ -147,6 +159,7 @@ function drawTable(type, data, isSpeedup) {
     table.setSelection([{ row: 0, column: null}]);
 
     function redrawTable(selectedRow) {
+        var s = table.getSortInfo();
         // Compute relative time using the first row as basis
         var basis = data.getValue(selectedRow, 1);
         for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
@@ -155,7 +168,7 @@ function drawTable(type, data, isSpeedup) {
         var formatter = new google.visualization.NumberFormat({suffix: 'x'});
         formatter.format(data, 2); // Apply formatter to second column
 
-        table.draw(data);
+        table.draw(data, s != null ? {sortColumn: s.column, sortAscending: s.ascending} : null);
     }
 
     google.visualization.events.addListener(table, 'select',
@@ -169,37 +182,12 @@ function drawTable(type, data, isSpeedup) {
     });
 }
 
-function drawStackedChart(type, data, title) {
-  // User another set of color for series
-  var colors = ['rgb(166,206,227)','rgb(31,120,180)','rgb(178,223,138)','rgb(51,160,44)','rgb(251,154,153)','rgb(227,26,28)','rgb(253,191,111)','rgb(255,127,0)','rgb(202,178,214)','rgb(106,61,154)','rgb(255,255,153)','rgb(177,89,40)'];
-  var options = { 
-    title: type,
-    chartArea: {'width': '70%', 'height': '70%'},
-    width: 800,
-    height: 300,
-    hAxis: { "title": title },
-    isStacked: true,
-    series: []
-  };
-
-  for (var i = 0; i < data.getNumberOfRows(); i++)
-    options.series.push({"color": colors[i]});
-
-  var div = document.createElement("div");
-  div.className = "chart";
-  $(div).data("filename", type);
-  $("#main").append(div);
-  var chart = new google.visualization.BarChart(div);
-
-  chart.draw(data, options);
-}
-
 function drawBarChart(type, data) {
   // Using same colors as in series
   var colors = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
   var options = { 
     title: type,
-    chartArea: {'width': '70%', 'height': '70%'},
+    chartArea: {'width': '65%', 'height': '70%'},
     width: 800,
     height: 300,
     hAxis: { title: data.getColumnLabel(1) },
@@ -223,7 +211,7 @@ function drawBarChart(type, data) {
 function drawPivotBarChart(type, data, title) {
   var options = { 
     title: type,
-    chartArea: {'width': '70%', 'height': '70%'},
+    chartArea: {'width': '65%', 'height': '70%'},
     width: 800,
     height: 600,
     hAxis: { "title": title }

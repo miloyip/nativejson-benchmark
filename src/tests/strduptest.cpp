@@ -21,7 +21,7 @@ public:
 
 class StrdupTest : public TestBase {
 public:
-	StrdupTest() : TestBase("Strdup") {
+	StrdupTest() : TestBase("strdup (C)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

@@ -73,7 +73,7 @@ public:
 
 class UdpjsonTest : public TestBase {
 public:
-    UdpjsonTest() : TestBase("udp/json-parser|builder") {
+    UdpjsonTest() : TestBase("udp/json-parser (C)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

@@ -64,7 +64,7 @@ public:
 
 class CjsonTest : public TestBase {
 public:
-    CjsonTest() : TestBase("cJSON") {
+    CjsonTest() : TestBase("cJSON (C)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

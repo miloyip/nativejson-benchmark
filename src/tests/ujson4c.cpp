@@ -67,7 +67,7 @@ public:
 
 class Ujson4c : public TestBase {
 public:
-	Ujson4c() : TestBase("Ujson4c") {
+	Ujson4c() : TestBase("ujson4c (C)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

@@ -53,49 +53,6 @@ private:
     Stat& stat;
 };
 
-//static void GenStat(Stat* s, const UnknownElement& v) {
-//    switch (v.) {
-//    case json_object:
-//        for (size_t i = 0; i < v->u.object.length; i++) {
-//            const json_object_entry* e = v->u.object.values + i;
-//            GenStat(s, e->value);
-//            s->stringLength += e->name_length;
-//        }
-//        s->stringCount += v->u.object.length;
-//        s->memberCount += v->u.object.length;
-//        s->objectCount++;
-//        break;
-//
-//    case json_array:
-//        for (size_t i = 0; i < v->u.array.length; i++)
-//            GenStat(s, v->u.array.values[i]);
-//        s->arrayCount++;
-//        s->elementCount += v->u.array.length;
-//        break;
-//
-//    case json_string:
-//        s->stringCount++;
-//        s->stringLength += v->u.string.length;
-//        break;
-//
-//    case json_integer:
-//    case json_double:
-//        s->numberCount++; 
-//        break;
-//
-//    case json_boolean:
-//        if (v->u.boolean)
-//            s->trueCount++;
-//        else
-//            s->falseCount++;
-//        break;
-//
-//    case json_null:
-//        s->nullCount++;
-//        break;
-//    }
-//}
-
 class CajunParseResult : public ParseResultBase {
 public:
     UnknownElement root;
@@ -110,7 +67,7 @@ public:
 
 class CajunTest : public TestBase {
 public:
-    CajunTest() : TestBase("CAJUN") {
+    CajunTest() : TestBase("CAJUN (C)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

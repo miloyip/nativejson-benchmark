@@ -62,7 +62,7 @@ public:
 };
 class JsoncppTest : public TestBase {
 public:
-	JsoncppTest() : TestBase("JsonCpp") {
+	JsoncppTest() : TestBase("JsonCpp (C++)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
