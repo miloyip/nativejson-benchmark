@@ -3,3 +3,5 @@
 /build/vs*/
 /intermediate
 /thirdparty/include/yajl
+/result/*.csv
+/result/*.html
