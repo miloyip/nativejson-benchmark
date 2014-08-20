@@ -34,3 +34,6 @@
 [submodule "thirdparty/cajun-jsonapi"]
 	path = thirdparty/cajun-jsonapi
 	url = https://github.com/cajun-jsonapi/cajun-jsonapi.git
+[submodule "thirdparty/fastjson"]
+	path = thirdparty/fastjson
+	url = https://github.com/mikeando/fastjson.git
