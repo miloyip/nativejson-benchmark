@@ -103,6 +103,7 @@ solution "benchmark"
             "../thirdparty/casablanca/Release/include/",
             "../thirdparty/casablanca/Release/src/pch",
             "../thirdparty/fastjson/include/",
+            "../thirdparty/jsonbox/include/",
             "../thirdparty/jsoncpp/include/",
             "../thirdparty/rapidjson/include/",
             "../thirdparty/udp-json-parser/",

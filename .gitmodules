@@ -40,3 +40,6 @@
 [submodule "thirdparty/dropbox-json11"]
 	path = thirdparty/dropbox-json11
 	url = https://github.com/dropbox/json11.git
+[submodule "thirdparty/jsonbox"]
+	path = thirdparty/jsonbox
+	url = https://github.com/anhero/JsonBox.git
