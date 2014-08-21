@@ -142,6 +142,7 @@ public:
 
     virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
         (void)length;
+        memset(stat, 0, sizeof(Stat));
         Reader reader;
         StringStream is(json);
         StatHandler<> handler(*stat);
@@ -150,6 +151,7 @@ public:
 
     virtual bool SaxStatisticsUTF16(const char* json, size_t length, Stat* stat) const {
         (void)length;
+        memset(stat, 0, sizeof(Stat));
         GenericReader<UTF8<>, UTF16<> > reader;
         StringStream is(json);
         StatHandler<UTF16<> > handler(*stat);

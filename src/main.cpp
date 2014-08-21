@@ -244,6 +244,24 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
         MEMORYSTAT_CHECKMEMORYLEAK();
     }
 
+    // Verify SaxStatistics()
+    for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
+        MEMORYSTAT_SCOPE();
+        Stat stat1;
+        if (test.SaxStatistics(itr->json, itr->length, &stat1)) {
+            if (memcmp(&stat1, &itr->stat, sizeof(Stat)) != 0 &&
+                memcmp(&stat1, &itr->statUTF16, sizeof(Stat)) != 0)
+            {
+                printf("\nSaxStatistics of '%s' is different from reference.\n\n", itr->filename);
+                printf("Reference\n---------\n");
+                PrintStat(itr->stat);
+                printf("\nStat #%d\n--------\n", 1);
+                PrintStat(stat1);
+                printf("\n");
+            }
+        }
+    }
+
     printf(failed ? "Failed\n" : "OK\n");
 }
 
