@@ -14,7 +14,7 @@
 static void GenStat(Stat& stat, const JsonValue& v) {
     switch (v.getTag()) {
     case JSON_TAG_ARRAY:
-        for (auto i : v) {
+        for (auto const& i : v) {
             GenStat(stat, i->value);
             stat.elementCount++;
         }
@@ -22,7 +22,7 @@ static void GenStat(Stat& stat, const JsonValue& v) {
         break;
 
     case JSON_TAG_OBJECT:
-        for (auto i : v) {
+        for (auto const& i : v) {
             GenStat(stat, i->value);
             stat.memberCount++;
             stat.stringLength += strlen(i->key);
