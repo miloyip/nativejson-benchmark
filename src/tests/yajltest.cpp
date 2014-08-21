@@ -93,6 +93,186 @@ static void GenStat(Stat* s, yajl_val v) {
     }
 }
 
+#define GEN_AND_RETURN(func)                      \
+{                                                 \
+    yajl_gen_status __stat = func;                \
+    return __stat == yajl_gen_status_ok; }
+
+static int reformat_null(void * ctx) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_null(g));
+}
+
+static int reformat_boolean(void * ctx, int boolean) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_bool(g, boolean));
+}
+
+static int reformat_integer(void * ctx, long long integerVal) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_integer(g, integerVal));
+}
+
+static int reformat_double(void * ctx, double doubleVal) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_double(g, doubleVal));
+}
+
+static int reformat_string(void * ctx, const unsigned char * stringVal, size_t stringLen) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_string(g, stringVal, stringLen));
+}
+
+static int reformat_map_key(void * ctx, const unsigned char * stringVal, size_t stringLen) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_string(g, stringVal, stringLen));
+}
+
+static int reformat_start_map(void * ctx) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_map_open(g));
+}
+
+static int reformat_end_map(void * ctx) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_map_close(g));
+}
+
+static int reformat_start_array(void * ctx) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_array_open(g));
+}
+
+static int reformat_end_array(void * ctx) {
+    yajl_gen g = (yajl_gen)ctx;
+    GEN_AND_RETURN(yajl_gen_array_close(g));
+}
+
+static yajl_callbacks callbacks = {
+    reformat_null,
+    reformat_boolean,
+    reformat_integer,
+    reformat_double,
+    NULL,
+    reformat_string,
+    reformat_start_map,
+    reformat_map_key,
+    reformat_end_map,
+    reformat_start_array,
+    reformat_end_array
+};
+
+struct StatContext {
+    Stat* stat;
+    bool after_key;
+};
+
+#define HANDLE_ELEMENTCOUNT() \
+    if (c->after_key) \
+        c->after_key = false;\
+    else \
+        stat->elementCount++
+
+static int stat_null(void * ctx) {
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    stat->nullCount++;
+    HANDLE_ELEMENTCOUNT();
+    return 1;
+}
+
+static int stat_boolean(void * ctx, int boolean) {
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    if (boolean)
+        stat->trueCount++;
+    else
+        stat->falseCount++;
+    HANDLE_ELEMENTCOUNT();
+    return 1;
+}
+
+static int stat_integer(void * ctx, long long integerVal) {
+    (void)integerVal;
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    stat->numberCount++;
+    HANDLE_ELEMENTCOUNT();
+    return 1;
+}
+
+static int stat_double(void * ctx, double doubleVal) {
+    (void)doubleVal;
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    stat->numberCount++;
+    HANDLE_ELEMENTCOUNT();
+    return 1;
+}
+
+static int stat_string(void * ctx, const unsigned char * stringVal, size_t stringLen) {
+    (void)stringVal;
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    stat->stringCount++;
+    stat->stringLength += stringLen;
+    HANDLE_ELEMENTCOUNT();
+    return 1;
+}
+
+static int stat_map_key(void * ctx, const unsigned char * stringVal, size_t stringLen) {
+    (void)stringVal;
+    StatContext* c = (StatContext*)ctx; 
+    Stat* stat = c->stat;
+    stat->memberCount++;
+    stat->stringCount++;
+    stat->stringLength += stringLen;
+    c->after_key = true;
+    return 1;
+}
+
+static int stat_start_map(void * ctx) {
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    HANDLE_ELEMENTCOUNT();
+    return 1;
+}
+
+static int stat_end_map(void * ctx) {
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    stat->objectCount++;
+    return 1;
+}
+
+static int stat_start_array(void * ctx) {
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    HANDLE_ELEMENTCOUNT();
+    return 1;
+}
+
+static int stat_end_array(void * ctx) {
+    StatContext* c = (StatContext*)ctx;
+    Stat* stat = c->stat;
+    stat->arrayCount++;
+    return 1;
+}
+
+static yajl_callbacks statCallbacks = {
+    stat_null,
+    stat_boolean,
+    stat_integer,
+    stat_double,
+    NULL,
+    stat_string,
+    stat_start_map,
+    stat_map_key,
+    stat_end_map,
+    stat_start_array,
+    stat_end_array
+};
+
 } // extern "C"
 
 class YajlParseResult : public ParseResultBase {
@@ -108,10 +288,10 @@ public:
     YajlStringResult() : g(), s() {}
     ~YajlStringResult() { yajl_gen_free(g); }
 
-    virtual const char* c_str() const { return s; }
+    virtual const char* c_str() const { return (const char*)s; }
 
     yajl_gen g;
-    const char* s;
+    const unsigned char* s;
 };
 
 class YajlTest : public TestBase {
@@ -137,7 +317,7 @@ public:
         }
 
         size_t len;
-        status = yajl_gen_get_buf(sr->g, (const unsigned char**)&sr->s, &len);
+        status = yajl_gen_get_buf(sr->g, &sr->s, &len);
 
         return sr;
     }
@@ -156,7 +336,7 @@ public:
         }
 
         size_t len;
-        status = yajl_gen_get_buf(sr->g, (const unsigned char**)&sr->s, &len);
+        status = yajl_gen_get_buf(sr->g, &sr->s, &len);
 
         return sr;
     }
@@ -166,6 +346,43 @@ public:
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, pr->root);
         return true;
+    }
+
+    virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
+        // https://github.com/lloyd/yajl/blob/master/reformatter/json_reformat.c
+        (void)length;
+        YajlStringResult* sr = new YajlStringResult;
+        sr->g = yajl_gen_alloc(NULL);
+        yajl_handle hand = yajl_alloc(&callbacks, NULL, (void *)sr->g);
+        if (yajl_parse(hand, (const unsigned char*)json, length) != yajl_status_ok || 
+            yajl_complete_parse(hand) != yajl_status_ok) {
+            delete sr;
+            sr = 0;
+        }
+        else {
+            size_t len;
+            yajl_gen_get_buf(sr->g, &sr->s, &len);
+            yajl_gen_clear(sr->g);
+        }
+        yajl_free(hand);
+        return sr;
+    }
+
+    virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
+        (void)length;
+        memset(stat, 0, sizeof(Stat));
+
+        StatContext context;
+        context.stat = stat;
+        context.after_key = true;
+        yajl_handle hand = yajl_alloc(&statCallbacks, NULL, &context);
+        bool ret = true;
+        if (yajl_parse(hand, (const unsigned char*)json, length) != yajl_status_ok ||
+            yajl_complete_parse(hand) != yajl_status_ok) {
+            ret = false;
+        }
+        yajl_free(hand);
+        return ret;
     }
 };
 
