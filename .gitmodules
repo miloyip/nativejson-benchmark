@@ -52,3 +52,6 @@
 [submodule "thirdparty/vincenthz-libjson"]
 	path = thirdparty/vincenthz-libjson
 	url = https://github.com/vincenthz/libjson.git
+[submodule "thirdparty/simplejson"]
+	path = thirdparty/simplejson
+	url = https://github.com/MJPA/SimpleJSON.git
