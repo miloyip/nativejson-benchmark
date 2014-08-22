@@ -5,6 +5,7 @@
 #endif
 #include "simplejson/src/JSON.cpp"
 #include "simplejson/src/JSONValue.cpp"
+#include <clocale>
 
 static void GenStat(Stat& stat, const JSONValue& v) {
     if (v.IsArray()) {
@@ -50,9 +51,12 @@ public:
 
 class SimplejsonStringResult : public StringResultBase {
 public:
-    virtual const char* c_str() const { return (const char*)s.c_str(); }
+    SimplejsonStringResult() : s() {}
+    ~SimplejsonStringResult() { free(s); }
 
-    std::wstring s;
+    virtual const char* c_str() const { return s; }
+
+    char* s;
 };
 class SimplejsonTest : public TestBase {
 public:
@@ -62,18 +66,41 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         SimplejsonParseResult* pr = new SimplejsonParseResult;
-        pr->root = JSON::Parse(json);
+
+        char* backupLocale = std::setlocale(LC_ALL, 0);
+        std::setlocale(LC_ALL, "en_US.UTF-8");
+        
+        pr->root = JSON::Parse(json); // Use mcbstowcs() internally
+
+        std::setlocale(LC_ALL, backupLocale);
+
         if (!pr->root) {
             delete pr;
             pr = 0;
         }
+
     	return pr;
     }
 
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const SimplejsonParseResult* pr = static_cast<const SimplejsonParseResult*>(parseResult);
         SimplejsonStringResult* sr = new SimplejsonStringResult;
-        sr->s = JSON::Stringify(pr->root);
+        std::wstring s = JSON::Stringify(pr->root);
+
+        // Doing reverse conversion as in JSON::Prase(const char*) with UTF8 locale
+
+        char* backupLocale = std::setlocale(LC_ALL, 0);
+        std::setlocale(LC_ALL, "en_US.UTF-8");
+
+        size_t length = s.size() * 2 + 1;
+        sr->s = (char*)malloc(length);
+        if (wcstombs(sr->s, s.c_str(), length) == (size_t)-1) {
+            delete sr;
+            sr = 0;
+        }
+
+        std::setlocale(LC_ALL, backupLocale);
+
         return sr;
     }
 
