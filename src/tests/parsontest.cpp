@@ -47,8 +47,6 @@ static void GenStat(Stat* s, JSON_Value* v) {
             s->falseCount++;
         break;
 
-        break;
-
     case JSONNull:
         s->nullCount++;
         break;
