@@ -46,3 +46,6 @@
 [submodule "thirdparty/json-c"]
 	path = thirdparty/json-c
 	url = https://github.com/json-c/json-c.git
+[submodule "thirdparty/parson"]
+	path = thirdparty/parson
+	url = https://github.com/kgabis/parson.git
