@@ -14,7 +14,9 @@ typedef struct json_val {
     int type;
     int length;
     union {
-        char *data;
+        char *str_val;
+        double float_val;
+        long long int_val;
         struct json_val **array;
         struct json_val_elem **object;
     } u;
@@ -22,6 +24,7 @@ typedef struct json_val {
 
 static void *tree_create_structure(int nesting, int is_object)
 {
+    (void)nesting;
     json_val_t *v = (json_val_t *)malloc(sizeof(json_val_t));
     if (v) {
         /* instead of defining a new enum type, we abuse the
@@ -57,10 +60,22 @@ static void *tree_create_data(int type, const char *data, uint32_t length)
     if (v) {
         v->type = type;
         v->length = length;
-        v->u.data = memalloc_copy_length(data, length);
-        if (!v->u.data) {
-            free(v);
-            return NULL;
+        switch (type) {
+        case JSON_STRING:
+            v->u.str_val = memalloc_copy_length(data, length);
+            if (!v->u.str_val) {
+                free(v);
+                return NULL;
+            }
+            break;
+
+        case JSON_INT:
+            v->u.int_val = strtoll(data, NULL, 10);
+            break;
+
+        case JSON_FLOAT:
+            v->u.float_val = atof(data);
+            break;
         }
     }
     return v;
@@ -135,8 +150,8 @@ static void tree_free(json_val_t * v) {
         free(v->u.array);
         break;
 
-    default:
-        free(v->u.data);
+    case JSON_STRING:
+        free(v->u.str_val);
         break;
     }
     free(v);
@@ -164,27 +179,35 @@ static void tree_print(json_printer* printer, json_print_function print_func, co
         break;
 
     case JSON_STRING:
-        json_print_raw(printer, JSON_STRING, v->u.data, (uint32_t)strlen(v->u.data));
+        json_print_raw(printer, JSON_STRING, v->u.str_val, (uint32_t)strlen(v->u.str_val));
         break;
 
     case JSON_INT:
-        json_print_raw(printer, JSON_STRING, v->u.data, (uint32_t)strlen(v->u.data));
+        {
+            char buffer[32];
+            int length = sprintf(buffer, "%lld", v->u.int_val);
+            json_print_raw(printer, JSON_INT, buffer, (uint32_t)length);
+        }        
         break;
 
     case JSON_FLOAT:
-        json_print_raw(printer, JSON_STRING, v->u.data, (uint32_t)strlen(v->u.data));
+        {
+            char buffer[32];
+            int length = sprintf(buffer, "%.17g", v->u.float_val);
+            json_print_raw(printer, JSON_FLOAT, buffer, (uint32_t)length);
+        }        
         break;
 
     case JSON_TRUE:
-        json_print_raw(printer, JSON_STRING, v->u.data, (uint32_t)strlen(v->u.data));
+        json_print_raw(printer, JSON_TRUE, "true", 4);
         break;
 
     case JSON_FALSE:
-        json_print_raw(printer, JSON_STRING, v->u.data, (uint32_t)strlen(v->u.data));
+        json_print_raw(printer, JSON_STRING, "false", 5);
         break;
 
     case JSON_NULL:
-        json_print_raw(printer, JSON_STRING, v->u.data, (uint32_t)strlen(v->u.data));
+        json_print_raw(printer, JSON_STRING, "null", 4);
         break;
     }
 }
@@ -210,7 +233,7 @@ static void GenStat(Stat* s, const json_val_t * v) {
 
     case JSON_STRING:
         s->stringCount++;
-        s->stringLength += strlen(v->u.data);
+        s->stringLength += strlen(v->u.str_val);
         break;
 
     case JSON_INT:
@@ -255,6 +278,71 @@ int string_buffer_append(void *userdata, const char *s, uint32_t length) {
     return 0;
 }
 
+struct StatContext {
+    Stat* stat;
+    bool after_key;
+};
+
+
+#define HANDLE_ELEMENTCOUNT() \
+    if (c->after_key) \
+        c->after_key = false;\
+    else \
+        s->elementCount++
+
+static int stat_callback(StatContext* c, int type, const char *data, uint32_t length) {
+    (void)data;
+
+    Stat* s = c->stat;
+    switch (type) {
+    case JSON_OBJECT_BEGIN:
+        s->objectCount++;
+        HANDLE_ELEMENTCOUNT();
+        break;
+
+    case JSON_KEY:
+        s->memberCount++;
+        s->stringCount++;
+        s->stringLength += length;
+        c->after_key = true;
+        break;
+
+    case JSON_ARRAY_BEGIN:
+        s->arrayCount++;
+        HANDLE_ELEMENTCOUNT();
+        break;
+
+    case JSON_STRING:
+        s->stringCount++;
+        s->stringLength += length;
+        HANDLE_ELEMENTCOUNT();
+        break;
+
+    case JSON_INT:
+    case JSON_FLOAT:
+        s->numberCount++;
+        HANDLE_ELEMENTCOUNT();
+        break;
+
+    case JSON_TRUE:
+        s->trueCount++;
+        HANDLE_ELEMENTCOUNT();
+        break;
+
+    case JSON_FALSE:
+        s->falseCount++;
+        HANDLE_ELEMENTCOUNT();
+        break;
+
+    case JSON_NULL:
+        s->nullCount++;
+        HANDLE_ELEMENTCOUNT();
+        break;
+    }
+
+    return 0;
+}
+
 } // extern "C"
 
 class VinenthzParseResult : public ParseResultBase {
@@ -271,6 +359,13 @@ public:
     ~VinenthzStringResult() { free(sb.buffer); }
 
     virtual const char* c_str() const { return sb.buffer; }
+
+    void AppendEnds() {
+        if (sb.buffer) {
+            //assert(sb.length < sb.capacity); // Must have avaliable space
+            sb.buffer[sb.length] = '\0';
+        }
+    }
 
     string_buffer sb;
 };
@@ -313,6 +408,7 @@ public:
         json_print_init(&printer, string_buffer_append, &sr->sb);
         tree_print(&printer, json_print_raw, pr->root);
         json_print_free(&printer);
+        sr->AppendEnds();
         return sr;
     }
 
@@ -323,6 +419,7 @@ public:
         json_print_init(&printer, string_buffer_append, &sr->sb);
         tree_print(&printer, json_print_pretty, pr->root);
         json_print_free(&printer);
+        sr->AppendEnds();
         return sr;
     }
 
@@ -332,6 +429,58 @@ public:
         GenStat(stat, pr->root);
         return true;
     }
+
+    virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
+        VinenthzStringResult* sr = new VinenthzStringResult();
+        json_printer printer;
+        json_print_init(&printer, string_buffer_append, &sr->sb);
+
+        json_config config;
+        memset(&config, 0, sizeof(json_config));
+        config.max_nesting = 0;
+        config.max_data = 0;
+        config.allow_c_comments = 0;
+        config.allow_yaml_comments = 0;
+
+        json_parser parser;
+        json_parser_init(&parser, &config, (json_parser_callback)json_print_raw, &printer);
+
+        uint32_t processed;
+        if (json_parser_string(&parser, json, (uint32_t)length, &processed) == 0)
+            sr->AppendEnds();
+        else {
+            delete sr;
+            sr = 0;
+        }
+
+        json_parser_free(&parser);
+        json_print_free(&printer);
+        return sr;
+    }
+
+    virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
+        json_config config;
+        memset(&config, 0, sizeof(json_config));
+        config.max_nesting = 0;
+        config.max_data = 0;
+        config.allow_c_comments = 0;
+        config.allow_yaml_comments = 0;
+
+        memset(stat, 0, sizeof(Stat));
+        StatContext context;
+        context.stat = stat;
+        context.after_key = true;
+
+        json_parser parser;
+        json_parser_init(&parser, &config, (json_parser_callback)stat_callback, &context);
+
+        uint32_t processed;
+        bool ret = (json_parser_string(&parser, json, (uint32_t)length, &processed) == 0);
+
+        json_parser_free(&parser);
+        return ret;
+    }
+
 };
 
 REGISTER_TEST(VinenthzTest);
