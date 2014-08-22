@@ -49,3 +49,6 @@
 [submodule "thirdparty/parson"]
 	path = thirdparty/parson
 	url = https://github.com/kgabis/parson.git
+[submodule "thirdparty/vincenthz-libjson"]
+	path = thirdparty/vincenthz-libjson
+	url = https://github.com/vincenthz/libjson.git
