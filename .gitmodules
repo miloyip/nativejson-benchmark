@@ -43,3 +43,6 @@
 [submodule "thirdparty/jsonbox"]
 	path = thirdparty/jsonbox
 	url = https://github.com/anhero/JsonBox.git
+[submodule "thirdparty/json-c"]
+	path = thirdparty/json-c
+	url = https://github.com/json-c/json-c.git
