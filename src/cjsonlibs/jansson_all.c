@@ -1,3 +1,5 @@
+#include "jansson_renaming.h"
+
 #include "jansson/src/dump.c"
 #include "jansson/src/error.c"
 #include "jansson/src/hashtable.c"
@@ -8,4 +10,4 @@
 #include "jansson/src/strbuffer.c"
 #include "jansson/src/strconv.c"
 #include "jansson/src/utf.c"
-#include "jansson/src/value.c""
+#include "jansson/src/value.c"

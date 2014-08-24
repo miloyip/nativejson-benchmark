@@ -1,14 +1,17 @@
 #pragma once
 
-#define USE_MEMORYSTAT
+#include "config.h"
 
-#ifdef USE_MEMORYSTAT
+#if USE_MEMORYSTAT
 
 #ifdef __cplusplus
 #include <new>
 #include <cstdlib>
 #include <cstring>
-#ifdef __GNUC__
+
+#if defined(__APPLE__)
+#include <malloc/malloc.h>
+#elif defined(__GNUC__)
 #include <malloc.h>
 #endif
 
@@ -76,9 +79,11 @@ public:
 
 private:
     size_t GetMallocSize(void* ptr) {
-#if _MSC_VER
+#if defined(_MSC_VER)
         return _msize(ptr);
-#elif __GNUC__
+#elif defined(__APPLE__)
+        return malloc_size(ptr);
+#elif defined(__GNUC__)
         return malloc_usable_size(ptr);
 #else
 #error Must implement Memory::GetMallocSize() in memorystat.h
@@ -181,7 +186,7 @@ namespace std {
 };
 #endif
 
-#else
+#else // USE_MEMORYSTAT
 
 #define MEMORYSTAT_SCOPE()
 

@@ -2,6 +2,7 @@
 
 extern "C" {
 
+#include "../cjsonlibs/jansson_renaming.h"
 #include "jansson/src/jansson.h"
 
 } // extern "C"

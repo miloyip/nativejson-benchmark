@@ -1,6 +1,6 @@
 #include "memorystat.h"
 
-#ifdef USE_MEMORYSTAT
+#if USE_MEMORYSTAT
 
 extern "C" {
 

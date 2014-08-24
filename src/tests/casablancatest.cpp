@@ -1,4 +1,4 @@
-#if ((defined(_MSC_VER) && _MSC_VER >= 1700) || (__cplusplus >= 201103L)) && !defined(__CYGWIN__)
+#if ((defined(_MSC_VER) && _MSC_VER >= 1700) || (__cplusplus >= 201103L && HAS_BOOST)) && !defined(__CYGWIN__)
 
 #include "../test.h"
 
