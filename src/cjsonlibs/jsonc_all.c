@@ -9,7 +9,8 @@
 #include "json-c/json_object.c"
 #include "json-c/json_object_iterator.c"
 #include "json-c/json_tokener.c"
-#include "json-c/json_util.c"
 #include "json-c/linkhash.c"
 #include "json-c/printbuf.c"
 #include "json-c/random_seed.c"
+
+#include "json-c/json_util.c"   // This file undef realloc, put to last

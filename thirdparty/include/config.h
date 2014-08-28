@@ -97,8 +97,9 @@
 
 #define HAVE_DECL_INFINITY 1
 
-#if !defined(_MSC_VER)
 #define HAVE_STRDUP 1
+
+#if !defined(_MSC_VER)
 #define HAVE_SNPRINTF 1
 #define HAVE_STRNCASECMP 1
 #define HAVE_VSNPRINTF 1

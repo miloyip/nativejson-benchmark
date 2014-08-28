@@ -127,12 +127,4 @@ protected:
     const char* name_;
 };
 
-// Some platforms may not have strdup()
-inline char* StrDup(const char* src) {
-    size_t size = strlen(src) + 1;
-    char* ret = (char*)malloc(size);
-    memcpy(ret, src, size);
-    return ret;
-}
-
 #define REGISTER_TEST(cls) static cls gRegister##cls

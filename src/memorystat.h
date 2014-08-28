@@ -23,8 +23,6 @@ struct MemoryStat {
     size_t peakSize;
 };
 
-#define MEMORYSTAT_VC_OPTIMIZATION 1 // _MSC_VER
-
 class Memory {
 public:
     static Memory& Instance() {
@@ -34,37 +32,23 @@ public:
 
     void* Malloc(size_t size) {
         void* p = malloc(size);
-
-        stat_->currentSize += GetMallocSize(p);
-        if (stat_->peakSize < stat_->currentSize)
-            stat_->peakSize = stat_->currentSize;
-        stat_->mallocCount++;
-
+        MallocStat(p);
         return p;
     }
 
     void* Realloc(void* ptr, size_t size) {
-        if (ptr) {
-            size_t originalSize = GetMallocSize(ptr);
-            stat_->currentSize -= originalSize;
-            stat_->freeCount++;
-        }
+        if (ptr)
+            FreeStat(ptr);
 
         void *p = realloc(ptr, size);
 
-        stat_->currentSize += GetMallocSize(p);
-        if (stat_->peakSize < stat_->currentSize)
-            stat_->peakSize = stat_->currentSize;
-        stat_->reallocCount++;
-
+        ReallocStat(p);
         return p;
     }
 
     void Free(void* ptr) {
         if (ptr) {
-            size_t size = GetMallocSize(ptr);
-            stat_->currentSize -= size;
-            stat_->freeCount++;
+            FreeStat(ptr);
             free(ptr);
         }
     }
@@ -77,6 +61,25 @@ public:
         return old;
     }
 
+    void MallocStat(void* p) {
+        stat_->currentSize += GetMallocSize(p);
+        if (stat_->peakSize < stat_->currentSize)
+            stat_->peakSize = stat_->currentSize;
+        stat_->mallocCount++;
+    }
+
+    void ReallocStat(void *p) {
+        stat_->currentSize += GetMallocSize(p);
+        if (stat_->peakSize < stat_->currentSize)
+            stat_->peakSize = stat_->currentSize;
+        stat_->reallocCount++;
+    }
+
+    void FreeStat(void *p) {
+        size_t size = GetMallocSize(p);
+        stat_->currentSize -= size;
+        stat_->freeCount++;
+    }
 private:
     size_t GetMallocSize(void* ptr) {
 #if defined(_MSC_VER)
@@ -118,38 +121,6 @@ private:
 
 #define MEMORYSTAT_SCOPE() MemoryStatScope scope##__LINE__
 
-inline void* operator new (std::size_t size) /*throw (std::bad_alloc) */{
-    return Memory::Instance().Malloc(size);
-}
-
-inline void* operator new (std::size_t size, const std::nothrow_t&) throw(){
-    return Memory::Instance().Malloc(size);
-}
-
-inline void* operator new[](std::size_t size) /*throw (std::bad_alloc)*/ {
-    return Memory::Instance().Malloc(size);
-}
-
-inline void* operator new[](std::size_t size, const std::nothrow_t&) throw() {
-    return Memory::Instance().Malloc(size);
-}
-
-inline void operator delete (void* ptr) throw() {
-    Memory::Instance().Free(ptr);
-}
-
-inline void operator delete (void* ptr, const std::nothrow_t&) throw() {
-    Memory::Instance().Free(ptr);
-}
-
-inline void operator delete[](void* ptr) throw() {
-    Memory::Instance().Free(ptr);
-}
-
-inline void operator delete[](void* ptr, const std::nothrow_t&) throw() {
-    Memory::Instance().Free(ptr);
-}
-
 #endif // __cplusplus
 
 #ifdef __cplusplus
@@ -190,4 +161,23 @@ namespace std {
 
 #define MEMORYSTAT_SCOPE()
 
+#endif
+
+// Override strdup
+#include <string.h>
+
+#ifdef strdup 
+#undef strdup
+#endif
+
+#define strdup StrDup
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+char* StrDup(const char* src);
+
+#ifdef __cplusplus
+}
 #endif
