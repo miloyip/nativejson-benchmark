@@ -1,6 +1,7 @@
 #include "../test.h"
 #include "../cjsonlibs/vincenthz_libjson_renaming.h"
 #include "vincenthz-libjson/json.h"
+#include <stdio.h>
 
 extern "C" {
 

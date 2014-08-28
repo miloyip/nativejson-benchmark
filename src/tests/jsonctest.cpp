@@ -84,14 +84,14 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JsoncParseResult* pr = static_cast<const JsoncParseResult*>(parseResult);
         JsoncStringResult* sr = new JsoncStringResult;
-        sr->s = strdup(json_object_to_json_string(pr->root));
+        sr->s = StrDup(json_object_to_json_string(pr->root));
         return sr;
     }
 
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const JsoncParseResult* pr = static_cast<const JsoncParseResult*>(parseResult);
         JsoncStringResult* sr = new JsoncStringResult;
-        sr->s = strdup(json_object_to_json_string_ext(pr->root, JSON_C_TO_STRING_PRETTY));
+        sr->s = StrDup(json_object_to_json_string_ext(pr->root, JSON_C_TO_STRING_PRETTY));
         return sr;
     }
 
