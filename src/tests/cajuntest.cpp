@@ -67,7 +67,7 @@ public:
 
 class CajunTest : public TestBase {
 public:
-    CajunTest() : TestBase("CAJUN (C)") {
+    CajunTest() : TestBase("CAJUN (C++)") {
 	}
 	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
