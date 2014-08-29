@@ -105,7 +105,7 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
             fclose(fp2);
 
             // Generate reference statistics
-#if TEST_SAXSTATISICS
+#if TEST_SAXSTATISTICS
             if (!referenceTest->SaxStatistics(t.json, t.length, &t.stat))
                 printf("Failed to generate reference statistics\n");
 #endif
