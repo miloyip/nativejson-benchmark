@@ -1,5 +1,7 @@
 #pragma once
 
+#include "machine.h"
+
 #ifndef MACHINE
 #define MACHINE "unknown"
 #endif
