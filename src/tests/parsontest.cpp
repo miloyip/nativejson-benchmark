@@ -63,9 +63,11 @@ public:
 
 class ParsonTest : public TestBase {
 public:
-    ParsonTest() : TestBase("Parson (C)") {
-	}
-	
+#if TEST_INFO
+    virtual const char* GetName() const { return "Parson (C)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
+
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;

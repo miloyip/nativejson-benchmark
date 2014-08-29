@@ -39,3 +39,7 @@
 #ifndef TEST_SAXSTATISTICSUTF16
 #define TEST_SAXSTATISTICSUTF16 1
 #endif
+
+#ifndef TEST_INFO
+#define TEST_INFO 1
+#endif

@@ -67,8 +67,10 @@ public:
 
 class Ujson4c : public TestBase {
 public:
-	Ujson4c() : TestBase("ujson4c (C)") {
-	}
+#if TEST_INFO
+    virtual const char* GetName() const { return "ujson4c (C)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 
 #if TEST_PARSE	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

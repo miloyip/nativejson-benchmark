@@ -86,8 +86,10 @@ public:
 
 class RapidjsonTest : public TestBase {
 public:
-    RapidjsonTest() : TestBase("RapidJSON (C++)") {
-    }
+#if TEST_INFO
+    virtual const char* GetName() const { return "RapidJSON (C++)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

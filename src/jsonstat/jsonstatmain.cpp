@@ -3,14 +3,14 @@
 
 int main(int argc, char* argv[]) {
 	if (argc != 2) {
-		printf("Usage: %s file.json\n", argv[0]);
+		printf("Usage: jsonstat file.json\n");
 		return 1;
 	}
 
 	FILE *fp = fopen(argv[1], "rb");
 	if (!fp) {
 		printf("File %s not found\n", argv[1]);
-		return 1;
+		return 2;
 	}
 
     fseek(fp, 0, SEEK_END);
@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     if (!test.Statistics(dom, &stat)) {
         printf("Not support Statistics\n");
         delete dom;
-        return 1;
+        return 3;
     }
 
     delete dom;

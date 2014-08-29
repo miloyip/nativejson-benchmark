@@ -141,7 +141,8 @@ solution "jsonstat"
     	"TEST_TEST_STATISTICS=1",
     	"TEST_SAXROUNDTRIP=0",
     	"TEST_SAXSTATISTICS=0",
-    	"TEST_SAXSTATISTICSUTF16=0"
+    	"TEST_SAXSTATISTICSUTF16=0",
+    	"TEST_INFO=0"
 	}
 
     includedirs {

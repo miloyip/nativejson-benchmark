@@ -60,8 +60,10 @@ public:
 };
 class SimplejsonTest : public TestBase {
 public:
-	SimplejsonTest() : TestBase("SimpleJSON (C++)") {
-	}
+#if TEST_INFO
+    virtual const char* GetName() const { return "SimpleJSON (C++)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 	
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

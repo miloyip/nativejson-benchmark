@@ -373,8 +373,10 @@ public:
 
 class VinenthzTest : public TestBase {
 public:
-    VinenthzTest() : TestBase("Vinenthz/libjson (C)") {
-	}
+#if TEST_INFO
+    virtual const char* GetName() const { return "Vinenthz/libjson (C)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

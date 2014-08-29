@@ -3,15 +3,23 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#if defined(_MSC_VER) || defined(__CYGWIN__)
+#include <process.h>
+#else
+#include <spawn.h>
+#include <sys/wait.h>
+#endif
 #include "test.h"
 #include "timer.h"
 #include "resultfilename.h"
 
 static const unsigned cTrialCount = 1;
+static const char* gProgramName;
 
 struct TestJson {
     TestJson() : filename(), json(), length(), stat(), statUTF16() {}
 
+    char* fullpath;
     char* filename;
     char* json;
     size_t length;
@@ -52,13 +60,6 @@ static void PrintMemoryStat() {
 }
 #endif
 
-static char* Strdup(const char* s) {
-    size_t length = strlen(s);
-    char* r = (char*)malloc(length + 1);
-    memcpy(r, s, length + 1);
-    return r;
-}
-
 static bool ReadFiles(const char* path, TestJsonList& testJsons) {
     char fullpath[FILENAME_MAX];
     sprintf(fullpath, path, "data.txt");
@@ -93,7 +94,8 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
             }
 
             TestJson t = TestJson();
-            t.filename = Strdup(filename);
+            t.fullpath = StrDup(fullpath);
+            t.filename = StrDup(filename);
             fseek(fp2, 0, SEEK_END);
             t.length = (size_t)ftell(fp2);
             fseek(fp2, 0, SEEK_SET);
@@ -127,6 +129,7 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
 
 static void FreeFiles(TestJsonList& testJsons) {
     for (TestJsonList::iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
+        free(itr->fullpath);
         free(itr->filename);
         free(itr->json);
         itr->filename = 0;
@@ -615,6 +618,65 @@ static void BenchSaxStatistics(const TestBase&, const TestJsonList&, FILE*) {
 }
 #endif
 
+static void BenchCodeSize(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    (void)testJsons;
+
+#if _MSC_VER
+    const char cSeparator = '\\';
+#else
+    const char cSeparator = '/';
+#endif
+
+    // Compute path of bin
+    char path[FILENAME_MAX];
+    strcpy(path, gProgramName);
+    char* lastSep = strrchr(path, cSeparator);
+    *lastSep = '\0';
+
+    // Compute filename suffix (e.g. "_release_x32_vs2010.exe"
+    const char* filename_suffix = strchr(lastSep + 1, '_');
+
+    // Compute test base name (e.g. "rapidjsontest")
+    char testFilename[FILENAME_MAX];
+    strcpy(testFilename, test.GetFilename());
+    *strrchr(testFilename, '.') = '\0';
+    const char* testBaseName = strrchr(testFilename, cSeparator) + 1;
+
+    // Assemble a full path
+    char fullpath[FILENAME_MAX];
+    sprintf(fullpath, "%s%cjsonstat%cjsonstat_%s%s", path, cSeparator, cSeparator, testBaseName, filename_suffix);
+
+    char * const argv[] = { fullpath, testJsons.front().fullpath, NULL };
+#ifdef _MSC_VER
+    int ret = _spawnv(_P_WAIT, fullpath, argv);
+#elif defined(__CYGWIN__)
+    int ret = spawnv(_P_WAIT, fullpath, argv);
+#else
+    pid_t pid;
+    if (posix_spawn(&pid, fullpath, NULL, NULL, argv, NULL) == 0) {
+        int status;
+        waitpid(pid, &status, 0);
+    }
+#endif
+
+    if (ret != 0) {
+        printf("Execute '%s' failed (ret=%d)\n", fullpath, ret);
+        return;
+    }
+
+    // Get file size
+    FILE *fp2 = fopen(fullpath, "rb");
+    if (fp2) {
+        fseek(fp2, 0, SEEK_END);
+        unsigned fileSize = (unsigned)ftell(fp2);
+        printf("jsonstat file size = %u\n", fileSize);
+        fprintf(fp, "7. Code size, %s, jsonstat,,,,,%u\n", test.GetName(), fileSize);
+        fclose(fp2);
+    }
+    else
+        printf("File '%s' not found\n", fullpath);
+}
+
 static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     printf("Benchmarking %s\n", test.GetName());
     BenchParse(test, testJsons, fp);
@@ -623,6 +685,7 @@ static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp)
     BenchStatistics(test, testJsons, fp);
     BenchSaxRoundtrip(test, testJsons, fp);
     BenchSaxStatistics(test, testJsons, fp);
+    BenchCodeSize(test, testJsons, fp);
     printf("\n");
 }
 
@@ -640,7 +703,7 @@ static void BenchAll(const TestJsonList& testJsons) {
     else
         fp = fopen(RESULT_FILENAME, "w");
 
-    fprintf(fp, "Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount\n");
+    fprintf(fp, "Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileSize (byte)\n");
 
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr)
@@ -651,11 +714,13 @@ static void BenchAll(const TestJsonList& testJsons) {
     printf("\n");
 }
 
-int main() {
+int main(int, char* argv[]) {
 #if _MSC_VER
     //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     //void *testWhetherMemoryLeakDetectionWorks = malloc(1);
 #endif
+    gProgramName = argv[0];
+
     MEMORYSTAT_SCOPE();
 
     {

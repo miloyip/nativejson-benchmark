@@ -64,8 +64,10 @@ public:
 
 class CjsonTest : public TestBase {
 public:
-    CjsonTest() : TestBase("cJSON (C)") {
-	}
+#if TEST_INFO
+    virtual const char* GetName() const { return "cJSON (C)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 	
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

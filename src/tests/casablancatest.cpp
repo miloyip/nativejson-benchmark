@@ -76,8 +76,10 @@ public:
 
 class CasablancaTest : public TestBase {
 public:
-	CasablancaTest() : TestBase("Casablanca (C++11)") {
-	}
+#if TEST_INFO
+    virtual const char* GetName() const { return "Casablanca (C++11)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 	
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

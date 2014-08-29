@@ -69,12 +69,17 @@ static void GenStat(Stat* s, json_t* v) {
 
 class JanssonTest : public TestBase {
 public:
-    JanssonTest() : TestBase("Jansson (C)") {
+    JanssonTest() {
 #if USE_MEMORYSTAT
         json_set_alloc_funcs(MemoryStatMalloc, MemoryStatFree);
 #endif
 	}
-	
+
+#if TEST_INFO
+    virtual const char* GetName() const { return "Jansson (C)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
+
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;

@@ -67,9 +67,11 @@ public:
 
 class CajunTest : public TestBase {
 public:
-    CajunTest() : TestBase("CAJUN (C++)") {
-	}
-	
+#if TEST_INFO
+    virtual const char* GetName() const { return "CAJUN (C++)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
+
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         CajunParseResult* pr = new CajunParseResult;

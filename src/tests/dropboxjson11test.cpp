@@ -62,10 +62,13 @@ public:
 
     std::string s;
 };
+
 class Dropboxjson11Test : public TestBase {
 public:
-	Dropboxjson11Test() : TestBase("JsonCpp (C++)") {
-	}
+#if TEST_INFO
+    virtual const char* GetName() const { return "dropbox/json11 (C++11)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 	
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

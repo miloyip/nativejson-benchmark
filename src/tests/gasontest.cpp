@@ -163,8 +163,10 @@ public:
 
 class GasonTest : public TestBase {
 public:
-	GasonTest() : TestBase("Dropbox/json11 (C++11)") {
-	}
+#if TEST_INFO
+    virtual const char* GetName() const { return "gason (C++11)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 	
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

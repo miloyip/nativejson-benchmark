@@ -69,17 +69,18 @@ public:
 
 class TestBase {
 public:
-    TestBase(const char* name) : name_(name) {
+    TestBase() {
         TestManager::Instance().AddTest(this);
-    }
-
-    const char* GetName() const {
-        return name_;
     }
 
     bool operator<(const TestBase& rhs) const {
         return strcmp(name_, rhs.name_) < 0;
     }
+
+#if TEST_INFO
+    virtual const char* GetName() const = 0;
+    virtual const char* GetFilename() const = 0;
+#endif
 
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {

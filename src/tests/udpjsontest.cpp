@@ -73,8 +73,10 @@ public:
 
 class UdpjsonTest : public TestBase {
 public:
-    UdpjsonTest() : TestBase("udp/json-parser (C)") {
-	}
+#if TEST_INFO
+    virtual const char* GetName() const { return "udp/json-parser (C)"; }
+    virtual const char* GetFilename() const { return __FILE__; }
+#endif
 
 #if TEST_PARSE	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
