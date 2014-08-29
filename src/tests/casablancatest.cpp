@@ -79,6 +79,7 @@ public:
 	CasablancaTest() : TestBase("Casablanca (C++11)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         CasablancaParseResult* pr = new CasablancaParseResult;
@@ -86,20 +87,25 @@ public:
         pr->root = value::parse(is);
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const CasablancaParseResult* pr = static_cast<const CasablancaParseResult*>(parseResult);
 		CasablancaStringResult* sr = new CasablancaStringResult;
 		sr->s = to_utf8string(pr->root.serialize());
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const CasablancaParseResult* pr = static_cast<const CasablancaParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(CasablancaTest);

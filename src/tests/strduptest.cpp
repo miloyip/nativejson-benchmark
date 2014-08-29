@@ -24,6 +24,7 @@ public:
 	StrdupTest() : TestBase("strdup (C)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         StrdupParseResult* pr = new StrdupParseResult;
         pr->r = (char*)malloc(length + 1);
@@ -31,7 +32,9 @@ public:
         memcpy(pr->r, json, length + 1);
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const StrdupParseResult* pr = static_cast<const StrdupParseResult*>(parseResult);
         StrdupStringResult* sr = new StrdupStringResult;
@@ -39,6 +42,7 @@ public:
         memcpy(sr->s, pr->r, pr->length + 1);
         return sr;
     }
+#endif
 };
 
 REGISTER_TEST(StrdupTest);

@@ -299,13 +299,16 @@ public:
 	YajlTest() : TestBase("YAJL (C)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         YajlParseResult* pr = new YajlParseResult;
         pr->root = yajl_tree_parse(json, NULL, 0);
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const YajlParseResult* pr = static_cast<const YajlParseResult*>(parseResult);
         YajlStringResult* sr = new YajlStringResult;
@@ -321,7 +324,9 @@ public:
 
         return sr;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const YajlParseResult* pr = static_cast<const YajlParseResult*>(parseResult);
         YajlStringResult* sr = new YajlStringResult;
@@ -340,14 +345,18 @@ public:
 
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const YajlParseResult* pr = static_cast<const YajlParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, pr->root);
         return true;
     }
+#endif
 
+#if TEST_SAXROUNDTRIP
     virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
         // https://github.com/lloyd/yajl/blob/master/reformatter/json_reformat.c
         (void)length;
@@ -367,7 +376,9 @@ public:
         yajl_free(hand);
         return sr;
     }
+#endif
 
+#if TEST_SAXSTATISTICS
     virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
         (void)length;
         memset(stat, 0, sizeof(Stat));
@@ -384,6 +395,7 @@ public:
         yajl_free(hand);
         return ret;
     }
+#endif
 };
 
 REGISTER_TEST(YajlTest);

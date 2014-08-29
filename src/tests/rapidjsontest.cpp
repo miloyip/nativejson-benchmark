@@ -89,6 +89,7 @@ public:
     RapidjsonTest() : TestBase("RapidJSON (C++)") {
     }
 
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         RapidjsonParseResult* pr = new RapidjsonParseResult;
@@ -98,7 +99,9 @@ public:
         }
         return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
         RapidjsonStringResult* sr = new RapidjsonStringResult;
@@ -106,7 +109,9 @@ public:
         pr->document.Accept(writer);
         return sr;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
         RapidjsonStringResult* sr = new RapidjsonStringResult;
@@ -114,7 +119,9 @@ public:
         pr->document.Accept(writer);
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const RapidjsonParseResult* pr = static_cast<const RapidjsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
@@ -126,7 +133,9 @@ public:
 #endif
         return true;
     }
+#endif
 
+#if TEST_SAXROUNDTRIP
     virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
         (void)length;
         Reader reader;
@@ -139,7 +148,9 @@ public:
         }
         return sr;
     }
+#endif
 
+#if TEST_SAXSTATISTICS
     virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
         (void)length;
         memset(stat, 0, sizeof(Stat));
@@ -148,7 +159,9 @@ public:
         StatHandler<> handler(*stat);
         return reader.Parse(is, handler);
     }
+#endif
 
+#if TEST_SAXSTATISTICSUTF16
     virtual bool SaxStatisticsUTF16(const char* json, size_t length, Stat* stat) const {
         (void)length;
         memset(stat, 0, sizeof(Stat));
@@ -157,6 +170,7 @@ public:
         StatHandler<UTF16<> > handler(*stat);
         return reader.Parse(is, handler);
     }
+#endif
 };
 
 REGISTER_TEST(RapidjsonTest);

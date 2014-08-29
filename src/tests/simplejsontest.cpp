@@ -63,6 +63,7 @@ public:
 	SimplejsonTest() : TestBase("SimpleJSON (C++)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         SimplejsonParseResult* pr = new SimplejsonParseResult;
@@ -81,7 +82,9 @@ public:
 
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const SimplejsonParseResult* pr = static_cast<const SimplejsonParseResult*>(parseResult);
         SimplejsonStringResult* sr = new SimplejsonStringResult;
@@ -103,13 +106,16 @@ public:
 
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const SimplejsonParseResult* pr = static_cast<const SimplejsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, *pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(SimplejsonTest);

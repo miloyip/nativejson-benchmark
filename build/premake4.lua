@@ -111,8 +111,9 @@ solution "benchmark"
         }
 
 		files { 
-			"../src/**.h",
-			"../src/**.cpp",
+			"../src/*.h",
+			"../src/*.cpp",
+			"../src/tests/*.cpp",
 		}
 
 		libdirs { "../bin" }
@@ -125,3 +126,75 @@ solution "benchmark"
 		configuration "gmake"
 			buildoptions "-std=c++11"
 
+solution "jsonstat"
+    configurations { "release" }
+    platforms { "x32", "x64" }
+    location ("./" .. (_ACTION or ""))
+    language "C++"
+    flags { "ExtraWarnings" }
+
+    defines {
+    	"USE_MEMORYSTAT=0",
+    	"TEST_PARSE=1",
+    	"TEST_STRINGIFY=0",
+    	"TEST_PRETTIFY=0",
+    	"TEST_TEST_STATISTICS=1",
+    	"TEST_SAXROUNDTRIP=0",
+    	"TEST_SAXSTATISTICS=0",
+    	"TEST_SAXSTATISTICSUTF16=0"
+	}
+
+    includedirs {
+        "../thirdparty/",
+        "../thirdparty/casablanca/Release/include/",
+        "../thirdparty/casablanca/Release/src/pch",
+        "../thirdparty/fastjson/include/",
+        "../thirdparty/jsonbox/include/",
+        "../thirdparty/jsoncpp/include/",
+        "../thirdparty/rapidjson/include/",
+        "../thirdparty/udp-json-parser/",
+        "../thirdparty/include/",
+    }
+
+    configuration "release"
+        defines { "NDEBUG" }
+        flags { "Optimize", "EnableSSE2" }
+
+    configuration "vs*"
+        defines { "_CRT_SECURE_NO_WARNINGS" }
+
+	project "jsonclibs2"
+		kind "StaticLib"
+
+        includedirs {
+            "../thirdparty/",
+            "../thirdparty/include/",
+            "../thirdparty/ujson4c/3rdparty/",
+			"../thirdparty/udp-json-parser/"
+        }
+
+		files { 
+			"../src/**.c",
+		}
+
+        setTargetObjDir("../bin/jsonstat")
+
+		copyfiles("../thirdparty/include/yajl", "../thirdparty/yajl/src/api/*.h")
+
+    local testfiles = os.matchfiles("../src/tests/*.cpp")
+    for _, testfile in ipairs(testfiles) do
+        project("jsonstat_" .. path.getbasename(testfile))
+            kind "ConsoleApp"
+            files { 
+            	"../src/jsonstat/jsonstatmain.cpp",
+            	"../src/memorystat.cpp",
+            	testfile
+			}
+			libdirs { "../bin/jsonstat" }
+			linkLib("jsonclibs2")
+			links "jsonclibs2"
+            setTargetObjDir("../bin/jsonstat")
+
+			configuration "gmake"
+				buildoptions "-std=c++11"
+    end

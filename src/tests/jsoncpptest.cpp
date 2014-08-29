@@ -65,6 +65,7 @@ public:
 	JsoncppTest() : TestBase("JsonCpp (C++)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JsoncppParseResult* pr = new JsoncppParseResult;
@@ -72,7 +73,9 @@ public:
         reader.parse(json, pr->root);
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JsoncppParseResult* pr = static_cast<const JsoncppParseResult*>(parseResult);
         FastWriter writer;
@@ -80,13 +83,16 @@ public:
         sr->s = writer.write(pr->root);
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const JsoncppParseResult* pr = static_cast<const JsoncppParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(JsoncppTest);

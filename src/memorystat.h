@@ -165,6 +165,7 @@ namespace std {
 
 // Override strdup
 #include <string.h>
+#include <stdlib.h>
 
 #ifdef strdup 
 #undef strdup

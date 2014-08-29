@@ -70,6 +70,7 @@ public:
     CajunTest() : TestBase("CAJUN (C++)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         CajunParseResult* pr = new CajunParseResult;
         std::istringstream is(std::string(json, length));
@@ -83,7 +84,9 @@ public:
         }
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const CajunParseResult* pr = static_cast<const CajunParseResult*>(parseResult);
         CajunStringResult* sr = new CajunStringResult;
@@ -92,7 +95,9 @@ public:
         sr->s = os.str();
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const CajunParseResult* pr = static_cast<const CajunParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
@@ -100,6 +105,7 @@ public:
         pr->root.Accept(visitor);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(CajunTest);

@@ -69,20 +69,24 @@ class Ujson4c : public TestBase {
 public:
 	Ujson4c() : TestBase("ujson4c (C)") {
 	}
-	
+
+#if TEST_PARSE	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         Ujson4cParseResult* pr = new Ujson4cParseResult;
 		pr->root = UJDecode(json, length, NULL, &pr->state);
     	return pr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const Ujson4cParseResult* pr = static_cast<const Ujson4cParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(Ujson4c);

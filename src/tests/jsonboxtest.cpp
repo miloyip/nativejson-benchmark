@@ -75,13 +75,16 @@ public:
 	JsonboxTest() : TestBase("JsonBox (C++)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JsonboxParseResult* pr = new JsonboxParseResult;
         pr->root.loadFromString(json);
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JsonboxParseResult* pr = static_cast<const JsonboxParseResult*>(parseResult);
         JsonboxStringResult* sr = new JsonboxStringResult;
@@ -90,7 +93,9 @@ public:
         sr->s = os.str();
         return sr;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const JsonboxParseResult* pr = static_cast<const JsonboxParseResult*>(parseResult);
         JsonboxStringResult* sr = new JsonboxStringResult;
@@ -99,13 +104,16 @@ public:
         sr->s = os.str();
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const JsonboxParseResult* pr = static_cast<const JsonboxParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(JsonboxTest);

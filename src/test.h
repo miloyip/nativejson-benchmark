@@ -81,47 +81,61 @@ public:
         return strcmp(name_, rhs.name_) < 0;
     }
 
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)json;
         (void)length;
         return 0;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         (void)parseResult;
         return 0;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         (void)parseResult;
         return 0;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         (void)parseResult;
         (void)stat;
         return false;
     }
+#endif
 
+#if TEST_SAXROUNDTRIP
     virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
         (void)json;
         (void)length;
         return 0;
     }
+#endif
 
+#if TEST_SAXSTATISTICS
     virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
         (void)json;
         (void)length;
         (void)stat;
         return false;
     }
+#endif
 
+#if TEST_SAXSTATISTICSUTF16
     virtual bool SaxStatisticsUTF16(const char* json, size_t length, Stat* stat) const {
         (void)json;
         (void)length;
         (void)stat;
         return false;
     }
+#endif
 
 protected:
     const char* name_;

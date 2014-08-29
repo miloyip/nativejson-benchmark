@@ -75,7 +75,8 @@ class UdpjsonTest : public TestBase {
 public:
     UdpjsonTest() : TestBase("udp/json-parser (C)") {
 	}
-	
+
+#if TEST_PARSE	
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         UdpjsonParseResult* pr = new UdpjsonParseResult;
         json_settings settings = json_settings();
@@ -88,9 +89,11 @@ public:
         }
     	return pr;
     }
+#endif
 
     // Very slow in the current version.
 #if 0
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const UdpjsonParseResult* pr = static_cast<const UdpjsonParseResult*>(parseResult);
         UdpjsonStringResult* sr = new UdpjsonStringResult;
@@ -99,7 +102,9 @@ public:
         json_serialize_ex(sr->s, pr->root, opts);
         return sr;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const UdpjsonParseResult* pr = static_cast<const UdpjsonParseResult*>(parseResult);
         UdpjsonStringResult* sr = new UdpjsonStringResult;
@@ -109,13 +114,16 @@ public:
         return sr;
     }
 #endif
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const UdpjsonParseResult* pr = static_cast<const UdpjsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(UdpjsonTest);

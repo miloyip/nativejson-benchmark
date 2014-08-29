@@ -34,7 +34,7 @@ static void PrintStat(const Stat& stat) {
     printf("stringLength: %10u\n", (unsigned)stat.stringLength);
 }
 
-#ifdef USE_MEMORYSTAT
+#if USE_MEMORYSTAT
 static void PrintMemoryStat() {
     const MemoryStat& stat = Memory::Instance().GetStat();
     printf(
@@ -92,7 +92,7 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
                 continue;
             }
 
-            TestJson t;
+            TestJson t = TestJson();
             t.filename = Strdup(filename);
             fseek(fp2, 0, SEEK_END);
             t.length = (size_t)ftell(fp2);
@@ -103,12 +103,15 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
             fclose(fp2);
 
             // Generate reference statistics
+#if TEST_SAXSTATISICS
             if (!referenceTest->SaxStatistics(t.json, t.length, &t.stat))
                 printf("Failed to generate reference statistics\n");
+#endif
 
+#if TEST_SAXSTATISTICSUTF16
             if (!referenceTest->SaxStatisticsUTF16(t.json, t.length, &t.statUTF16))
                 printf("Failed to generate reference UTF16 statistics\n");
-
+#endif
             printf("Read '%s' (%u bytes)\n", t.filename, (unsigned)t.length);
             PrintStat(t.stat);
             printf("\n");
@@ -132,7 +135,7 @@ static void FreeFiles(TestJsonList& testJsons) {
 }
 
 // Normally use this at the end of MEMORYSTAT_SCOPE()
-#ifdef USE_MEMORYSTAT
+#if USE_MEMORYSTAT
 void CheckMemoryLeak() {
     const MemoryStat& stat = Memory::Instance().GetStat();
     if (stat.currentSize != 0) {
@@ -150,11 +153,14 @@ void CheckMemoryLeak() {
 #endif
 
 static void Verify(const TestBase& test, const TestJsonList& testJsons) {
+    (void)testJsons;
+
     printf("Verifying %s ... ", test.GetName());
     fflush(stdout);
 
     bool failed = false;
 
+#if TEST_PARSE && TEST_STATISTICS
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         MEMORYSTAT_SCOPE();
 
@@ -243,7 +249,9 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
 
         MEMORYSTAT_CHECKMEMORYLEAK();
     }
+#endif
 
+#if TEST_SAXSTATISTICS
     // Verify SaxStatistics()
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         MEMORYSTAT_SCOPE();
@@ -261,6 +269,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
             }
         }
     }
+#endif
 
     printf(failed ? "Failed\n" : "OK\n");
 }
@@ -273,7 +282,7 @@ static void VerifyAll(const TestJsonList& testJsons) {
     printf("\n");
 }
 
-#ifdef USE_MEMORYSTAT
+#if USE_MEMORYSTAT
 #define BENCH_MEMORYSTAT_INIT()             MemoryStat memoryStat = MemoryStat()
 #define BENCH_MEMORYSTAT_ITERATION(trial)   if (trial == 0) memoryStat = Memory::Instance().GetStat()
 #ifdef _MSC_VER
@@ -287,6 +296,7 @@ static void VerifyAll(const TestJsonList& testJsons) {
 #define BENCH_MEMORYSTAT_OUTPUT(fp)
 #endif
 
+#if TEST_PARSE
 static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
@@ -334,7 +344,12 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
     }
     MEMORYSTAT_CHECKMEMORYLEAK();
 }
+#else
+static void BenchParse(const TestBase&, const TestJsonList&, FILE *) {
+}
+#endif
 
+#if TEST_PARSE && TEST_STRINGIFY
 static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
@@ -385,7 +400,12 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
     }
     MEMORYSTAT_CHECKMEMORYLEAK();
 }
+#else
+static void BenchStringify(const TestBase&, const TestJsonList&, FILE *) {
+}
+#endif
 
+#if TEST_PARSE && TEST_PRETTIFY
 static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
@@ -436,7 +456,12 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
     }
     MEMORYSTAT_CHECKMEMORYLEAK();
 }
+#else
+static void BenchPrettify(const TestBase&, const TestJsonList&, FILE *) {
+}
+#endif
 
+#if TEST_PARSE && TEST_STATISTICS
 static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
@@ -483,7 +508,12 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
     }
     MEMORYSTAT_CHECKMEMORYLEAK();
 }
+#else
+static void BenchStatistics(const TestBase&, const TestJsonList&, FILE *) {
+}
+#endif
 
+#if TEST_SAXROUNDTRIP
 static void BenchSaxRoundtrip(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
@@ -531,7 +561,12 @@ static void BenchSaxRoundtrip(const TestBase& test, const TestJsonList& testJson
     }
     MEMORYSTAT_CHECKMEMORYLEAK();
 }
+#else
+static void BenchSaxRoundtrip(const TestBase&, const TestJsonList&, FILE*) {
+}
+#endif
 
+#if TEST_SAXSTATISTICS
 static void BenchSaxStatistics(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     MEMORYSTAT_SCOPE();
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
@@ -575,6 +610,10 @@ static void BenchSaxStatistics(const TestBase& test, const TestJsonList& testJso
     }
     MEMORYSTAT_CHECKMEMORYLEAK();
 }
+#else
+static void BenchSaxStatistics(const TestBase&, const TestJsonList&, FILE*) {
+}
+#endif
 
 static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
     printf("Benchmarking %s\n", test.GetName());
@@ -617,6 +656,8 @@ int main() {
     //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     //void *testWhetherMemoryLeakDetectionWorks = malloc(1);
 #endif
+    MEMORYSTAT_SCOPE();
+
     {
         // Read files
         TestJsonList testJsons;
@@ -633,9 +674,5 @@ int main() {
         FreeFiles(testJsons);
     }
 
-    TestManager::DestroyInstance();
-
-#ifdef USE_MEMORYSTAT
-    PrintMemoryStat();
-#endif
+    MEMORYSTAT_CHECKMEMORYLEAK();
 }

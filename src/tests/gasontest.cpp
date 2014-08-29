@@ -166,6 +166,7 @@ public:
 	GasonTest() : TestBase("Dropbox/json11 (C++11)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         GasonParseResult* pr = new GasonParseResult;
@@ -179,7 +180,9 @@ public:
         }
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         std::ostringstream os;
@@ -188,7 +191,9 @@ public:
         result->s = os.str();
         return result;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         std::ostringstream os;
@@ -197,13 +202,16 @@ public:
         result->s = os.str();
         return result;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->value);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(GasonTest);

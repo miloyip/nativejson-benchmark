@@ -70,6 +70,7 @@ public:
     JsoncTest() : TestBase("json-c (C)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JsoncParseResult* pr = new JsoncParseResult;
@@ -80,27 +81,34 @@ public:
         }
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JsoncParseResult* pr = static_cast<const JsoncParseResult*>(parseResult);
         JsoncStringResult* sr = new JsoncStringResult;
         sr->s = StrDup(json_object_to_json_string(pr->root));
         return sr;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const JsoncParseResult* pr = static_cast<const JsoncParseResult*>(parseResult);
         JsoncStringResult* sr = new JsoncStringResult;
         sr->s = StrDup(json_object_to_json_string_ext(pr->root, JSON_C_TO_STRING_PRETTY));
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const JsoncParseResult* pr = static_cast<const JsoncParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, (json_object*)pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(JsoncTest);

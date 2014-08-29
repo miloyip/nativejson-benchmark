@@ -59,6 +59,7 @@ public:
 	PicojsonTest() : TestBase("PicoJSON (C++)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         PicojsonParseResult* pr = new PicojsonParseResult;
         std::string err;
@@ -69,20 +70,25 @@ public:
     	}
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const PicojsonParseResult* pr = static_cast<const PicojsonParseResult*>(parseResult);
         PicojsonStringResult* sr = new PicojsonStringResult;
         sr->s = pr->v.serialize();
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const PicojsonParseResult* pr = static_cast<const PicojsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->v);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(PicojsonTest);

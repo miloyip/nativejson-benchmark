@@ -90,7 +90,8 @@ class FastjsonTest : public TestBase {
 public:
     FastjsonTest() : TestBase("FastJson (C++)") {
 	}
-	
+
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         FastjsonParseResult* pr = new FastjsonParseResult;
         std::string error_message;
@@ -102,7 +103,9 @@ public:
         pr->sum = ParseNumbers(pr->token);
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const FastjsonParseResult* pr = static_cast<const FastjsonParseResult*>(parseResult);
         FastjsonStringResult* sr = new FastjsonStringResult;
@@ -112,13 +115,16 @@ public:
         sr->s = as_string(&pr->token);
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const FastjsonParseResult* pr = static_cast<const FastjsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->token);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(FastjsonTest);

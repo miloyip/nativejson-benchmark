@@ -375,7 +375,8 @@ class VinenthzTest : public TestBase {
 public:
     VinenthzTest() : TestBase("Vinenthz/libjson (C)") {
 	}
-	
+
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         VinenthzParseResult* pr = new VinenthzParseResult;
 
@@ -401,7 +402,9 @@ public:
         json_parser_dom_free(&dom);
         return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const VinenthzParseResult* pr = static_cast<const VinenthzParseResult*>(parseResult);
         VinenthzStringResult* sr = new VinenthzStringResult();
@@ -412,7 +415,9 @@ public:
         sr->AppendEnds();
         return sr;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const VinenthzParseResult* pr = static_cast<const VinenthzParseResult*>(parseResult);
         VinenthzStringResult* sr = new VinenthzStringResult();
@@ -423,14 +428,18 @@ public:
         sr->AppendEnds();
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const VinenthzParseResult* pr = static_cast<const VinenthzParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, pr->root);
         return true;
     }
+#endif
 
+#if TEST_SAXROUNDTRIP
     virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
         VinenthzStringResult* sr = new VinenthzStringResult();
         json_printer printer;
@@ -458,7 +467,9 @@ public:
         json_print_free(&printer);
         return sr;
     }
+#endif
 
+#if TEST_SAXSTATISTICS
     virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
         json_config config;
         memset(&config, 0, sizeof(json_config));
@@ -481,7 +492,7 @@ public:
         json_parser_free(&parser);
         return ret;
     }
-
+#endif
 };
 
 REGISTER_TEST(VinenthzTest);

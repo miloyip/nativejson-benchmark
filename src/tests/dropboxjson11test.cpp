@@ -67,6 +67,7 @@ public:
 	Dropboxjson11Test() : TestBase("JsonCpp (C++)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         Dropboxjson11ParseResult* pr = new Dropboxjson11ParseResult;
@@ -74,20 +75,25 @@ public:
         pr->root = Json::parse(json, err);
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const Dropboxjson11ParseResult* pr = static_cast<const Dropboxjson11ParseResult*>(parseResult);
         Dropboxjson11StringResult* sr = new Dropboxjson11StringResult;
         pr->root.dump(sr->s);
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const Dropboxjson11ParseResult* pr = static_cast<const Dropboxjson11ParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(Dropboxjson11Test);

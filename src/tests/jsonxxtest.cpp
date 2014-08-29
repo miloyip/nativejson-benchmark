@@ -81,6 +81,7 @@ public:
     JsonxxTest() : TestBase("hjiang/JSON++ (C++)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JsonxxParseResult* pr = new JsonxxParseResult;
@@ -90,20 +91,25 @@ public:
         }
         return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
         JsonxxStringResult* sr = new JsonxxStringResult;
         sr->s = pr->o.json();
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->o);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(JsonxxTest);

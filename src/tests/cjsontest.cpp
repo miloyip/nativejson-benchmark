@@ -67,6 +67,7 @@ public:
     CjsonTest() : TestBase("cJSON (C)") {
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         CjsonParseResult* pr = new CjsonParseResult;
@@ -77,27 +78,34 @@ public:
         }
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const CjsonParseResult* pr = static_cast<const CjsonParseResult*>(parseResult);
         CjsonStringResult* sr = new CjsonStringResult;
         sr->s = cJSON_PrintUnformatted(pr->root);
         return sr;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const CjsonParseResult* pr = static_cast<const CjsonParseResult*>(parseResult);
         CjsonStringResult* sr = new CjsonStringResult;
         sr->s = cJSON_Print(pr->root);
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const CjsonParseResult* pr = static_cast<const CjsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(CjsonTest);

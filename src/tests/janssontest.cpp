@@ -75,6 +75,7 @@ public:
 #endif
 	}
 	
+#if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JanssonParseResult* pr = new JanssonParseResult;
@@ -86,7 +87,9 @@ public:
         }
     	return pr;
     }
+#endif
 
+#if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JanssonParseResult* pr = static_cast<const JanssonParseResult*>(parseResult);
         JanssonStringResult* sr = new JanssonStringResult;
@@ -97,7 +100,9 @@ public:
         }
         return sr;
     }
+#endif
 
+#if TEST_PRETTIFY
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const JanssonParseResult* pr = static_cast<const JanssonParseResult*>(parseResult);
         JanssonStringResult* sr = new JanssonStringResult;
@@ -108,13 +113,16 @@ public:
         }
         return sr;
     }
+#endif
 
+#if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const JanssonParseResult* pr = static_cast<const JanssonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, pr->root);
         return true;
     }
+#endif
 };
 
 REGISTER_TEST(JanssonTest);
