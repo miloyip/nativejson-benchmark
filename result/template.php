@@ -27,45 +27,59 @@ $(function() {
   for (var i in types) {
     var type = types[i];
     addSection(type);
-    addSubsection("Time");
 
     var view = new google.visualization.DataView(dt);
     view.setRows(view.getFilteredRows([{column: 0, value: type}]));
 
-    var timedt = google.visualization.data.group(
-      view,
-      [1], 
-      [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-    );
-
-    sortCaseInsensitive(timedt, 0);
-
-    drawTable(type, timedt.clone(), true);
-    drawBarChart(type, timedt);
-
-    // Per JSON
-    drawPivotBarChart(
-      type + " per JSON",
-      pivotTable(google.visualization.data.group(
+    if (type.search("Code size") != -1) {
+      var sizedt = google.visualization.data.group(
         view,
-        [2, 1],
-        [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-      )),
-      dt.getColumnLabel(3)
-    );
+        [1], 
+        [{"column": 7, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+      );
+      sortCaseInsensitive(sizedt, 0);
+      addSubsection(sizedt.getColumnLabel(1));
+      drawTable(type, sizedt.clone(), false);
+      drawBarChart(type, sizedt);
+    }
+    else {
+      addSubsection("Time");
 
-    // Only show memory of Parse
-    if (type.search("Parse") != -1) {
-      for (var column = 4; column <= 6; column++) {
-        var memorydt = google.visualization.data.group(
+      var timedt = google.visualization.data.group(
+        view,
+        [1], 
+        [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+      );
+
+      sortCaseInsensitive(timedt, 0);
+
+      drawTable(type, timedt.clone(), true);
+      drawBarChart(type, timedt);
+
+      // Per JSON
+      drawPivotBarChart(
+        type + " per JSON",
+        pivotTable(google.visualization.data.group(
           view,
-          [1], 
-          [{"column": column, "aggregation": google.visualization.data.sum, 'type': 'number' }]
-        );
-        sortCaseInsensitive(memorydt, 0);
-        addSubsection(memorydt.getColumnLabel(1));
-        drawTable(type, memorydt.clone(), false);
-        drawBarChart(type, memorydt);
+          [2, 1],
+          [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+        )),
+        dt.getColumnLabel(3)
+      );
+
+      // Only show memory of Parse
+      if (type.search("Parse") != -1) {
+        for (var column = 4; column <= 6; column++) {
+          var memorydt = google.visualization.data.group(
+            view,
+            [1], 
+            [{"column": column, "aggregation": google.visualization.data.sum, 'type': 'number' }]
+          );
+          sortCaseInsensitive(memorydt, 0);
+          addSubsection(memorydt.getColumnLabel(1));
+          drawTable(type, memorydt.clone(), false);
+          drawBarChart(type, memorydt);
+        }
       }
     }
   }
@@ -185,11 +199,12 @@ function drawTable(type, data, isSpeedup) {
 function drawBarChart(type, data) {
   // Using same colors as in series
   var colors = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
+  var h = data.getNumberOfRows() * 20;
   var options = { 
     title: type,
-    chartArea: {'width': '65%', 'height': '70%'},
+    chartArea: {'width': '65%', 'height': h },
     width: 800,
-    height: 300,
+    height: h + 100,
     hAxis: { title: data.getColumnLabel(1) },
     legend: { position: "none" },
   };
@@ -209,12 +224,15 @@ function drawBarChart(type, data) {
 
 
 function drawPivotBarChart(type, data, title) {
+  var h = (data.getNumberOfColumns() + 1) * data.getNumberOfRows() * 15;
   var options = { 
     title: type,
-    chartArea: {'width': '65%', 'height': '70%'},
+    chartArea: {'width': '65%', 'height': h},
     width: 800,
-    height: 600,
-    hAxis: { "title": title }
+    height: h + 100,
+    hAxis: { "title": title },
+    legend: { textStyle: {fontSize: 12}},
+    bar : { groupWidth: 15 * data.getNumberOfColumns() }
   };
   var div = document.createElement("div");
   div.className = "chart";

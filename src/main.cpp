@@ -204,6 +204,14 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
         if (!dom2) {
             printf("\nFailed to parse '%s' 2nd time\n", itr->filename);
             failed = true;
+
+            // Write out json1 for diagnosis
+            char filename[FILENAME_MAX];
+            sprintf(filename, "%s_%s", test.GetName(), itr->filename);
+            FILE* fp = fopen(filename, "wb");
+            fwrite(json1->c_str(), strlen(json1->c_str()), 1, fp);
+            fclose(fp);
+
             delete json1;
             continue;
         }
@@ -342,6 +350,7 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
 
             fprintf(fp, "1. Parse,%s,%s,%f", test.GetName(), itr->filename, minDuration);
             BENCH_MEMORYSTAT_OUTPUT(fp);
+            fprintf(fp, ",0");  // Code size
             fputc('\n', fp);
         }
     }
@@ -398,6 +407,7 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
 
             fprintf(fp, "2. Stringify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
             BENCH_MEMORYSTAT_OUTPUT(fp);
+            fprintf(fp, ",0");  // Code size
             fputc('\n', fp);
         }
     }
@@ -454,6 +464,7 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
 
             fprintf(fp, "3. Prettify,%s,%s,%f", test.GetName(), itr->filename, minDuration);
             BENCH_MEMORYSTAT_OUTPUT(fp);
+            fprintf(fp, ",0");  // Code size
             fputc('\n', fp);
         }
     }
@@ -506,6 +517,7 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
 
             fprintf(fp, "4. Statistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
             BENCH_MEMORYSTAT_OUTPUT(fp);
+            fprintf(fp, ",0");  // Code size
             fputc('\n', fp);
         }
     }
@@ -559,6 +571,7 @@ static void BenchSaxRoundtrip(const TestBase& test, const TestJsonList& testJson
 
             fprintf(fp, "5. Sax Round-trip,%s,%s,%f", test.GetName(), itr->filename, minDuration);
             BENCH_MEMORYSTAT_OUTPUT(fp);
+            fprintf(fp, ",0");  // Code size
             fputc('\n', fp);
         }
     }
@@ -608,6 +621,7 @@ static void BenchSaxStatistics(const TestBase& test, const TestJsonList& testJso
 
             fprintf(fp, "6. SaxStatistics,%s,%s,%f", test.GetName(), itr->filename, minDuration);
             BENCH_MEMORYSTAT_OUTPUT(fp);
+            fprintf(fp, ",0");  // Code size
             fputc('\n', fp);
         }
     }
@@ -670,7 +684,11 @@ static void BenchCodeSize(const TestBase& test, const TestJsonList& testJsons, F
         fseek(fp2, 0, SEEK_END);
         unsigned fileSize = (unsigned)ftell(fp2);
         printf("jsonstat file size = %u\n", fileSize);
-        fprintf(fp, "7. Code size, %s, jsonstat,,,,,%u\n", test.GetName(), fileSize);
+        fprintf(fp, "7. Code size, %s, jsonstat,0", test.GetName());
+#if USE_MEMORYSTAT
+        fprintf(fp, ",0,0,0");
+#endif
+        fprintf(fp, ",%u\n", fileSize);
         fclose(fp2);
     }
     else
@@ -703,7 +721,11 @@ static void BenchAll(const TestJsonList& testJsons) {
     else
         fp = fopen(RESULT_FILENAME, "w");
 
-    fprintf(fp, "Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileSize (byte)\n");
+    fputs("Type,Library,Filename,Time (ms)", fp);
+#if USE_MEMORYSTAT
+    fputs(",Memory (byte),MemoryPeak (byte),AllocCount", fp);
+#endif
+    fputs(",FileSize (byte)\n", fp);
 
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr)
