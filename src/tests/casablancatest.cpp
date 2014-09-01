@@ -17,9 +17,10 @@
 #include "casablanca/Release/src/uri/uri_builder.cpp"
 #include "casablanca/Release/src/uri/uri_parser.cpp"
 #include <strstream>
+#include <sstream>
 
 using namespace web::json;
-using namespace utility::conversions;
+//using namespace utility::conversions;
 
 static void GenStat(Stat& stat, const value& v) {
     switch (v.type()) {
@@ -86,7 +87,14 @@ public:
         (void)length;
         CasablancaParseResult* pr = new CasablancaParseResult;
 		std::istrstream is (json);
-        pr->root = value::parse(is);
+        try {
+            pr->root = value::parse(is);
+        }
+        catch (web::json::json_exception& e) {
+            printf("Parse error '%s'\n", e.what());
+            delete pr;
+            pr = 0;
+        }
     	return pr;
     }
 #endif
@@ -95,7 +103,9 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const CasablancaParseResult* pr = static_cast<const CasablancaParseResult*>(parseResult);
 		CasablancaStringResult* sr = new CasablancaStringResult;
-		sr->s = to_utf8string(pr->root.serialize());
+        std::ostringstream os;
+        pr->root.serialize(os);
+        sr->s = os.str();
         return sr;
     }
 #endif
