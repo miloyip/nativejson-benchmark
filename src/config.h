@@ -2,7 +2,7 @@
 
 // Define this if installed boost
 #ifndef HAS_BOOST
-#define HAS_BOOST 0
+#define HAS_BOOST 1
 #endif
 
 // Define this to profile memory usage in tests

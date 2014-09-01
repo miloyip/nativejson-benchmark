@@ -1,0 +1,37 @@
+[
+    {
+        "country" : "England",
+        "county" : "Essex",
+        "house_number" : 42,
+        "road" : "East Street",
+        "town" : "Newtown"
+    },
+    {
+        "country" : "England",
+        "county" : "Yorkshire",
+        "house_number" : 1,
+        "road" : "West Street",
+        "town" : "Hull"
+    },
+    {
+        "country" : "Wales",
+        "county" : "Dyfed",
+        "house_number" : 12,
+        "road" : "South Road",
+        "town" : "Aberystwyth"
+    },
+    {
+        "country" : "England",
+        "county" : "Devon",
+        "house_number" : 45,
+        "road" : "North Road",
+        "town" : "Paignton"
+    },
+    {
+        "country" : "England",
+        "county" : "Hertfordshire",
+        "house_number" : 78,
+        "road" : "Upper Street",
+        "town" : "Ware"
+    }
+]
