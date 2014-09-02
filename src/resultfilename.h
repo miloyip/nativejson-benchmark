@@ -29,6 +29,14 @@
 #			define OS "mac32"
 #		endif
 #   endif
+#elif defined(__linux__) || defined(__linux) || defined(linux)
+#   if defined(__x86_64__) || defined(__x86_64) || defined(__amd64__)
+#       define OS "linux64"
+#   elif defined(__i386__) || defined(__i386)
+#       define OS "linux32"
+#   else
+#       define OS "linux"
+#   endif
 #endif
 
 #ifndef OS
@@ -57,7 +65,7 @@
 #elif defined(__GNUC__)
 #	define COMPILER "gcc" STR(__GNUC__) "." STR(__GNUC_MINOR__)
 #else
-#	define COMPILER "Unknown"
+#	define COMPILER "unknown"
 #endif
 
 #define RESULT_FILENAME MACHINE "_" OS "_" COMPILER ".csv"
