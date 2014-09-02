@@ -667,7 +667,8 @@ static void BenchCodeSize(const TestBase& test, const TestJsonList& testJsons, F
     int ret = spawnv(_P_WAIT, fullpath, argv);
 #else
     pid_t pid;
-    if (posix_spawn(&pid, fullpath, NULL, NULL, argv, NULL) == 0) {
+    int ret = posix_spawn(&pid, fullpath, NULL, NULL, argv, NULL);
+    if (ret == 0) {
         int status;
         waitpid(pid, &status, 0);
     }
