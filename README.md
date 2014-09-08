@@ -50,7 +50,7 @@ Library | Language | Version | Notes
 [cJSON](http://sourceforge.net/projects/cjson/) | C | 2013-08-19 |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ |
-[gason](https://github.com/vivkin/gason) | C++11 |
+[gason](https://github.com/vivkin/gason) | C++11 | 
 [jansson](https://github.com/akheron/jansson) | C | 2.6
 [json-c](https://github.com/json-c/json-c) | C |
 [json spirit](http://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) | C++ | 4.08 | Need Boost
@@ -69,6 +69,8 @@ udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.co
 Libraries with Git repository are included as submodule in `thirdparty` path. Other libraries are add as files in `thirdparty` path.
 
 All libraries are latest version on 8 Sep 2014. The exact commit of submodule can be navigated at [here](https://github.com/miloyip/nativejson-benchmark/tree/master/thirdparty).
+
+To measure the overheads of the benchmark process, a `strdup` test is added for comparison. It simply allocate and copy the input string in Parse and Stringify benchmark.
 
 Besides, some libraries was tried to integrated in this benchmark but failed:
 
@@ -95,7 +97,7 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 1. Execute `git submodule update --init` to download all submodules (libraries).
 2. Obtain [premake4](http://industriousone.com/premake/download).
 3. Copy premake4 executable to `build/` path (or system path).
-4. Run `premake.bat` or `premake.sh` in `build`
+4. Run `premake.bat` or `premake.sh` in `build/`
 5. On Windows, build the solution at `build/vs2008/` or `/vs2010/`.
 6. On other platforms, run GNU `make config=release32` (or `release64`) at `build/gmake/`
 7. Optional: run `buuild/machine.sh` for UNIX or CYGWIN to use CPU info to generate prefix of result filename.
