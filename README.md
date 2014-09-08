@@ -4,7 +4,7 @@ Copyright(c) 2014 Milo Yip (miloyip@gmail.com)
 
 ## Introduction
 
-This benchmark evaluates the performance of 21 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
+This benchmark evaluates the performance of 20 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
 
 Performance of JSON parsing/generation may be critical for server-side applications, mobile/embedded systems, or any application that requires processing of large size or number of JSONs. Native (C/C++) libraries are important because they should provide the best possible performance, while other languages may create bindings of native libraries.
 
@@ -14,7 +14,9 @@ This benchmark may be useful for optimizing existing libraries and developing ne
 
 ## Disclaimer
 
-The original author (Milo Yip) of this benchmark is also the primary author of [RapidJSON](https://github.com/miloyip/rapidjson). Although he has tried to make the benchmark as objective and fair as possible, every benchmarks have their drawbacks, and are limited to particular testing procedures, datasets and platforms. And also, this benchmark does not compare additional features that a library may support, or the user-friendliness of APIs, securities, cross-platform, etc. The author encourage users to benchmarks with their own data sets and platforms.
+The original author (Milo Yip) of this benchmark is also the primary author of [RapidJSON](https://github.com/miloyip/rapidjson).
+
+Although the development of benchmark is tried to be as objective and fair as possible, every benchmarks have their drawbacks, and are limited to particular testing procedures, datasets and platforms. And also, this benchmark does not compare additional features that a library may support, or the user-friendliness of APIs, securities, cross-platform, etc. The author encourage users to benchmarks with their own data sets and platforms.
 
 ## Benchmarks and Measurements
 
@@ -39,35 +41,36 @@ AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new
 
 ## Libraries
 
-Currently 21 libraries are successfully benchmarked. They are listed in alphabetic order:
+Currently 20 libraries are successfully benchmarked. They are listed in alphabetic order:
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
-[CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ |
-[Casablanca](https://casablanca.codeplex.com/) (C++ REST SDK) | C++11 | | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
-[cJSON](http://sourceforge.net/projects/cjson/) | C |
-[dropbox/json11](https://github.com/dropbox/json11) | C++11 |
+[CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
+[Casablanca](https://casablanca.codeplex.com/) (C++ REST SDK) | C++11 | 2.1.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
+[cJSON](http://sourceforge.net/projects/cjson/) | C | 2013-08-19 |
+[dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ |
 [gason](https://github.com/vivkin/gason) | C++11 |
-[jansson](https://github.com/akheron/jansson) | C |
+[jansson](https://github.com/akheron/jansson) | C | 2.6
 [json-c](https://github.com/json-c/json-c) | C |
 [json spirit](http://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) | C++ | 4.08 | Need Boost
-[Json Box](https://github.com/anhero/JsonBox) | C++ |
-[JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++
-[JSON++](https://github.com/hjiang/jsonxx) | C++
-[parson](https://github.com/kgabis/parson) | C
-[picojson](https://github.com/kazuho/picojson) | C++
-[RapidJSON](https://github.com/miloyip/rapidjson) | C++
-[simplejson](https://github.com/MJPA/SimpleJSON) | C++
-udp/json ([udp/json-builder](https://github.com/udp/json-builder) & 
-[udp/json-parser](https://github.com/udp/json-parser)) | C
-[ujson4c](https://github.com/esnme/ujson4c) | C
-[vincenthz/libjson](https://github.com/vincenthz/libjson) | C
+[Json Box](https://github.com/anhero/JsonBox) | C++ | 0.4.4
+[JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ | 
+[JSON++](https://github.com/hjiang/jsonxx) | C++ | 
+[parson](https://github.com/kgabis/parson) | C | 
+[picojson](https://github.com/kazuho/picojson) | C++ | 1.1.1
+[RapidJSON](https://github.com/miloyip/rapidjson) | C++ | 
+[simplejson](https://github.com/MJPA/SimpleJSON) | C++ | 
+udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
+[ujson4c](https://github.com/esnme/ujson4c) | C | 
+[vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
 [YAJL](https://github.com/lloyd/yajl) | C | 2.1.0
 
 Libraries with Git repository are included as submodule in `thirdparty` path. Other libraries are add as files in `thirdparty` path.
 
-Some libraries was tried but unable to benchmark:
+All libraries are latest version on 8 Sep 2014. The exact commit of submodule can be navigated at [here](https://github.com/miloyip/nativejson-benchmark/tree/master/thirdparty).
+
+Besides, some libraries was tried to integrated in this benchmark but failed:
 
 Library   | Issue
 ----------|------------------------------
@@ -77,25 +80,28 @@ Library   | Issue
 
 ## JSON data
 
+All tested JSON data are in UTF-8.
+
 JSON file   | Size | Description
-------------|------------------------------
-canada.json [source](https://github.com/mloskot/json_benchmark/blob/master/data/canada.json) | 2199KB | Contour of Canada border in [GeoJSON](http://geojson.org/) format. Contains a lot of real numbers.
-citm_catalog.json [source](https://github.com/RichardHightower/json-parsers-benchmark/blob/master/data/citm_catalog.json) | 1737KB | 
-* twitter.json | 632KB | Search "一" (character of "one" in Japanese and Chinese) in Twitter public time line for gathering some tweets with CJK characters.
+------------|------|-----------------------
+`canada.json` [source](https://github.com/mloskot/json_benchmark/blob/master/data/canada.json) | 2199KB | Contour of Canada border in [GeoJSON](http://geojson.org/) format. Contains a lot of real numbers.
+`citm_catalog.json` [source](https://github.com/RichardHightower/json-parsers-benchmark/blob/master/data/citm_catalog.json) | 1737KB | A big benchmark file with indentation used in several Java JSON parser benchmarks.
+`twitter.json` | 632KB | Search "一" (character of "one" in Japanese and Chinese) in Twitter public time line for gathering some tweets with CJK characters.
 
 The benchmark program reads `data/data.txt` which contains file names of JSON to be tested.
 
 ## Build and Run
 
-1. Obtain [premake4](http://industriousone.com/premake/download).
-2. Copy premake4 executable to `build/` path (or system path).
-3. Run `premake.bat` or `premake.sh` in `build`
-4. On Windows, build the solution at `build/vs2008/` or `/vs2010/`.
-5. On other platforms, run GNU `make config=release32` (or `release64`) at `build/gmake/`
-6. Optional: run `buuild/machine.sh` for UNIX or CYGWIN to use CPU info to generate prefix of result filename.
-7. Run the `nativejson_release_...` executable is generated at `bin/`
-8. The results in CSV format will be written to `result/`.
-9. Run GNU `make` in `result/` to generate results in HTML.
+1. Execute `git submodule update --init` to download all submodules (libraries).
+2. Obtain [premake4](http://industriousone.com/premake/download).
+3. Copy premake4 executable to `build/` path (or system path).
+4. Run `premake.bat` or `premake.sh` in `build`
+5. On Windows, build the solution at `build/vs2008/` or `/vs2010/`.
+6. On other platforms, run GNU `make config=release32` (or `release64`) at `build/gmake/`
+7. Optional: run `buuild/machine.sh` for UNIX or CYGWIN to use CPU info to generate prefix of result filename.
+8. Run the `nativejson_release_...` executable is generated at `bin/`
+9. The results in CSV format will be written to `result/`.
+10. Run GNU `make` in `result/` to generate results in HTML.
 
 ## Results
 
