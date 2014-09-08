@@ -87,6 +87,16 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 
 ## Build and Run
 
+1. Obtain [premake4](http://industriousone.com/premake/download).
+2. Copy premake4 executable to `build/` path (or system path).
+3. Run `premake.bat` or `premake.sh` in `build`
+4. On Windows, build the solution at `build/vs2008/` or `/vs2010/`.
+5. On other platforms, run GNU `make config=release32` (or `release64`) at `build/gmake/`
+6. Optional: run `buuild/machine.sh` for UNIX or CYGWIN to use CPU info to generate prefix of result filename.
+7. Run the `nativejson_release_...` executable is generated at `bin/`
+8. The results in CSV format will be written to `result/`.
+9. Run GNU `make` in `result/` to generate results in HTML.
+
 ## Results
 
 ## FAQ
