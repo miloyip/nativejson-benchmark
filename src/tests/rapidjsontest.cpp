@@ -13,7 +13,7 @@
 using namespace rapidjson;
 
 template <typename Encoding = UTF8<> >
-class StatHandler {
+class StatHandler : public BaseReaderHandler<Encoding, StatHandler<Encoding> > {
 public:
     typedef typename Encoding::Ch Ch;
 
