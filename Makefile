@@ -7,7 +7,11 @@ ifeq ($(VERBOSE),)
 endif
 
 
-nativejson_$(CONFIG)_gmake : build/gmake/nativejson.make bin/nativejson_$(CONFIG)_gmake.a
+all : bin/nativejson_release_x64_gmake
+	cd bin && ./nativejson_release_x64_gmake
+	cd result && make -f makefile
+
+bin/nativejson_%_gmake : build/gmake/nativejson.make bin/nativejson_%_gmake.a
 	cd build/gmake && make -f nativejson.make config=$(CONFIG) verbose=$(VERBOSE)
 
 clean : 
@@ -30,14 +34,13 @@ build/gmake/benchmark.make : setup
 
 	
 	
-bin/nativejson_$(CONFIG)_gmake.a : build/gmake/benchmark.make
+bin/nativejson_release_x64_gmake.a : build/gmake/benchmark.make
 	cd build/gmake && make -f benchmark.make config=$(CONFIG) verbose=$(VERBOSE)
 	
 	
-all : bin/nativejson_$(CONFIG)_gmake
-	cd bin && ./nativejson_$(CONFIG)_gmake
-	cd result && make -f makefile
 	
 clean_status :
 	@echo "Filesystem status according to GIT"
 	@git clean -dfxn
+	
+	
