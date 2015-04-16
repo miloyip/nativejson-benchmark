@@ -9,24 +9,24 @@ static void GenStat(Stat& stat, const json& v) {
     switch (v.type()) {
     case json::value_t::array:
         for (auto& element : v)
-            GenStat(stat, v);
+            GenStat(stat, element);
         stat.arrayCount++;
         stat.elementCount += v.size();
         break;
 
     case json::value_t::object:
-        for (auto& element : v) {
-            GenStat(stat, v.value());
-            stat.stringLength += v.key().size();
+        for (json::const_iterator it = v.begin(); it != v.end(); ++it) {
+            GenStat(stat, it.value());
+            stat.stringLength += it.key().size();
         }
         stat.objectCount++;
-        stat.memberCount += o.size();
-        stat.stringCount += o.size();
+        stat.memberCount += v.size();
+        stat.stringCount += v.size();
         break;
 
     case json::value_t::string:
         stat.stringCount++;
-        stat.stringLength += v.getString().size();
+        stat.stringLength += v.size();
         break;
 
     case json::value_t::number_integer:
@@ -66,10 +66,10 @@ public:
 #endif
 
 #if TEST_PARSE
-    virtual ParseResultBase* Parse(const char* json, size_t length) const {
+    virtual ParseResultBase* Parse(const char* j, size_t length) const {
         (void)length;
         NlohmannParseResult* pr = new NlohmannParseResult;
-        pr->root = parse(json);
+        pr->root = json::parse(j);
     	return pr;
     }
 #endif
@@ -78,7 +78,7 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const NlohmannParseResult* pr = static_cast<const NlohmannParseResult*>(parseResult);
         NlohmannStringResult* sr = new NlohmannStringResult;
-        sr->root = parseResult->root.dump();
+        sr->s = pr->root.dump();
         return sr;
     }
 #endif
@@ -87,7 +87,7 @@ public:
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const NlohmannParseResult* pr = static_cast<const NlohmannParseResult*>(parseResult);
         NlohmannStringResult* sr = new NlohmannStringResult;
-        sr->root = parseResult->root.dump(4);
+        sr->s = pr->root.dump(4);
         return sr;
     }
 #endif
