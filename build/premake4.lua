@@ -108,6 +108,8 @@ solution "benchmark"
             "../thirdparty/rapidjson/include/",
             "../thirdparty/udp-json-parser/",
             "../thirdparty/include/",
+            "../thirdparty/json-voorhees/include",
+            "../thirdparty/json-voorhees/src",
         }
 
 		files { 

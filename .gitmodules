@@ -58,3 +58,6 @@
 [submodule "thirdparty/nlohmann"]
 	path = thirdparty/nlohmann
 	url = https://github.com/nlohmann/json.git
+[submodule "thirdparty/json-voorhees"]
+	path = thirdparty/json-voorhees
+	url = https://github.com/tgockel/json-voorhees.git
