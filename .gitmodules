@@ -61,3 +61,6 @@
 [submodule "thirdparty/json-voorhees"]
 	path = thirdparty/json-voorhees
 	url = https://github.com/tgockel/json-voorhees.git
+[submodule "thirdparty/jsoncons"]
+	path = thirdparty/jsoncons
+	url = https://github.com/danielaparker/jsoncons.git

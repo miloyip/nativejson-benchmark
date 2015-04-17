@@ -110,6 +110,7 @@ solution "benchmark"
             "../thirdparty/include/",
             "../thirdparty/json-voorhees/include",
             "../thirdparty/json-voorhees/src",
+            "../thirdparty/jsoncons/src",
         }
 
 		files { 
@@ -157,6 +158,9 @@ solution "jsonstat"
         "../thirdparty/rapidjson/include/",
         "../thirdparty/udp-json-parser/",
         "../thirdparty/include/",
+        "../thirdparty/json-voorhees/include",
+        "../thirdparty/json-voorhees/src",
+        "../thirdparty/jsoncons/src",
     }
 
     configuration "release"
