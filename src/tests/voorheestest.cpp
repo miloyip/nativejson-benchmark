@@ -1,5 +1,7 @@
 #include "../test.h"
 
+#if HAS_BOOST
+
 #include "json-voorhees/src/jsonv/algorithm_map.cpp"
 #include "json-voorhees/src/jsonv/algorithm_traverse.cpp"
 #include "json-voorhees/src/jsonv/array.cpp"
@@ -20,49 +22,47 @@
 
 using namespace jsonv;
 
-static void GenStat(Stat& stat, const Value& v) {
-    switch (v.getType()) {
-    case Value::ARRAY:
+static void GenStat(Stat& stat, const value& v) {
+    switch (v.kind()) {
+    case kind::array:
         {
-            const Array& a = v.getArray();
-            for (Array::const_iterator itr = a.begin(); itr != a.end(); ++itr)
+            for (value::const_array_iterator itr = v.begin_array(); itr != v.end_array(); ++itr)
                 GenStat(stat, *itr);
             stat.arrayCount++;
-            stat.elementCount += a.size();
+            stat.elementCount += v.size();
         }
         break;
 
-    case Value::OBJECT:
+    case kind::object:
         {
-            const Object& o = v.getObject();
-            for (Object::const_iterator itr = o.begin(); itr != o.end(); ++itr) {
+            for (value::const_object_iterator itr = v.begin_object(); itr != v.end_object(); ++itr) {
                 GenStat(stat, itr->second);
                 stat.stringLength += itr->first.size();
             }
             stat.objectCount++;
-            stat.memberCount += o.size();
-            stat.stringCount += o.size();
+            stat.memberCount += v.size();
+            stat.stringCount += v.size();
         }
         break;
 
-    case Value::STRING: 
+    case kind::string: 
         stat.stringCount++;
-        stat.stringLength += v.getString().size();
+        stat.stringLength += v.size();
         break;
 
-    case Value::INTEGER:
-    case Value::DOUBLE:
+    case kind::integer:
+    case kind::decimal:
         stat.numberCount++;
         break;
 
-    case Value::BOOLEAN:
-        if (v.getBoolean())
+    case kind::boolean:
+        if (v.as_boolean())
             stat.trueCount++;
         else
             stat.falseCount++;
         break;
 
-    case Value::NULL_VALUE:
+    case kind::null:
         stat.nullCount++;
         break;
     }
@@ -70,7 +70,7 @@ static void GenStat(Stat& stat, const Value& v) {
 
 class VoorheesParseResult : public ParseResultBase {
 public:
-    Value root;
+    value root;
 };
 
 class VoorheesStringResult : public StringResultBase {
@@ -90,7 +90,7 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         VoorheesParseResult* pr = new VoorheesParseResult;
-        pr->root.loadFromString(json);
+        pr->root = parse(json);
     	return pr;
     }
 #endif
@@ -99,9 +99,7 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const VoorheesParseResult* pr = static_cast<const VoorheesParseResult*>(parseResult);
         VoorheesStringResult* sr = new VoorheesStringResult;
-        std::ostringstream os;
-        pr->root.writeToStream(os, false, false);
-        sr->s = os.str();
+        sr->s = to_string(pr->root);
         return sr;
     }
 #endif
@@ -111,7 +109,8 @@ public:
         const VoorheesParseResult* pr = static_cast<const VoorheesParseResult*>(parseResult);
         VoorheesStringResult* sr = new VoorheesStringResult;
         std::ostringstream os;
-        pr->root.writeToStream(os, true, false);
+        ostream_pretty_encoder e(os, 4);
+        e.encode(pr->root);
         sr->s = os.str();
         return sr;
     }
@@ -128,3 +127,5 @@ public:
 };
 
 REGISTER_TEST(VoorheesTest);
+
+#endif
