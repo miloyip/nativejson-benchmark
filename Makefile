@@ -26,7 +26,7 @@ clean :
 	rm -rf result/*.html
 
 setup :
-	cd build && ./premake.sh
+	cd build && ./premake.sh && ./machine.sh
 	
 	
 build/gmake/nativejson.make : setup
