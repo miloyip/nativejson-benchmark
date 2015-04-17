@@ -26,7 +26,7 @@ static void GenStat(Stat& stat, const json& v) {
 
     case json::value_t::string:
         stat.stringCount++;
-        stat.stringLength += v.size();
+        stat.stringLength += v.get<std::string>().size();
         break;
 
     case json::value_t::number_integer:
