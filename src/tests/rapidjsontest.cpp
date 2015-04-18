@@ -1,8 +1,11 @@
 #include "../test.h"
 
-// Turn on SSE2 for x86-64.
-#if defined(_M_X64) || defined(__amd64)
-#define RAPIDJSON_SSE2
+// __SSE2__ and __SSE4_2__ are recognized by gcc, clang, and the Intel compiler.
+// We use -march=native with gmake to enable -msse2 and -msse4.2, if supported.
+#if defined(__SSE4_2__)
+#  define RAPIDJSON_SSE42
+#elif defined(__SSE2__)
+#  define RAPIDJSON_SSE2
 #endif
 
 #include "rapidjson/document.h"
