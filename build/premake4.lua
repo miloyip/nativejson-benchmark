@@ -111,6 +111,7 @@ solution "benchmark"
             "../thirdparty/json-voorhees/include",
             "../thirdparty/json-voorhees/src",
             "../thirdparty/jsoncons/src",
+            "../thirdparty/ArduinoJson/include",
         }
 
 		files { 

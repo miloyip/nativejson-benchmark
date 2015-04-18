@@ -64,3 +64,6 @@
 [submodule "thirdparty/jsoncons"]
 	path = thirdparty/jsoncons
 	url = https://github.com/danielaparker/jsoncons.git
+[submodule "thirdparty/ArduinoJson"]
+	path = thirdparty/ArduinoJson
+	url = https://github.com/bblanchon/ArduinoJson.git
