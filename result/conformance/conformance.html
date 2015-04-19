@@ -47,16 +47,19 @@ $(function() {
       return sum / a.length;
     }
 
-    var formatter = new google.visualization.NumberFormat({pattern:'###%'});
-    formatter.format(percentdt, 1);
+    var perecentFormatter = new google.visualization.NumberFormat({pattern:'###%'});
+    perecentFormatter.format(percentdt, 1);
 
     drawBarChart(type, percentdt);
 
-    view.setColumns([ 2, 1, {calc:stringToBoolean, type:'boolean', label:''} ]);
+    view.setColumns([ 2, 1, {calc:stringToBoolean, type:'string', label:''} ]);
     
     function stringToBoolean(dt, row) {
       var v = dt.getValue(row, 3);
-      return dt.getValue(row, 3).trim() == 'true';
+      if (dt.getValue(row, 3).trim() == 'true')
+        return '<span class="glyphicon glyphicon-ok text-success"></span>';
+      else
+        return '<span class="glyphicon glyphicon-remove text-danger"></span>';
     }
 
     drawTable(type, pivotTable(view));
@@ -124,7 +127,7 @@ function drawTable(type, data) {
   div.className = "tablechart";
   $("#main").append(div);
   var table = new google.visualization.Table(div);
-  table.draw(data);
+  table.draw(data, { allowHtml: true});
 }
 
 function drawBarChart(type, data) {
