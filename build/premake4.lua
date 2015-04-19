@@ -112,6 +112,7 @@ solution "benchmark"
             "../thirdparty/json-voorhees/src",
             "../thirdparty/jsoncons/src",
             "../thirdparty/ArduinoJson/include",
+            "../thirdparty/include/jeayeson/include/dummy",
         }
 
 		files { 
@@ -128,7 +129,7 @@ solution "benchmark"
 		links "jsonclibs"
 
 		configuration "gmake"
-			buildoptions "-std=c++11"
+			buildoptions "-std=c++14"
 
 solution "jsonstat"
     configurations { "release" }
@@ -162,6 +163,7 @@ solution "jsonstat"
         "../thirdparty/json-voorhees/include",
         "../thirdparty/json-voorhees/src",
         "../thirdparty/jsoncons/src",
+        "../thirdparty/include/jeayeson/include/dummy",
     }
 
     configuration "release"
