@@ -19,7 +19,7 @@ public:
 class RapidjsonAutoUTFTest : public TestBase {
 public:
 #if TEST_INFO
-    virtual const char* GetName() const { return "RapidJSON (C++/AutoUTF)"; }
+    virtual const char* GetName() const { return "RapidJSON (C++, AutoUTF)"; }
     virtual const char* GetFilename() const { return __FILE__; }
 #endif
 

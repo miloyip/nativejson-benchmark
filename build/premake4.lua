@@ -75,7 +75,7 @@ solution "benchmark"
 		defines { "_CRT_SECURE_NO_WARNINGS" }
 		
 	configuration "gmake"
-		buildoptions "-march=native -Wall -Wextra"
+		buildoptions "-msse4.2 -Wall -Wextra"
 
 	project "jsonclibs"
 		kind "StaticLib"
@@ -111,6 +111,7 @@ solution "benchmark"
             "../thirdparty/json-voorhees/include",
             "../thirdparty/json-voorhees/src",
             "../thirdparty/jsoncons/src",
+            "../thirdparty/ArduinoJson/include",
         }
 
 		files { 
