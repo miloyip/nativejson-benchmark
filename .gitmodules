@@ -71,3 +71,6 @@
 [submodule "thirdparty/jeayeson"]
 	path = thirdparty/jeayeson
 	url = https://github.com/jeaye/jeayeson.git
+[submodule "thirdparty/nbsdxSimpleJSON"]
+	path = thirdparty/nbsdxSimpleJSON
+	url = https://github.com/nbsdx/SimpleJSON.git
