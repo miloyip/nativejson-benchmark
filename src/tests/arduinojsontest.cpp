@@ -1,5 +1,6 @@
 #include "../test.h"
 
+#include "ArduinoJson/src/DynamicJsonBuffer.cpp"
 #include "ArduinoJson/src/JsonArray.cpp"
 #include "ArduinoJson/src/JsonBuffer.cpp"
 #include "ArduinoJson/src/JsonObject.cpp"
@@ -11,59 +12,49 @@
 #include "ArduinoJson/src/internals/Prettyfier.cpp"
 #include "ArduinoJson/src/internals/QuotedString.cpp"
 #include "ArduinoJson/src/internals/StringBuilder.cpp"
-#include "ArduinoJson/DynamicJsonBuffer.hpp"
+#include "ArduinoJson/test/Printers.cpp"
 #include <string>
+#include <sstream>
 
 using namespace ArduinoJson;
-/*
-static void GenStat(Stat& stat, const Value& v) {
-    switch (v.getType()) {
-    case Value::ARRAY:
-        {
-            const Array& a = v.getArray();
-            for (Array::const_iterator itr = a.begin(); itr != a.end(); ++itr)
-                GenStat(stat, *itr);
-            stat.arrayCount++;
-            stat.elementCount += a.size();
+
+static void GenStat(Stat& stat, const JsonVariant& v) {
+    if (v.is<const JsonArray&>()) {
+        const JsonArray& a = v.asArray();
+        size_t size = a.size();
+        for (size_t i = 0; i < size; i++)
+            GenStat(stat, a[i]);
+        stat.arrayCount++;
+        stat.elementCount += size;
+    }
+    else if (v.is<const JsonObject&>()) {
+        const JsonObject& o = v.asObject();
+        for (JsonObject::const_iterator itr = o.begin(); itr != o.end(); ++itr) {
+            GenStat(stat, itr->value);
+            stat.stringLength += strlen(itr->key);
         }
-        break;
-
-    case Value::OBJECT:
-        {
-            const Object& o = v.getObject();
-            for (Object::const_iterator itr = o.begin(); itr != o.end(); ++itr) {
-                GenStat(stat, itr->second);
-                stat.stringLength += itr->first.size();
-            }
-            stat.objectCount++;
-            stat.memberCount += o.size();
-            stat.stringCount += o.size();
+        stat.objectCount++;
+        stat.memberCount += o.size();
+        stat.stringCount += o.size();
+    }
+    else if (v.is<const char*>()) {
+        if (v.asString()) {
+            stat.stringCount++;
+            stat.stringLength += strlen(v.asString());
         }
-        break;
-
-    case Value::STRING: 
-        stat.stringCount++;
-        stat.stringLength += v.getString().size();
-        break;
-
-    case Value::INTEGER:
-    case Value::DOUBLE:
+        else
+            stat.nullCount++; // JSON null value is treat as string null pointer
+    }
+    else if (v.is<long>() || v.is<double>())
         stat.numberCount++;
-        break;
-
-    case Value::BOOLEAN:
-        if (v.getBoolean())
+    else if (v.is<bool>()) {
+        if ((bool)v)
             stat.trueCount++;
         else
             stat.falseCount++;
-        break;
-
-    case Value::NULL_VALUE:
-        stat.nullCount++;
-        break;
     }
 }
-*/
+
 class ArduinojsonParseResult : public ParseResultBase {
 public:
     ArduinojsonParseResult() : buffer(), root() {}
@@ -98,13 +89,14 @@ public:
     	return pr;
     }
 #endif
-/*
+
 #if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const ArduinojsonParseResult* pr = static_cast<const ArduinojsonParseResult*>(parseResult);
         ArduinojsonStringResult* sr = new ArduinojsonStringResult;
         std::ostringstream os;
-        pr->root.writeToStream(os, false, false);
+        StreamPrintAdapter adapter(os);
+        pr->root->printTo(adapter);
         sr->s = os.str();
         return sr;
     }
@@ -115,7 +107,8 @@ public:
         const ArduinojsonParseResult* pr = static_cast<const ArduinojsonParseResult*>(parseResult);
         ArduinojsonStringResult* sr = new ArduinojsonStringResult;
         std::ostringstream os;
-        pr->root.writeToStream(os, true, false);
+        StreamPrintAdapter adapter(os);
+        pr->root->prettyPrintTo(adapter);
         sr->s = os.str();
         return sr;
     }
@@ -125,11 +118,12 @@ public:
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const ArduinojsonParseResult* pr = static_cast<const ArduinojsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
-        GenStat(*stat, pr->root);
+        JsonVariant v;
+        v.set(const_cast<JsonObject&>(*pr->root));
+        GenStat(*stat, v);
         return true;
     }
 #endif
-*/
 };
 
 REGISTER_TEST(ArduinojsonTest);
