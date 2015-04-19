@@ -69,7 +69,13 @@ public:
     virtual ParseResultBase* Parse(const char* j, size_t length) const {
         (void)length;
         NlohmannParseResult* pr = new NlohmannParseResult;
-        pr->root = json::parse(j);
+        try {
+            pr->root = json::parse(j);
+        }
+        catch (...) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif

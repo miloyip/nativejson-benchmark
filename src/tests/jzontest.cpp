@@ -69,6 +69,10 @@ public:
         JzonParseResult* pr = new JzonParseResult;
         Parser parser;
         pr->root = parser.parseString(json);
+        if (!parser.getError().empty()) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif

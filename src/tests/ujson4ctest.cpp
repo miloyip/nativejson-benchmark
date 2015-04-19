@@ -65,7 +65,7 @@ public:
 	void* state;
 };
 
-class Ujson4c : public TestBase {
+class Ujson4cTest : public TestBase {
 public:
 #if TEST_INFO
     virtual const char* GetName() const { return "ujson4c (C)"; }
@@ -77,6 +77,10 @@ public:
         (void)length;
         Ujson4cParseResult* pr = new Ujson4cParseResult;
 		pr->root = UJDecode(json, length, NULL, &pr->state);
+		if (pr->root == NULL) {
+			delete pr;
+			return 0;
+		}
     	return pr;
     }
 #endif
@@ -91,4 +95,4 @@ public:
 #endif
 };
 
-REGISTER_TEST(Ujson4c);
+REGISTER_TEST(Ujson4cTest);

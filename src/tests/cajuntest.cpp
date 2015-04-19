@@ -80,7 +80,7 @@ public:
         {
             Reader::Read(pr->root, is);
         }
-        catch (Reader::ParseException&) {
+        catch (...) {
             delete pr;
             return 0;
         }

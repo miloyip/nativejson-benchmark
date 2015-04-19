@@ -72,7 +72,10 @@ public:
         (void)length;
         JsoncppParseResult* pr = new JsoncppParseResult;
         Reader reader;
-        reader.parse(json, pr->root);
+        if (!reader.parse(json, pr->root)) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif

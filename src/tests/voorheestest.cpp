@@ -90,7 +90,13 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         VoorheesParseResult* pr = new VoorheesParseResult;
-        pr->root = parse(json);
+        try {
+            pr->root = parse(json);
+        }
+        catch (...) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif

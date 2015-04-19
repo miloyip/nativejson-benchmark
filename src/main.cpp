@@ -60,6 +60,17 @@ static void PrintMemoryStat() {
 }
 #endif
 
+static char* ReadJSON(FILE *fp, size_t* length) {
+    fseek(fp, 0, SEEK_END);
+    *length = (size_t)ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    char* json = (char*)malloc(*length + 1);
+    fread(json, 1, *length, fp);
+    json[*length] = '\0';
+    fclose(fp);
+    return json;
+}
+
 static bool ReadFiles(const char* path, TestJsonList& testJsons) {
     char fullpath[FILENAME_MAX];
     sprintf(fullpath, path, "data.txt");
@@ -96,13 +107,7 @@ static bool ReadFiles(const char* path, TestJsonList& testJsons) {
             TestJson t = TestJson();
             t.fullpath = StrDup(fullpath);
             t.filename = StrDup(filename);
-            fseek(fp2, 0, SEEK_END);
-            t.length = (size_t)ftell(fp2);
-            fseek(fp2, 0, SEEK_SET);
-            t.json = (char*)malloc(t.length + 1);
-            fread(t.json, 1, t.length, fp2);
-            t.json[t.length] = '\0';
-            fclose(fp2);
+            t.json = ReadJSON(fp2, &t.length);
 
             // Generate reference statistics
 #if TEST_SAXSTATISTICS
@@ -696,8 +701,9 @@ static void BenchCodeSize(const TestBase& test, const TestJsonList& testJsons, F
         printf("File '%s' not found\n", fullpath);
 }
 
-static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
-    printf("Benchmarking %s\n", test.GetName());
+static void BenchPerformance(const TestBase& test, const TestJsonList& testJsons, FILE *fp) {
+    printf("Benchmarking Performance of %s\n", test.GetName());
+
     BenchParse(test, testJsons, fp);
     BenchStringify(test, testJsons, fp);
     BenchPrettify(test, testJsons, fp);
@@ -705,10 +711,11 @@ static void Bench(const TestBase& test, const TestJsonList& testJsons, FILE *fp)
     BenchSaxRoundtrip(test, testJsons, fp);
     BenchSaxStatistics(test, testJsons, fp);
     BenchCodeSize(test, testJsons, fp);
+    
     printf("\n");
 }
 
-static void BenchAll(const TestJsonList& testJsons) {
+static void BenchAllPerformance(const TestJsonList& testJsons) {
     // Try to write to /result path, where template.php exists
     FILE *fp;
     if ((fp = fopen("../../result/template.php", "r")) != NULL) {
@@ -730,9 +737,96 @@ static void BenchAll(const TestJsonList& testJsons) {
 
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr)
-        Bench(**itr, testJsons, fp);
+        BenchPerformance(**itr, testJsons, fp);
 
     fclose(fp);
+}
+
+#if TEST_CONFORMANCE
+
+static void BenchConformance(const TestBase& test, FILE* fp) {
+    printf("Benchmarking Conformance of %s\n", test.GetName());
+    
+#if TEST_PARSE
+    // Parse Validation, JsonChecker pass
+    for (int i = 1; i <= 3; i++) {
+        MEMORYSTAT_SCOPE();
+
+        char path[256];
+        sprintf(path, "../data/jsonchecker/pass%d.json", i);
+        FILE *fp2 = fopen(path, "r");
+        if (!fp2)
+            continue;
+        size_t length;
+        char* json = ReadJSON(fp2, &length);
+
+        ParseResultBase* pr = test.Parse(json, length);
+        fprintf(fp, "Parse Validation, %s, JsonChecker pass%d, %s\n", test.GetName(), i, pr != 0 ? "true" : "false");
+        delete pr;
+
+        free(json);
+
+        MEMORYSTAT_CHECKMEMORYLEAK();
+    }
+
+    // Parse Validation, JsonChecker fail
+    for (int i = 1; i <= 33; i++) {
+        MEMORYSTAT_SCOPE();
+
+        char path[256];
+        sprintf(path, "../data/jsonchecker/fail%d.json", i);
+        FILE *fp2 = fopen(path, "r");
+        if (!fp2)
+            continue;
+        size_t length;
+        char* json = ReadJSON(fp2, &length);
+
+        ParseResultBase* pr = test.Parse(json, length);
+        fprintf(fp, "Parse Validation, %s, JsonChecker fail%d, %s\n", test.GetName(), i, pr == 0 ? "true" : "false");
+        delete pr;
+
+        free(json);
+
+        MEMORYSTAT_CHECKMEMORYLEAK();
+    }
+#endif // TEST_PARSE
+
+    printf("\n");
+}
+
+static void BenchAllConformance() {
+    FILE *fp;
+    if ((fp = fopen("../../result/conformance/template.php", "r")) != NULL) {
+        fclose(fp);
+        fp = fopen("../../result/conformance/conformance.csv", "w");
+    }
+    else if ((fp = fopen("../result/conformance/template.php", "r")) != NULL) {
+        fclose(fp);
+        fp = fopen("../result/conformance/conformance.csv", "w");
+    }
+    else
+        fp = fopen("conformance.csv", "w");
+
+    fputs("Type,Library,Test,Result\n", fp);
+
+    TestList& tests = TestManager::Instance().GetTests();
+    for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr) {
+        if (strcmp((*itr)->GetName(), "strdup (C)") == 0)
+            continue;
+        BenchConformance(**itr, fp);
+    }
+
+    fclose(fp);
+}
+
+#endif // TEST_CONFORMANCE
+
+static void BenchAll(const TestJsonList& testJsons) {
+    BenchAllPerformance(testJsons);
+
+#if TEST_CONFORMANCE
+    BenchAllConformance();
+#endif
 
     printf("\n");
 }
@@ -756,7 +850,7 @@ int main(int, char* argv[]) {
         TestList& tests = TestManager::Instance().GetTests();
         std::sort(tests.begin(), tests.end());
 
-        VerifyAll(testJsons);
+        //VerifyAll(testJsons);
         BenchAll(testJsons);
 
         FreeFiles(testJsons);

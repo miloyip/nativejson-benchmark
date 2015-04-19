@@ -306,6 +306,10 @@ public:
         (void)length;
         YajlParseResult* pr = new YajlParseResult;
         pr->root = yajl_tree_parse(json, NULL, 0);
+        if (!pr->root) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif

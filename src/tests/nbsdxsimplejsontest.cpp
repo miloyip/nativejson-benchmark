@@ -74,7 +74,13 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         NbsdxsimplejsonParseResult* pr = new NbsdxsimplejsonParseResult;
-        pr->root = JSON::Load(json);
+        try {
+            pr->root = JSON::Load(json);
+        }
+        catch (...) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif

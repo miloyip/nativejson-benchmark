@@ -70,7 +70,13 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JsonconsParseResult* pr = new JsonconsParseResult;
-        pr->root = json::parse_string(json);
+        try {
+            pr->root = json::parse_string(json);
+        }
+        catch (...) {
+            delete pr;
+        return 0;
+        }
     	return pr;
     }
 #endif

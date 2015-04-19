@@ -86,6 +86,10 @@ public:
         pr->buffer = (char*)malloc(length);
         memcpy(pr->buffer, json, length);
         pr->root = &pr->jsonBuffer.parseObject(pr->buffer);
+        if (!pr->root->success()) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif

@@ -76,6 +76,10 @@ public:
         Dropboxjson11ParseResult* pr = new Dropboxjson11ParseResult;
         std::string err;
         pr->root = Json::parse(json, err);
+        if (!err.empty()) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif
