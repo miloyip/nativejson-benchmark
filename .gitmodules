@@ -74,3 +74,6 @@
 [submodule "thirdparty/nbsdxSimpleJSON"]
 	path = thirdparty/nbsdxSimpleJSON
 	url = https://github.com/nbsdx/SimpleJSON.git
+[submodule "thirdparty/Jzon"]
+	path = thirdparty/Jzon
+	url = https://github.com/Zguy/Jzon.git
