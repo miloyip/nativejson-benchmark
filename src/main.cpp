@@ -755,6 +755,10 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         char path[256];
         sprintf(path, "../data/jsonchecker/pass%d.json", i);
         FILE *fp2 = fopen(path, "r");
+        if (!fp2) {
+            sprintf(path, "../../data/jsonchecker/pass%d.json", i);
+            fp2 = fopen(path, "r");
+        }
         if (!fp2)
             continue;
         size_t length;
@@ -776,6 +780,10 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         char path[256];
         sprintf(path, "../data/jsonchecker/fail%d.json", i);
         FILE *fp2 = fopen(path, "r");
+        if (!fp2) {
+            sprintf(path, "../../data/jsonchecker/fail%d.json", i);
+            fp2 = fopen(path, "r");
+        }
         if (!fp2)
             continue;
         size_t length;
