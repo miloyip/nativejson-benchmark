@@ -95,6 +95,10 @@ public:
             delete pr;
             pr = 0;
         }
+        catch (...) {
+            delete pr;
+            pr = 0;
+        }
     	return pr;
     }
 #endif
