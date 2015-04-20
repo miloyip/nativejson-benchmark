@@ -71,6 +71,18 @@ static char* ReadJSON(FILE *fp, size_t* length) {
     return json;
 }
 
+static char* ReadJSON(const char* filename, size_t* length) {
+    FILE *fp = fopen(filename, "r");
+    if (!fp) {
+        char buffer[FILENAME_MAX];
+        sprintf(buffer, "../%s", filename);
+        fp = fopen(buffer, "r");
+        if (!fp)
+            return 0;
+    }
+    return ReadJSON(fp, length);
+}
+
 static bool ReadFiles(const char* path, TestJsonList& testJsons) {
     char fullpath[FILENAME_MAX];
     sprintf(fullpath, path, "data.txt");
@@ -752,20 +764,15 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
     for (int i = 1; i <= 3; i++) {
         MEMORYSTAT_SCOPE();
 
-        char path[256];
+        char path[FILENAME_MAX];
         sprintf(path, "../data/jsonchecker/pass%d.json", i);
-        FILE *fp2 = fopen(path, "r");
-        if (!fp2) {
-            sprintf(path, "../../data/jsonchecker/pass%d.json", i);
-            fp2 = fopen(path, "r");
-        }
-        if (!fp2)
-            continue;
         size_t length;
-        char* json = ReadJSON(fp2, &length);
+        char* json = ReadJSON(path, &length);
+        if (!json)
+            continue;
 
         ParseResultBase* pr = test.Parse(json, length);
-        fprintf(fp, "Parse Validation, %s, JsonChecker pass%d, %s\n", test.GetName(), i, pr != 0 ? "true" : "false");
+        fprintf(fp, "Parse Validation,%s,pass%d,%s\n", test.GetName(), i, pr != 0 ? "true" : "false");
         delete pr;
 
         free(json);
@@ -777,21 +784,48 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
     for (int i = 1; i <= 33; i++) {
         MEMORYSTAT_SCOPE();
 
-        char path[256];
+        char path[FILENAME_MAX];
         sprintf(path, "../data/jsonchecker/fail%d.json", i);
-        FILE *fp2 = fopen(path, "r");
-        if (!fp2) {
-            sprintf(path, "../../data/jsonchecker/fail%d.json", i);
-            fp2 = fopen(path, "r");
-        }
-        if (!fp2)
-            continue;
         size_t length;
-        char* json = ReadJSON(fp2, &length);
+        char* json = ReadJSON(path, &length);
+        if (!json)
+            continue;
 
         ParseResultBase* pr = test.Parse(json, length);
-        fprintf(fp, "Parse Validation, %s, JsonChecker fail%d, %s\n", test.GetName(), i, pr == 0 ? "true" : "false");
+        fprintf(fp, "Parse Validation,%s,fail%d,%s\n", test.GetName(), i, pr == 0 ? "true" : "false");
         delete pr;
+
+        free(json);
+
+        MEMORYSTAT_CHECKMEMORYLEAK();
+    }
+
+    // Roundtrip
+    for (int i = 1; i <= 27; i++) {
+        MEMORYSTAT_SCOPE();
+        
+        char path[FILENAME_MAX];
+        sprintf(path, "../data/roundtrip/roundtrip%02d.json", i);
+        size_t length;
+        char* json = ReadJSON(path, &length);
+        if (!json)
+            continue;
+
+        ParseResultBase* pr = test.Parse(json, length);
+        bool result = false;
+        if (pr) {
+            StringResultBase* sr = test.Stringify(pr);
+            delete pr;
+
+            if (sr) {
+                result = strcmp(json, sr->c_str()) == 0;
+                if (!result)
+                    printf("Expect: %s\nActual: %s\n\n", json, sr->c_str());
+                delete sr;
+            }
+        }
+
+        fprintf(fp, "Roundtrip,%s,roundtrip%02d,%s\n", test.GetName(), i, result ? "true" : "false");
 
         free(json);
 

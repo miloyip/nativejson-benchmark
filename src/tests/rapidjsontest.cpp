@@ -95,7 +95,7 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         RapidjsonParseResult* pr = new RapidjsonParseResult;
-        if (pr->document.Parse(json).HasParseError()) {
+        if (pr->document.Parse<kParseFullPrecisionFlag>(json).HasParseError()) {
             delete pr;
             return 0;
         }
