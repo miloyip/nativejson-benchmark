@@ -1,4 +1,7 @@
 #include "../test.h"
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1800 // Before VC2013 do not support C99 variable declaration
+
 #include "json-c/json.h"
 
 static void GenStat(Stat* s, json_object* v) {
@@ -114,3 +117,5 @@ public:
 };
 
 REGISTER_TEST(JsoncTest);
+
+#endif

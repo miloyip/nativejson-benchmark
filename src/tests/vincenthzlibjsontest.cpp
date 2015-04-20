@@ -3,6 +3,10 @@
 #include "vincenthz-libjson/json.h"
 #include <stdio.h>
 
+#ifdef _MSC_VER
+#define strtoll _strtoi64
+#endif
+
 extern "C" {
 
 struct json_val_elem {

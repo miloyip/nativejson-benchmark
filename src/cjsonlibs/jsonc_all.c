@@ -1,5 +1,7 @@
 #include "../memorystat.h"
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1800 // Before VC2013 do not support C99 variable declaration
+
 // It generates linking error on VS2013. No need multithread.
 #define InterlockedCompareExchange(a,b,c)
 
@@ -14,3 +16,5 @@
 #include "json-c/random_seed.c"
 
 #include "json-c/json_util.c"   // This file undef realloc, put to last
+
+#endif

@@ -1,5 +1,7 @@
 #include "../test.h"
 
+#ifndef _MSC_VER // VC have compilation error
+
 #include "nbsdxSimpleJSON/json.hpp"
 
 using namespace json;
@@ -114,3 +116,5 @@ public:
 };
 
 REGISTER_TEST(NbsdxsimplejsonTest);
+
+#endif
