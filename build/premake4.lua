@@ -75,7 +75,7 @@ solution "benchmark"
 		defines { "_CRT_SECURE_NO_WARNINGS" }
 		
 	configuration "gmake"
-		buildoptions "-msse4.2 -Wall -Wextra"
+		buildoptions "-march=native -Wall -Wextra"
 
 	project "jsonclibs"
 		kind "StaticLib"
@@ -207,5 +207,5 @@ solution "jsonstat"
             setTargetObjDir("../bin/jsonstat")
 
 			configuration "gmake"
-				buildoptions "-std=c++11"
+				buildoptions "-std=c++14"
     end

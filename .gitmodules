@@ -77,3 +77,6 @@
 [submodule "thirdparty/Jzon"]
 	path = thirdparty/Jzon
 	url = https://github.com/Zguy/Jzon.git
+[submodule "thirdparty/sajson"]
+	path = thirdparty/sajson
+	url = https://github.com/chadaustin/sajson.git

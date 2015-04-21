@@ -27,7 +27,7 @@ clean :
 	rm -rf result/*.html
 
 setup :
-	cd build && ./premake.sh
+	cd build && ./premake.sh && ./machine.sh
 	
 	
 build/gmake/nativejson.make : setup
@@ -43,5 +43,3 @@ bin/nativejson_release_x64_gmake.a : build/gmake/benchmark.make
 clean_status :
 	@echo "Filesystem status according to GIT"
 	@git clean -dfxn
-	
-	
