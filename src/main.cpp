@@ -765,7 +765,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         MEMORYSTAT_SCOPE();
 
         char path[FILENAME_MAX];
-        sprintf(path, "../data/jsonchecker/pass%d.json", i);
+        sprintf(path, "../data/jsonchecker/pass%02d.json", i);
         size_t length;
         char* json = ReadJSON(path, &length);
         if (!json)
@@ -773,8 +773,8 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
 
         ParseResultBase* pr = test.Parse(json, length);
         bool result = pr != 0;
-        fprintf(fp, "Parse Validation,%s,pass%d,%s\n", test.GetName(), i, result ? "true" : "false");
-        printf("pass%d: %s\n", i, result ? "true" : "false");
+        fprintf(fp, "Parse Validation,%s,pass%02d,%s\n", test.GetName(), i, result ? "true" : "false");
+        printf("pass%02d: %s\n", i, result ? "true" : "false");
         delete pr;
 
         free(json);
@@ -787,7 +787,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         MEMORYSTAT_SCOPE();
 
         char path[FILENAME_MAX];
-        sprintf(path, "../data/jsonchecker/fail%d.json", i);
+        sprintf(path, "../data/jsonchecker/fail%02d.json", i);
         size_t length;
         char* json = ReadJSON(path, &length);
         if (!json)
@@ -795,8 +795,8 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
 
         ParseResultBase* pr = test.Parse(json, length);
         bool result = pr == 0;
-        fprintf(fp, "Parse Validation,%s,fail%d,%s\n", test.GetName(), i, result ? "true" : "false");
-        printf("fail%d: %s\n", i, result ? "true" : "false");
+        fprintf(fp, "Parse Validation,%s,fail%02d,%s\n", test.GetName(), i, result ? "true" : "false");
+        printf("fail%02d: %s\n", i, result ? "true" : "false");
         delete pr;
 
         free(json);
