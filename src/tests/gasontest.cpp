@@ -86,7 +86,7 @@ static void dumpString(std::ostringstream& os, const char *s) {
     os << s << "\"";
 }
 
-static void dumpValue(std::ostringstream& os, const JsonValue& o, int shiftWidth, int indent = 0) {
+static void dumpValue(std::ostringstream& os, const JsonValue& o, int shiftWidth, const std::string& linefeed = "", int indent = 0) {
     switch (o.getTag()) {
     case JSON_TAG_NUMBER:
         char buffer[32];
@@ -107,12 +107,14 @@ static void dumpValue(std::ostringstream& os, const JsonValue& o, int shiftWidth
             os << "[]";
             break;
         }
-        os << "[\n";
+        os << "[" << linefeed;
         for (auto i : o) {
             if (shiftWidth > 0)
                 os << std::setw(indent + shiftWidth) << " " << std::setw(0);
-            dumpValue(os, i->value, shiftWidth, indent + shiftWidth);
-            os << (i->next ? ",\n" : "\n");
+            dumpValue(os, i->value, shiftWidth, linefeed, indent + shiftWidth);
+            if (i->next)
+                os << ",";
+            os << linefeed;
         }
         if (indent > 0)
             os << std::setw(indent) << " " << std::setw(0);
@@ -123,14 +125,16 @@ static void dumpValue(std::ostringstream& os, const JsonValue& o, int shiftWidth
             os << "{}";
             break;
         }
-        os << "{\n";
+        os << "{" << linefeed;
         for (auto i : o) {
             if (shiftWidth > 0)
                 os << std::setw(indent + shiftWidth) << " " << std::setw(0);
             dumpString(os, i->key);
-            os << ": ";
-            dumpValue(os, i->value, shiftWidth, indent + shiftWidth);
-            os << (i->next ? ",\n" : "\n");
+            os << ":";
+            dumpValue(os, i->value, shiftWidth, linefeed, indent + shiftWidth);
+            if (i->next)
+                os << ",";
+            os << linefeed;
         }
         if (indent > 0)
             os << std::setw(indent) << " " << std::setw(0);
@@ -199,7 +203,7 @@ public:
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const GasonParseResult* pr = static_cast<const GasonParseResult*>(parseResult);
         std::ostringstream os;
-        dumpValue(os, pr->value, 4);
+        dumpValue(os, pr->value, 4, "\n");
         GasonStringResult* result = new GasonStringResult;
         result->s = os.str();
         return result;

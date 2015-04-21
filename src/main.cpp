@@ -772,7 +772,9 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             continue;
 
         ParseResultBase* pr = test.Parse(json, length);
-        fprintf(fp, "Parse Validation,%s,pass%d,%s\n", test.GetName(), i, pr != 0 ? "true" : "false");
+        bool result = pr != 0;
+        fprintf(fp, "Parse Validation,%s,pass%d,%s\n", test.GetName(), i, result ? "true" : "false");
+        printf("pass%d: %s\n", i, result ? "true" : "false");
         delete pr;
 
         free(json);
@@ -792,7 +794,9 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             continue;
 
         ParseResultBase* pr = test.Parse(json, length);
-        fprintf(fp, "Parse Validation,%s,fail%d,%s\n", test.GetName(), i, pr == 0 ? "true" : "false");
+        bool result = pr == 0;
+        fprintf(fp, "Parse Validation,%s,fail%d,%s\n", test.GetName(), i, result ? "true" : "false");
+        printf("fail%d: %s\n", i, result ? "true" : "false");
         delete pr;
 
         free(json);
@@ -813,21 +817,40 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
 
         ParseResultBase* pr = test.Parse(json, length);
         bool result = false;
+        bool terminate = false;
         if (pr) {
             StringResultBase* sr = test.Stringify(pr);
             delete pr;
 
             if (sr) {
-                result = strcmp(json, sr->c_str()) == 0;
+                // Some libraries must produce newlines/tabs, skip them in comparison.
+                const char* s = sr->c_str();
+                result = true;
+                for (size_t i = 0; i < length; ++i, ++s) {
+                    while (*s == '\n' || *s == '\t')
+                        ++s;
+                    if (json[i] != *s) {
+                        result = false;
+                        break;
+                    }
+                }
+
+                printf("roundtrip%02d: %s\n", i, result ? "true" : "false");
+
                 if (!result)
                     printf("Expect: %s\nActual: %s\n\n", json, sr->c_str());
                 delete sr;
             }
+            else
+                terminate = true; // This library does not support stringify, terminate this test
         }
 
-        fprintf(fp, "Roundtrip,%s,roundtrip%02d,%s\n", test.GetName(), i, result ? "true" : "false");
-
         free(json);
+
+        if (terminate)
+            break;
+
+        fprintf(fp, "Roundtrip,%s,roundtrip%02d,%s\n", test.GetName(), i, result ? "true" : "false");
 
         MEMORYSTAT_CHECKMEMORYLEAK();
     }

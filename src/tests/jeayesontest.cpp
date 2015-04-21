@@ -76,8 +76,25 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JeayesonParseResult* pr = new JeayesonParseResult;
-        pr->root = map_t(json);
-    	return pr;
+        // Determine object or array
+        for (size_t i = 0; i < length; i++) {
+            switch (json[i]) {
+                case '{':
+                    pr->root = map_t(json);
+                    return pr;
+                case '[':
+                    pr->root = array_t(json);
+                    return pr;
+                case ' ':
+                case '\t':
+                case '\n':
+                case '\r':
+                    continue;
+            }
+            break; // Unknown first non-whitespace character
+        }
+        delete pr;
+        return 0;
     }
 #endif
 

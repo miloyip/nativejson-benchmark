@@ -7,12 +7,21 @@
 
 using namespace jsonxx;
 
-void GenObjectStat(Stat& s, const Object& o);
-
 static void GenStat(Stat& s, const Value& v) {
     switch (v.type_) {
     case Value::OBJECT_:
-        GenObjectStat(s, v.get<Object>());
+        {
+            const Object& o = v.get<Object>();
+            Object::container::const_iterator itr = o.kv_map().begin();
+            Object::container::const_iterator end = o.kv_map().end();
+            for (; itr != end; ++itr) {
+                s.stringLength += itr->first.size(); // key
+                GenStat(s, *itr->second);
+            }
+            s.objectCount++;
+            s.memberCount += o.size();
+            s.stringCount += o.size();  // Key
+        }
         break;
 
     case Value::ARRAY_:
@@ -52,21 +61,9 @@ static void GenStat(Stat& s, const Value& v) {
     }
 }
 
-void GenObjectStat(Stat& s, const Object& o) {
-    Object::container::const_iterator itr = o.kv_map().begin();
-    Object::container::const_iterator end = o.kv_map().end();
-    for (; itr != end; ++itr) {
-        s.stringLength += itr->first.size(); // key
-        GenStat(s, *itr->second);
-    }
-    s.objectCount++;
-    s.memberCount += o.size();
-    s.stringCount += o.size();  // Key
-}
-
 class JsonxxParseResult : public ParseResultBase {
 public:
-    Object o;
+    Value v;
 };
 
 class JsonxxStringResult : public StringResultBase {
@@ -87,7 +84,7 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JsonxxParseResult* pr = new JsonxxParseResult;
-        if (!pr->o.parse(json)) {
+        if (!pr->v.parse(json)) {
             delete pr;
             return 0;
         }
@@ -99,7 +96,7 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
         JsonxxStringResult* sr = new JsonxxStringResult;
-        sr->s = pr->o.json();
+        sr->s = pr->v.is<Object>() ? pr->v.get<Object>().json() : pr->v.get<Array>().json();
         return sr;
     }
 #endif
@@ -108,7 +105,7 @@ public:
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const JsonxxParseResult* pr = static_cast<const JsonxxParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
-        GenStat(*stat, pr->o);
+        GenStat(*stat, pr->v);
         return true;
     }
 #endif

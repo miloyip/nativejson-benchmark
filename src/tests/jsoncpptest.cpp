@@ -84,6 +84,7 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JsoncppParseResult* pr = static_cast<const JsoncppParseResult*>(parseResult);
         FastWriter writer;
+        writer.omitEndingLineFeed();
         JsoncppStringResult* sr = new JsoncppStringResult;
         sr->s = writer.write(pr->root);
         return sr;

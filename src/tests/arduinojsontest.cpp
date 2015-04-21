@@ -57,12 +57,12 @@ static void GenStat(Stat& stat, const JsonVariant& v) {
 
 class ArduinojsonParseResult : public ParseResultBase {
 public:
-    ArduinojsonParseResult() : buffer(), root() {}
+    ArduinojsonParseResult() : buffer() {}
     ~ArduinojsonParseResult() { free(buffer); }
 
     char* buffer;
     DynamicJsonBuffer jsonBuffer;
-    JsonObject* root;
+    JsonVariant root;
 };
 
 class ArduinojsonStringResult : public StringResultBase {
@@ -85,12 +85,41 @@ public:
         ArduinojsonParseResult* pr = new ArduinojsonParseResult;
         pr->buffer = (char*)malloc(length);
         memcpy(pr->buffer, json, length);
-        pr->root = &pr->jsonBuffer.parseObject(pr->buffer);
-        if (!pr->root->success()) {
-            delete pr;
-            return 0;
+
+        // Determine object or array
+        for (size_t i = 0; i < length; i++) {
+            switch (json[i]) {
+                case '{':
+                    {
+                        JsonObject& o = pr->jsonBuffer.parseObject(pr->buffer);
+                        if (!o.success()) {
+                            delete pr;
+                            return 0;
+                        }
+                        pr->root.set(o);
+                    }
+                    return pr;
+                case '[':
+                    {
+                        JsonArray& a = pr->jsonBuffer.parseArray(pr->buffer);
+                        if (!a.success()) {
+                            delete pr;
+                            return 0;
+                        }
+                        pr->root.set(a);
+                    }
+                    return pr;
+                case ' ':
+                case '\t':
+                case '\n':
+                case '\r':
+                    continue;
+            }
+            // Unknown first non-whitespace character
+            break;
         }
-    	return pr;
+        delete pr;
+        return 0;
     }
 #endif
 
@@ -100,7 +129,7 @@ public:
         ArduinojsonStringResult* sr = new ArduinojsonStringResult;
         std::ostringstream os;
         StreamPrintAdapter adapter(os);
-        pr->root->printTo(adapter);
+        pr->root.printTo(adapter);
         sr->s = os.str();
         return sr;
     }
@@ -112,7 +141,7 @@ public:
         ArduinojsonStringResult* sr = new ArduinojsonStringResult;
         std::ostringstream os;
         StreamPrintAdapter adapter(os);
-        pr->root->prettyPrintTo(adapter);
+        pr->root.prettyPrintTo(adapter);
         sr->s = os.str();
         return sr;
     }
@@ -122,9 +151,7 @@ public:
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const ArduinojsonParseResult* pr = static_cast<const ArduinojsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
-        JsonVariant v;
-        v.set(const_cast<JsonObject&>(*pr->root));
-        GenStat(*stat, v);
+        GenStat(*stat, pr->root);
         return true;
     }
 #endif
