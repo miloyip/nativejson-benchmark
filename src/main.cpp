@@ -915,7 +915,7 @@ int main(int, char* argv[]) {
         TestList& tests = TestManager::Instance().GetTests();
         std::sort(tests.begin(), tests.end());
 
-        //VerifyAll(testJsons);
+        VerifyAll(testJsons);
         BenchAll(testJsons);
 
         FreeFiles(testJsons);
