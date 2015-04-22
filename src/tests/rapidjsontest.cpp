@@ -8,6 +8,18 @@
 #  define RAPIDJSON_SSE2
 #endif
 
+#ifndef TEST_PARSE_FLAG
+#define TEST_PARSE_FLAG kParseDefaultFlags
+#endif
+
+#ifndef TEST_NAME
+#define TEST_NAME "RapidJSON (C++)"
+#endif
+
+#ifndef TEST_CLASS
+#define TEST_CLASS RapidjsonTest
+#endif
+
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
@@ -87,10 +99,10 @@ public:
     StringBuffer sb;
 };
 
-class RapidjsonTest : public TestBase {
+class TEST_CLASS : public TestBase {
 public:
 #if TEST_INFO
-    virtual const char* GetName() const { return "RapidJSON (C++)"; }
+    virtual const char* GetName() const { return TEST_NAME; }
     virtual const char* GetFilename() const { return __FILE__; }
 #endif
 
@@ -98,7 +110,7 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         RapidjsonParseResult* pr = new RapidjsonParseResult;
-        if (pr->document.Parse(json).HasParseError()) {
+        if (pr->document.Parse<TEST_PARSE_FLAG>(json).HasParseError()) {
             delete pr;
             return 0;
         }
@@ -147,7 +159,7 @@ public:
         RapidjsonStringResult* sr = new RapidjsonStringResult;
         StringStream is(json);
         Writer<StringBuffer> writer(sr->sb);
-        if (!reader.Parse(is, writer)) {
+        if (!reader.Parse<TEST_PARSE_FLAG>(is, writer)) {
             delete sr;
             return 0;
         }
@@ -162,7 +174,7 @@ public:
         Reader reader;
         StringStream is(json);
         StatHandler<> handler(*stat);
-        return reader.Parse(is, handler);
+        return reader.Parse<TEST_PARSE_FLAG>(is, handler);
     }
 #endif
 
@@ -176,6 +188,25 @@ public:
         return reader.Parse(is, handler);
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        Document doc;
+        if (doc.Parse<TEST_PARSE_FLAG>(json).HasParseError() || !doc.IsArray() || doc.Size() != 1 || !doc[0].IsNumber())
+            return false;
+        *d = doc[0].GetDouble();
+        return true;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        Document doc;
+        if (doc.Parse<TEST_PARSE_FLAG>(json).HasParseError() || !doc.IsArray() || doc.Size() != 1 || !doc[0].IsString())
+            return false;
+        *s = doc[0].GetString();
+        *length = doc[0].GetStringLength();
+        return true;
+    }
+#endif
 };
 
-REGISTER_TEST(RapidjsonTest);
+REGISTER_TEST(TEST_CLASS);

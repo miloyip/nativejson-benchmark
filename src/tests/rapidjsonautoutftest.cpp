@@ -31,7 +31,7 @@ public:
         MemoryStream ms(json, length);
         RapidjsonAutoUTFParseResult* pr = new RapidjsonAutoUTFParseResult;
         AutoUTFInputStream<unsigned, MemoryStream> is(ms);
-        if (pr->document.ParseStream<0, AutoUTF<unsigned> >(is).HasParseError()) {
+        if (pr->document.ParseStream<kParseDefaultFlags, AutoUTF<unsigned> >(is).HasParseError()) {
             delete pr;
             return 0;
         }
@@ -39,6 +39,30 @@ public:
     }
 #endif
 
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        MemoryStream ms(json, strlen(json));
+        RapidjsonAutoUTFParseResult* pr = new RapidjsonAutoUTFParseResult;
+        AutoUTFInputStream<unsigned, MemoryStream> is(ms);
+        Document doc;
+        if (doc.ParseStream<kParseDefaultFlags, AutoUTF<unsigned> >(is).HasParseError() || !doc.IsArray() || doc.Size() != 1 || !doc[0].IsNumber())
+            return false;
+        *d = doc[0].GetDouble();
+        return true;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        MemoryStream ms(json, strlen(json));
+        RapidjsonAutoUTFParseResult* pr = new RapidjsonAutoUTFParseResult;
+        AutoUTFInputStream<unsigned, MemoryStream> is(ms);
+        Document doc;
+        if (doc.ParseStream<kParseDefaultFlags, AutoUTF<unsigned> >(is).HasParseError() || !doc.IsArray() || doc.Size() != 1 || !doc[0].IsString())
+            return false;
+        *s = doc[0].GetString();
+        *length = doc[0].GetStringLength();
+        return true;
+    }
+#endif
 };
 
 REGISTER_TEST(RapidjsonAutoUTFTest);

@@ -138,6 +138,24 @@ public:
     }
 #endif
 
+#if TEST_CONFORMANCE
+    // Parse a JSON of an array containing one double
+    // Return false if it is failed to parse.
+    // E.g. json = "[1.0]" -> d = 1.0
+    virtual bool ParseDouble(const char* json, double* d) const {
+        (void)json;
+        (void)d;
+        return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        (void)json;
+        (void)s;
+        (void)length;
+        return false;
+    }
+#endif
+
 protected:
     const char* name_;
 };
