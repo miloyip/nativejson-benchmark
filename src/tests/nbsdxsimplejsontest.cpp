@@ -5,55 +5,50 @@
 #include "nbsdxSimpleJSON/json.hpp"
 
 using namespace json;
-/*
+
 static void GenStat(Stat& stat, const JSON& v) {
-    switch (v.JSONType()) {
+    switch (const_cast<JSON&>(v).JSONType()) {
     case JSON::Class::Array:
-        {
-            const Array& a = v.getArray();
-            for (Array::const_iterator itr = a.begin(); itr != a.end(); ++itr)
-                GenStat(stat, *itr);
-            stat.arrayCount++;
-            stat.elementCount += a.size();
+        for (auto& i : const_cast<JSON&>(v).ArrayRange()) {
+            GenStat(stat, i);
+            stat.elementCount++;
         }
+        stat.arrayCount++;
         break;
 
-    case JSON::OBJECT:
-        {
-            const Object& o = v.getObject();
-            for (Object::const_iterator itr = o.begin(); itr != o.end(); ++itr) {
-                GenStat(stat, itr->second);
-                stat.stringLength += itr->first.size();
-            }
-            stat.objectCount++;
-            stat.memberCount += o.size();
-            stat.stringCount += o.size();
+    case JSON::Class::Object:
+        for (auto& i : const_cast<JSON&>(v).ObjectRange()) {
+            GenStat(stat, i.second);
+            stat.stringLength += i.first.size();
+            stat.stringCount++;
+            stat.elementCount++;
         }
+        stat.objectCount++;
         break;
 
-    case JSON::STRING: 
+    case JSON::Class::String:
         stat.stringCount++;
-        stat.stringLength += v.getString().size();
+        stat.stringLength += v.ToString().size();
         break;
 
-    case JSON::INTEGER:
-    case JSON::DOUBLE:
+    case JSON::Class::Integral:
+    case JSON::Class::Floating:
         stat.numberCount++;
         break;
 
-    case JSON::BOOLEAN:
-        if (v.getBoolean())
+    case JSON::Class::Boolean:
+        if (v.ToBool())
             stat.trueCount++;
         else
             stat.falseCount++;
         break;
 
-    case JSON::NULL_VALUE:
+    case JSON::Class::Null:
         stat.nullCount++;
         break;
     }
 }
-*/
+
 class NbsdxsimplejsonParseResult : public ParseResultBase {
 public:
     JSON root;
@@ -68,7 +63,7 @@ public:
 class NbsdxsimplejsonTest : public TestBase {
 public:
 #if TEST_INFO
-    virtual const char* GetName() const { return "nbsdx/SimpleJSON (C++11)"; }
+    virtual const char* GetName() const { return "nbsdx_SimpleJSON (C++11)"; }
     virtual const char* GetFilename() const { return __FILE__; }
 #endif
 
@@ -105,14 +100,14 @@ public:
     }
 #endif
 
-// #if TEST_STATISTICS
-//     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
-//         const NbsdxsimplejsonParseResult* pr = static_cast<const NbsdxsimplejsonParseResult*>(parseResult);
-//         memset(stat, 0, sizeof(Stat));
-//         GenStat(*stat, pr->root);
-//         return true;
-//     }
-// #endif
+#if TEST_STATISTICS
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
+        const NbsdxsimplejsonParseResult* pr = static_cast<const NbsdxsimplejsonParseResult*>(parseResult);
+        memset(stat, 0, sizeof(Stat));
+        GenStat(*stat, pr->root);
+        return true;
+    }
+#endif
 };
 
 REGISTER_TEST(NbsdxsimplejsonTest);
