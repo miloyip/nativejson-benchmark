@@ -1,5 +1,7 @@
 #include "../test.h"
 
+#if !defined(_MSC_VER) // runtime crash in Visual Studio
+
 #include "jsoncons/json.hpp"
 
 using namespace jsoncons;
@@ -110,3 +112,5 @@ public:
 };
 
 REGISTER_TEST(JsonconsTest);
+
+#endif

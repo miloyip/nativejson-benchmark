@@ -5,7 +5,7 @@
 #pragma warning (disable:4244) // conversion from 'int' to 'char', possible loss of data
 #pragma warning (disable:4800) // 'uint64_t' : forcing value to bool 'true' or 'false' (performance warning)
 #endif
-#include "gason/gason.cpp"
+#include "gason/src/gason.cpp"
 #include <cstdio>
 #include <cstdlib>
 #include <iomanip>
@@ -13,7 +13,7 @@
 
 static void GenStat(Stat& stat, const JsonValue& v) {
     switch (v.getTag()) {
-    case JSON_TAG_ARRAY:
+    case JSON_ARRAY:
         for (auto const& i : v) {
             GenStat(stat, i->value);
             stat.elementCount++;
@@ -21,7 +21,7 @@ static void GenStat(Stat& stat, const JsonValue& v) {
         stat.arrayCount++;
         break;
 
-    case JSON_TAG_OBJECT:
+    case JSON_OBJECT:
         for (auto const& i : v) {
             GenStat(stat, i->value);
             stat.memberCount++;
@@ -31,23 +31,24 @@ static void GenStat(Stat& stat, const JsonValue& v) {
         stat.objectCount++;
         break;
 
-    case JSON_TAG_STRING: 
+    case JSON_STRING: 
         stat.stringCount++;
         stat.stringLength += strlen(v.toString());
         break;
 
-    case JSON_TAG_NUMBER:
+    case JSON_NUMBER:
         stat.numberCount++;
         break;
 
-    case JSON_TAG_BOOL:
-        if (v.toBool())
-            stat.trueCount++;
-        else
-            stat.falseCount++;
+    case JSON_TRUE:
+        stat.trueCount++;
         break;
 
-    case JSON_TAG_NULL:
+    case JSON_FALSE:
+        stat.falseCount++;
+        break;
+
+    case JSON_NULL:
         stat.nullCount++;
         break;
     }
@@ -88,18 +89,21 @@ static void dumpString(std::ostringstream& os, const char *s) {
 
 static void dumpValue(std::ostringstream& os, const JsonValue& o, int shiftWidth, const std::string& linefeed = "", int indent = 0) {
     switch (o.getTag()) {
-    case JSON_TAG_NUMBER:
+    case JSON_NUMBER:
         char buffer[32];
         sprintf(buffer, "%f", o.toNumber());
         os << buffer;
         break;
-    case JSON_TAG_BOOL:
-        os << (o.toBool() ? "true" : "false");
+    case JSON_TRUE:
+        os << "true";
+        break;        
+    case JSON_FALSE:
+        os << "false";
         break;
-    case JSON_TAG_STRING:
+    case JSON_STRING:
         dumpString(os, o.toString());
         break;
-    case JSON_TAG_ARRAY:
+    case JSON_ARRAY:
         // It is not necessary to use o.toNode() to check if an array or object
         // is empty before iterating over its members, we do it here to allow
         // nicer pretty printing.
@@ -120,7 +124,7 @@ static void dumpValue(std::ostringstream& os, const JsonValue& o, int shiftWidth
             os << std::setw(indent) << " " << std::setw(0);
         os.put(']');
         break;
-    case JSON_TAG_OBJECT:
+    case JSON_OBJECT:
         if (!o.toNode()) {
             os << "{}";
             break;
@@ -140,7 +144,7 @@ static void dumpValue(std::ostringstream& os, const JsonValue& o, int shiftWidth
             os << std::setw(indent) << " " << std::setw(0);
         os.put('}');
         break;
-    case JSON_TAG_NULL:
+    case JSON_NULL:
         os << "null";
         break;
     }
@@ -180,7 +184,7 @@ public:
         // gason uses insitu parsing, the source json must make a copy.
         pr->json = (char*)malloc(length + 1);
         memcpy(pr->json, json, length + 1);
-        if (jsonParse(pr->json, &end, &pr->value, pr->allocator) != JSON_PARSE_OK) {
+        if (jsonParse(pr->json, &end, &pr->value, pr->allocator) != JSON_OK) {
             delete pr;
             return 0;
         }

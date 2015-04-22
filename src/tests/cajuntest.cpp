@@ -1,5 +1,7 @@
 #include "../test.h"
 
+#if !defined(_MSC_VER) // runtime crash in Visual Studio
+
 #include "cajun-jsonapi/include/cajun/json/reader.h"
 #include "cajun-jsonapi/include/cajun/json/writer.h"
 
@@ -111,3 +113,5 @@ public:
 };
 
 REGISTER_TEST(CajunTest);
+
+#endif

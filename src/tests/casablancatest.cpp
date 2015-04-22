@@ -6,18 +6,27 @@
 
 #include "casablanca/Release/src/pch/stdafx.h"
 
+#include "casablanca/Release/src/utilities/web_utilities.cpp" // Must compile this first
 #include "casablanca/Release/src/json/json.cpp"
 #include "casablanca/Release/src/json/json_parsing.cpp"
 #include "casablanca/Release/src/json/json_serialization.cpp"
 #include "casablanca/Release/src/utilities/asyncrt_utils.cpp"
 #include "casablanca/Release/src/http/common/http_msg.cpp"
 #include "casablanca/Release/src/http/common/http_helpers.cpp"
-#include "casablanca/Release/src/http/client/http_msg_client.cpp"
+#include "casablanca/Release/src/http/client/http_client_msg.cpp"
+#include "casablanca/Release/src/http/client/http_client_winhttp.cpp"
+#include "casablanca/Release/src/http/oauth/oauth1.cpp"
+#include "casablanca/Release/src/websockets/client/ws_client.cpp"
 #include "casablanca/Release/src/uri/uri.cpp"
 #include "casablanca/Release/src/uri/uri_builder.cpp"
 #include "casablanca/Release/src/uri/uri_parser.cpp"
+#include "casablanca/Release/src/utilities/base64.cpp"
 #include <strstream>
 #include <sstream>
+
+#pragma comment (lib, "Winhttp.lib")
+#pragma comment (lib, "Bcrypt.lib")
+#pragma comment (lib, "Crypt32.lib")
 
 using namespace web::json;
 //using namespace utility::conversions;
