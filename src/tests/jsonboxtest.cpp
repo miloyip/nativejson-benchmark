@@ -85,7 +85,13 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JsonboxParseResult* pr = new JsonboxParseResult;
-        pr->root.loadFromString(json);
+        try {
+            pr->root.loadFromString(json);
+        }
+        catch (...) {
+            delete pr;
+            return 0;
+        }
     	return pr;
     }
 #endif
