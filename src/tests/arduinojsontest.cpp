@@ -21,9 +21,9 @@ using namespace ArduinoJson;
 static void GenStat(Stat& stat, const JsonVariant& v) {
     if (v.is<const JsonArray&>()) {
         const JsonArray& a = v.asArray();
-        size_t size = a.size();
-        for (size_t i = 0; i < size; i++)
-            GenStat(stat, a[i]);
+        size_t size = 0;
+        for (JsonArray::const_iterator itr = a.begin(); itr != a.end(); ++itr)
+            GenStat(stat, *itr);
         stat.arrayCount++;
         stat.elementCount += size;
     }
