@@ -101,6 +101,33 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        Json root;
+        std::string err;
+        root = Json::parse(json, err);
+        if (err.empty() && root.is_array() && root.array_items().size() == 1 && root.array_items()[0].is_number()) {
+            *d = root.array_items()[0].number_value();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        Json root;
+        std::string err;
+        root = Json::parse(json, err);
+        if (err.empty() && root.is_array() && root.array_items().size() == 1 && root.array_items()[0].is_string()) {
+            *s = root.array_items()[0].string_value().c_str();
+            *length = root.array_items()[0].string_value().size();
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(Dropboxjson11Test);

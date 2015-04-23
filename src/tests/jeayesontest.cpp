@@ -117,6 +117,30 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        try {
+            *d = array_t(json)[0].as<double>();
+            return true;
+        }
+        catch (...) {
+            return false;
+        }
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        try {
+            std::string ss = array_t(json)[0].as<std::string>();
+            *s = ss.c_str();
+            *length = ss.size();
+            return true;
+        }
+        catch (...) {
+            return false;
+        }
+    }
+#endif
 };
 
 REGISTER_TEST(JeayesonTest);

@@ -108,6 +108,31 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        try {
+            JSON root = JSON::Load(json);
+            *d = root[0].ToFloat();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        try {
+            JSON root = JSON::Load(json);
+            *s = root[0].ToString().c_str();
+            *length = root[0].ToString().size();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+#endif
 };
 
 REGISTER_TEST(NbsdxsimplejsonTest);

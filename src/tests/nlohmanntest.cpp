@@ -106,6 +106,32 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* j, double* d) const {
+        try {
+            json root = json::parse(j);
+            *d = root[0].get<double>();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+
+    virtual bool ParseString(const char* j, const char** s, size_t *length) const {
+        try {
+            json root = json::parse(j);
+            std::string ss = root[0].get<std::string>();
+            *s = ss.c_str();
+            *length = ss.size();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+#endif
 };
 
 REGISTER_TEST(NlohmannTest);

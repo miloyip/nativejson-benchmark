@@ -128,6 +128,41 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        JanssonParseResult pr;
+        json_error_t error;
+        pr.root = json_loads(json, 0, &error);
+        if (pr.root && 
+            json_is_array(pr.root) && 
+            json_array_size(pr.root) == 1 &&
+            json_is_real(json_array_get(pr.root, 0)))
+        {
+            *d = json_real_value(json_array_get(pr.root, 0));
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        JanssonParseResult pr;
+        json_error_t error;
+        pr.root = json_loads(json, 0, &error);
+        if (pr.root && 
+            json_is_array(pr.root) && 
+            json_array_size(pr.root) == 1 &&
+            json_is_string(json_array_get(pr.root, 0)))
+        {
+            *s = json_string_value(json_array_get(pr.root, 0));
+            *length = json_string_length(json_array_get(pr.root, 0));
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(JanssonTest);

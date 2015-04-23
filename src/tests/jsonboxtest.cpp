@@ -126,6 +126,33 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        try {
+            Value root;
+            root.loadFromString(json);
+            *d = root.getArray()[0].getDouble();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        try {
+            Value root;
+            root.loadFromString(json);
+            *s = root.getArray()[0].getString().c_str();
+            *length = root.getArray()[0].getString().size();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+#endif
 };
 
 REGISTER_TEST(JsonboxTest);

@@ -89,6 +89,39 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        ParsonParseResult pr;
+        pr.root = json_parse_string(json);
+        if (pr.root &&
+            json_value_get_type(pr.root) == JSONArray &&
+            json_array_get_count(json_value_get_array(pr.root)) == 1 &&
+            json_value_get_type(json_array_get_value(json_value_get_array(pr.root), 0)) == JSONNumber)
+        {
+            *d = json_value_get_number(json_array_get_value(json_value_get_array(pr.root), 0));
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        ParsonParseResult pr;
+        pr.root = json_parse_string(json);
+        if (pr.root &&
+            json_value_get_type(pr.root) == JSONArray &&
+            json_array_get_count(json_value_get_array(pr.root)) == 1 &&
+            json_value_get_type(json_array_get_value(json_value_get_array(pr.root), 0)) == JSONString)
+        {
+            *s = json_value_get_string(json_array_get_value(json_value_get_array(pr.root), 0));
+            *length = strlen(*s);
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(ParsonTest);

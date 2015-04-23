@@ -118,6 +118,61 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        SimplejsonParseResult pr;
+
+        char* backupLocale = std::setlocale(LC_ALL, 0);
+        std::setlocale(LC_ALL, "en_US.UTF-8");
+        
+        pr.root = JSON::Parse(json); // Use mcbstowcs() internally
+
+        std::setlocale(LC_ALL, backupLocale);
+
+        if (pr.root &&
+            pr.root->IsArray() &&
+            pr.root->AsArray().size() == 1 &&
+            pr.root->AsArray()[0]->IsNumber())
+        {
+            *d = pr.root->AsArray()[0]->AsNumber();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *l) const {
+        SimplejsonParseResult pr;
+        static SimplejsonStringResult sr; // hacking for storing a converted result
+        free(sr.s);
+        sr.s = 0;
+
+        char* backupLocale = std::setlocale(LC_ALL, 0);
+        std::setlocale(LC_ALL, "en_US.UTF-8");
+        
+        pr.root = JSON::Parse(json); // Use mcbstowcs() internally
+
+        bool ret = false;
+        if (pr.root &&
+            pr.root->IsArray() &&
+            pr.root->AsArray().size() == 1 &&
+            pr.root->AsArray()[0]->IsString())
+        {
+            std::wstring ss = pr.root->AsArray()[0]->AsString();
+            size_t length = ss.size() * 2 + 1;
+            sr.s = (char*)malloc(length);
+            if (wcstombs(sr.s, ss.c_str(), length) != (size_t)-1) {
+                *s = sr.s;
+                *l = ss.size();
+                ret = true;
+            }
+        }
+
+        std::setlocale(LC_ALL, backupLocale);
+        return ret;
+    }
+#endif
 };
 
 REGISTER_TEST(SimplejsonTest);

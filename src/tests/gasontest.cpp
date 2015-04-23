@@ -222,6 +222,41 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        GasonParseResult pr;
+        char* end = 0;
+        pr.json = strdup(json);
+        if (jsonParse(pr.json, &end, &pr.value, pr.allocator) == JSON_OK &&
+            pr.value.getTag() == JSON_ARRAY && 
+            pr.value.toNode() &&
+            pr.value.toNode()->value.getTag() == JSON_NUMBER)
+        {
+            *d = pr.value.toNode()->value.toNumber();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        GasonParseResult pr;
+        char* end = 0;
+        pr.json = strdup(json);
+        if (jsonParse(pr.json, &end, &pr.value, pr.allocator) == JSON_OK &&
+            pr.value.getTag() == JSON_ARRAY && 
+            pr.value.toNode() &&
+            pr.value.toNode()->value.getTag() == JSON_STRING)
+        {
+            *s = pr.value.toNode()->value.toString();
+            *length = strlen(*s);
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(GasonTest);

@@ -108,6 +108,31 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        CjsonParseResult pr;
+        pr.root = cJSON_Parse(json);
+        if (pr.root && pr.root->type == cJSON_Array && pr.root->child && pr.root->child->type == cJSON_Number) {
+            *d = pr.root->child->valuedouble;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        CjsonParseResult pr;
+        pr.root = cJSON_Parse(json);
+        if (pr.root && pr.root->type == cJSON_Array && pr.root->child && pr.root->child->type == cJSON_String) {
+            *s = pr.root->child->valuestring;
+            *length = strlen(*s);
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(CjsonTest);

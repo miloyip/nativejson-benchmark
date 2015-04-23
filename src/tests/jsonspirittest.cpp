@@ -112,6 +112,35 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        Value root;
+        if (read_string(std::string(json), root)) {
+            try {
+                *d = root.get_array()[0].get_real();
+                return true;
+            }
+            catch (...) {
+            }
+        }
+        return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        Value root;
+        if (read_string(std::string(json), root)) {
+            try {
+                *s = root.get_array()[0].get_str().c_str();
+                *length = root.get_array()[0].get_str().size();
+                return true;
+            }
+            catch (...) {
+            }
+        }
+        return false;
+    }
+#endif
 };
 
 REGISTER_TEST(JsonspiritTest);

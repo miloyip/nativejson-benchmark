@@ -130,6 +130,31 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        try {
+            value v = parse(json);
+            *d = v[0].as_decimal();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        try {
+            value v = parse(json);
+            *s = v[0].as_string().c_str();
+            *length = v[0].as_string().size();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+#endif
 };
 
 REGISTER_TEST(VoorheesTest);

@@ -126,6 +126,43 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        UdpjsonParseResult pr;
+        json_settings settings = json_settings();
+        settings.value_extra = json_builder_extra;  /* space for json-builder state */
+        char error[128];
+        pr.root = json_parse_ex(&settings, json, strlen(json), error);
+        if (pr.root &&
+            pr.root->type == json_array &&
+            pr.root->u.array.length == 1 &&
+            pr.root->u.array.values[0]->type == json_double)
+        {
+            *d = pr.root->u.array.values[0]->u.dbl;
+            return true;
+        }
+        return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        UdpjsonParseResult pr;
+        json_settings settings = json_settings();
+        settings.value_extra = json_builder_extra;  /* space for json-builder state */
+        char error[128];
+        pr.root = json_parse_ex(&settings, json, strlen(json), error);
+        if (pr.root &&
+            pr.root->type == json_array &&
+            pr.root->u.array.length == 1 &&
+            pr.root->u.array.values[0]->type == json_string)
+        {
+            *s = pr.root->u.array.values[0]->u.string.ptr;
+            *length = pr.root->u.array.values[0]->u.string.length;
+            return true;
+        }
+        return false;
+    }
+#endif
 };
 
 REGISTER_TEST(UdpjsonTest);

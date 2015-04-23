@@ -499,6 +499,39 @@ public:
         return ret;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        VinenthzParseResult* pr = static_cast<VinenthzParseResult*>(Parse(json, strlen(json)));
+        bool ret = false;
+        if (pr && 
+            pr->root->type == JSON_ARRAY_BEGIN &&
+            pr->root->length == 1 &&
+            pr->root->u.array[0]->type == JSON_FLOAT)
+        {
+            *d = pr->root->u.array[0]->u.float_val;
+            ret = true;
+        }
+        delete pr;
+        return ret;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        VinenthzParseResult* pr = static_cast<VinenthzParseResult*>(Parse(json, strlen(json)));
+        bool ret = false;
+        if (pr && 
+            pr->root->type == JSON_ARRAY_BEGIN &&
+            pr->root->length == 1 &&
+            pr->root->u.array[0]->type == JSON_STRING)
+        {
+            *s = pr->root->u.array[0]->u.str_val;
+            *length = pr->root->u.array[0]->length;
+            ret = true;
+        }
+        delete pr;
+        return ret;
+    }
+#endif
 };
 
 REGISTER_TEST(VinenthzTest);

@@ -77,9 +77,9 @@ public:
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         CajunParseResult* pr = new CajunParseResult;
-        std::istringstream is(std::string(json, length));
         try
         {
+            std::istringstream is(std::string(json, length));
             Reader::Read(pr->root, is);
         }
         catch (...) {
@@ -108,6 +108,38 @@ public:
         StatVisitor visitor(*stat);
         pr->root.Accept(visitor);
         return true;
+    }
+#endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        try
+        {
+            std::istringstream is(json);
+            UnknownElement root;
+            Reader::Read(root, is);
+            *d = (Number)root[0];
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        try
+        {
+            UnknownElement root;
+            std::istringstream is(json);
+            Reader::Read(root, is);
+            std::string& ss = (String&)root[0];
+            *s = ss.c_str();
+            *length = ss.size();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
     }
 #endif
 };

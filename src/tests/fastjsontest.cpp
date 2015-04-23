@@ -127,6 +127,39 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        FastjsonParseResult pr;
+        std::string error_message;
+        if (dom::parse_string(json, &pr.token, &pr.chunk, 0, 0, &error_message) &&
+            pr.token.type == Token::ArrayToken && pr.token.array.ptr &&
+            pr.token.array.ptr->tok.type == Token::ValueToken &&
+            pr.token.array.ptr->tok.value.type_hint == ValueType::NumberHint)
+        {
+            *d = atof(pr.token.array.ptr->tok.value.ptr);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        FastjsonParseResult pr;
+        std::string error_message;
+        if (dom::parse_string(json, &pr.token, &pr.chunk, 0, 0, &error_message) &&
+            pr.token.type == Token::ArrayToken && pr.token.array.ptr &&
+            pr.token.array.ptr->tok.type == Token::ValueToken &&
+            pr.token.array.ptr->tok.value.type_hint == ValueType::StringHint)
+        {
+            *s = pr.token.array.ptr->tok.value.ptr;
+            *length = pr.token.array.ptr->tok.value.size;
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(FastjsonTest);

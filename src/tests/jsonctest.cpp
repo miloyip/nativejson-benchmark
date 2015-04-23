@@ -27,7 +27,7 @@ static void GenStat(Stat* s, json_object* v) {
 
     case json_type_string:
         s->stringCount++;
-        s->stringLength += strlen(json_object_get_string(v));
+        s->stringLength += json_object_get_string_len(v);
         break;
 
     case json_type_int:
@@ -112,6 +112,39 @@ public:
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, (json_object*)pr->root);
         return true;
+    }
+#endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        JsoncParseResult pr;
+        pr.root = json_tokener_parse(json);
+        if (pr.root && 
+            json_object_get_type(pr.root) == json_type_array &&
+            json_object_array_length(pr.root) == 1 &&
+            json_object_get_type(json_object_array_get_idx(pr.root, 0)) == json_type_double) 
+        {
+            *d = json_object_get_double(json_object_array_get_idx(pr.root, 0));
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        JsoncParseResult pr;
+        pr.root = json_tokener_parse(json);
+        if (pr.root && 
+            json_object_get_type(pr.root) == json_type_array &&
+            json_object_array_length(pr.root) == 1 &&
+            json_object_get_type(json_object_array_get_idx(pr.root, 0)) == json_type_string) 
+        {
+            *s = json_object_get_string(json_object_array_get_idx(pr.root, 0));
+            *length = json_object_get_string_len(json_object_array_get_idx(pr.root, 0));
+            return true;
+        }
+        else
+            return false;
     }
 #endif
 };

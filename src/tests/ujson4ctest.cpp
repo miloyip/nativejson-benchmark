@@ -1,6 +1,7 @@
 #include "../test.h"
 
 #include "ujson4c/src/ujdecode.h"
+#include <clocale>
 
 extern "C" {
 
@@ -91,6 +92,46 @@ public:
         memset(stat, 0, sizeof(Stat));
         GenStat(stat, pr->root);
         return true;
+    }
+#endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        Ujson4cParseResult pr;
+		pr.root = UJDecode(json, strlen(json), NULL, &pr.state);
+		if (pr.root && UJIsArray(pr.root)) {
+			void* iter = UJBeginArray(pr.root);
+			UJObject value;
+			if (UJIterArray(&iter, &value) && UJIsDouble(value)) {
+				*d = UJNumericFloat(value);
+				return true;
+			}
+		}
+        return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        Ujson4cParseResult pr;
+        static std::vector<char> v; // hack for returning temp result
+		pr.root = UJDecode(json, strlen(json), NULL, &pr.state);
+		if (pr.root && UJIsArray(pr.root)) {
+			void* iter = UJBeginArray(pr.root);
+			UJObject value;
+			if (UJIterArray(&iter, &value) && UJIsString(value)) {
+				const wchar_t* w = UJReadString(value, length);
+			    char* backupLocale = std::setlocale(LC_ALL, 0);
+			    std::setlocale(LC_ALL, "en_US.UTF-8");
+			    v.resize(*length * 2 + 1);
+			    bool ret = false;
+                if (wcstombs(&v.front(), w, *length) != (size_t)-1) {
+                	*s = &v.front();
+                	ret = true;
+                }
+		        std::setlocale(LC_ALL, backupLocale);				
+				return ret;
+			}
+		}
+        return false;
     }
 #endif
 };

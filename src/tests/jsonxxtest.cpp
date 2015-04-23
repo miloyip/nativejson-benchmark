@@ -109,6 +109,30 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        Value v;
+        if (v.parse(json) && v.is<Array>() && v.get<Array>().size() == 1) {
+            *d = (double)v.get<Array>().get<Number>(0);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        Value v;
+        if (v.parse(json) && v.is<Array>() && v.get<Array>().size() == 1) {
+            std::string& ss = v.get<Array>().get<String>(0);
+            *s = ss.c_str();
+            *length = ss.size();
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(JsonxxTest);

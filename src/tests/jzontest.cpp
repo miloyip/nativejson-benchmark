@@ -106,6 +106,32 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        Parser parser;
+        Node root = parser.parseString(json);
+        if (parser.getError().empty() && root.isArray() && root.getCount() == 1 && root.get(0).isNumber()) {
+            *d = root.get(0).toDouble();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        Parser parser;
+        Node root = parser.parseString(json);
+        if (parser.getError().empty() && root.isArray() && root.getCount() == 1 && root.get(0).isString()) {
+            std::string ss = root.get(0).toString();
+            *s = ss.c_str();
+            *length = ss.size();
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(JzonTest);

@@ -91,6 +91,42 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        value v;
+        std::string err;
+        parse(v, json, json + strlen(json), &err);
+        if (err.empty() &&
+            v.is<array>() &&
+            v.get<array>().size() == 1 &&
+            v.get<array>()[0].is<double>())
+        {
+            *d = v.get<array>()[0].get<double>();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        value v;
+        std::string err;
+        parse(v, json, json + strlen(json), &err);
+        if (err.empty() &&
+            v.is<array>() &&
+            v.get<array>().size() == 1 &&
+            v.get<array>()[0].is<std::string>())
+        {
+            std::string ss = v.get<array>()[0].get<std::string>();
+            *s = ss.c_str();
+            *length = ss.size();
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(PicojsonTest);

@@ -155,6 +155,35 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        ArduinojsonParseResult pr;
+        pr.buffer = strdup(json);
+        JsonArray& a = pr.jsonBuffer.parseArray(pr.buffer);
+        bool ret = false;
+        if (a.success() && a.size() == 1) {
+            *d = (double)a[0];
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        ArduinojsonParseResult pr;
+        pr.buffer = strdup(json);
+        JsonArray& a = pr.jsonBuffer.parseArray(pr.buffer);
+        bool ret = false;
+        if (a.success() && a.size() == 1) {
+            *s = a[0].asString();
+            *length = strlen(*s);
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(ArduinojsonTest);

@@ -94,6 +94,38 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        document doc = parse(literal(json));
+        if (doc.is_valid() &&
+            doc.get_root().get_type() == TYPE_ARRAY &&
+            doc.get_root().get_length() == 1 &&
+            doc.get_root().get_array_element(0).get_type() == TYPE_DOUBLE)
+        {
+            *d = doc.get_root().get_array_element(0).get_double_value();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        document doc = parse(literal(json));
+        if (doc.is_valid() &&
+            doc.get_root().get_type() == TYPE_ARRAY &&
+            doc.get_root().get_length() == 1 &&
+            doc.get_root().get_array_element(0).get_type() == TYPE_STRING)
+        {
+            std::string ss = doc.get_root().get_array_element(0).as_string();
+            *s = ss.c_str();
+            *length = ss.length();
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(SajsonTest);

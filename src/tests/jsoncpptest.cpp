@@ -99,6 +99,39 @@ public:
         return true;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        Reader reader;
+        Value root;
+        if (reader.parse(json, root) && 
+            root.isArray() &&
+            root.size() == 1 &&
+            root[0].isDouble())
+        {
+            *d = root[0].asDouble();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        Reader reader;
+        Value root;
+        if (reader.parse(json, root) && 
+            root.isArray() &&
+            root.size() == 1 &&
+            root[0].isString())
+        {
+            *s = root[0].asString().c_str();
+            *length = root[0].asString().size();
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(JsoncppTest);

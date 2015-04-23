@@ -402,6 +402,37 @@ public:
         return ret;
     }
 #endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        YajlParseResult pr;
+        pr.root = yajl_tree_parse(json, NULL, 0);
+        if (YAJL_IS_ARRAY(pr.root) && 
+            YAJL_GET_ARRAY(pr.root)->len == 1 && 
+            YAJL_IS_DOUBLE(YAJL_GET_ARRAY(pr.root)->values[0]))
+        {
+            *d = YAJL_GET_DOUBLE(YAJL_GET_ARRAY(pr.root)->values[0]);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+        YajlParseResult pr;
+        pr.root = yajl_tree_parse(json, NULL, 0);
+        if (YAJL_IS_ARRAY(pr.root) && 
+            YAJL_GET_ARRAY(pr.root)->len == 1 && 
+            YAJL_IS_STRING(YAJL_GET_ARRAY(pr.root)->values[0]))
+        {
+            *s = YAJL_GET_STRING(YAJL_GET_ARRAY(pr.root)->values[0]);
+            *length = strlen(*s);
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 };
 
 REGISTER_TEST(YajlTest);

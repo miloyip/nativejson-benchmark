@@ -77,7 +77,7 @@ public:
         }
         catch (...) {
             delete pr;
-        return 0;
+            return 0;
         }
     	return pr;
     }
@@ -107,6 +107,31 @@ public:
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->root);
         return true;
+    }
+#endif
+
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json_, double* d) const {
+        try {
+            json root = json::parse_string(json_);
+            *d = root.at(0).as_double();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
+    }
+
+    virtual bool ParseString(const char* json_, const char** s, size_t *length) const {
+        try {
+            json root = json::parse_string(json_);
+            *s = root.at(0).as_string().c_str();
+            *length = root.at(0).as_string().size();
+            return true;
+        }
+        catch (...) {
+        }
+        return false;
     }
 #endif
 };
