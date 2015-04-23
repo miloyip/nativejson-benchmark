@@ -23,8 +23,16 @@ $(function() {
     dt.sort(column);
   }
 
+  addSection("0. Overall");
+
+  var overallDiv = document.createElement("div");
+  overallDiv.className = "chart";
+  $(overallDiv).data("filename", "overall" + "_" + "Result");
+  $("#main").append(overallDiv);
+
   // Per type sections
   var types = dt.getDistinctValues(0);
+  var overallDt, overallKeyRowMap = {}, overallKeyCount = {};
   for (var i in types) {
     var type = types[i];
     addSection(type);
@@ -50,7 +58,32 @@ $(function() {
     var perecentFormatter = new google.visualization.NumberFormat({pattern:'###%'});
     perecentFormatter.format(percentdt, 1);
 
-    drawBarChart(type, percentdt);
+    drawBarChart(type, percentdt.clone());
+
+    // Accumulate perecentage for overall
+    if (overallDt == null) {
+      overallDt = percentdt.clone();
+      for (var row = 0; row < overallDt.getNumberOfRows(); row++) {
+        var key = overallDt.getValue(row, 0);
+        overallKeyRowMap[key] = row;
+        overallKeyCount[key] = 1;
+      }
+    }
+    else {
+      for (var row = 0; row < percentdt.getNumberOfRows(); row++) {
+        var key = percentdt.getValue(row, 0);
+        var result = percentdt.getValue(row, 1);
+        var r = overallKeyRowMap[key];
+        if (r != null) {
+          overallDt.setValue(r, 1, overallDt.getValue(r, 1) + result);
+          overallKeyCount[key]++;
+        }
+        else {
+          overallKeyRowMap[key] = overallDt.addRow([key, result]);
+          overallKeyCount[key] = 1;
+        }
+      }
+    }
 
     view.setColumns([ 2, 1, {calc:stringToBoolean, type:'string', label:''} ]);
     
@@ -63,6 +96,16 @@ $(function() {
     }
 
     drawTable(type, pivotTable(view));
+  }
+
+  {
+    // average results
+    for (var row = 0; row < overallDt.getNumberOfRows(); row++)
+      overallDt.setValue(row, 1, overallDt.getValue(row, 1) / overallKeyCount[overallDt.getValue(row, 0)]);
+
+    var perecentFormatter = new google.visualization.NumberFormat({pattern:'###%'});
+    perecentFormatter.format(overallDt, 1);
+    drawBarChart("0. Overall", overallDt, overallDiv)
   }
 
   $(".chart").each(function() {
@@ -130,7 +173,7 @@ function drawTable(type, data) {
   table.draw(data, { allowHtml: true});
 }
 
-function drawBarChart(type, data) {
+function drawBarChart(type, data, div) {
   // Using same colors as in series
   var colors = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
   var h = data.getNumberOfRows() * 20;
@@ -147,12 +190,13 @@ function drawBarChart(type, data) {
   for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
     data.setValue(rowIndex, 2, colors[rowIndex]);
 
-  var div = document.createElement("div");
-  div.className = "chart";
-  $(div).data("filename", type + "_" + data.getColumnLabel(1));
-  $("#main").append(div);
+  if (div == null) {
+    div = document.createElement("div");
+    div.className = "chart";
+    $(div).data("filename", type + "_" + data.getColumnLabel(1));
+    $("#main").append(div);
+  }
   var chart = new google.visualization.BarChart(div);
-
   chart.draw(data, options);
 }
 
