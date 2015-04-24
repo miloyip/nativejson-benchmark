@@ -216,27 +216,6 @@ function drawBarChart(type, data, div) {
   chart.draw(data, options);
 }
 
-
-function drawPivotBarChart(type, data, title) {
-  var h = (data.getNumberOfColumns() + 1) * data.getNumberOfRows() * 15;
-  var options = { 
-    title: type,
-    chartArea: {'width': '65%', 'height': h},
-    width: 800,
-    height: h + 100,
-    hAxis: { "title": title },
-    legend: { textStyle: {fontSize: 12}},
-    bar : { groupWidth: 15 * data.getNumberOfColumns() }
-  };
-  var div = document.createElement("div");
-  div.className = "chart";
-  $(div).data("filename", type + "_" + title);
-  $("#main").append(div);
-  var chart = new google.visualization.BarChart(div);
-
-  chart.draw(data, options);
-}
-
 // http://jsfiddle.net/P6XXM/
 function sanitize(svg) {
     svg = svg

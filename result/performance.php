@@ -206,7 +206,7 @@ function drawBarChart(type, data) {
   var h = data.getNumberOfRows() * 20;
   var options = { 
     title: type,
-    chartArea: {'width': '65%', 'height': h },
+    chartArea: {left: '30%', width: '60%', 'height': h },
     width: 800,
     height: h + 100,
     hAxis: { title: data.getColumnLabel(1) },
@@ -228,15 +228,15 @@ function drawBarChart(type, data) {
 
 
 function drawPivotBarChart(type, data, title) {
-  var h = (data.getNumberOfColumns() + 1) * data.getNumberOfRows() * 15;
+  var h = (data.getNumberOfColumns() + 1) * data.getNumberOfRows() * 10;
   var options = { 
     title: type,
-    chartArea: {'width': '65%', 'height': h},
+    chartArea: {left: '20%', width: '55%', 'height': h},
     width: 800,
     height: h + 100,
     hAxis: { "title": title },
     legend: { textStyle: {fontSize: 12}},
-    bar : { groupWidth: 15 * data.getNumberOfColumns() }
+    bar : { groupWidth: 10 * data.getNumberOfColumns() }
   };
   var div = document.createElement("div");
   div.className = "chart";
