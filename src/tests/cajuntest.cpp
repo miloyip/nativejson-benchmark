@@ -126,15 +126,13 @@ public:
         return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         try
         {
             UnknownElement root;
             std::istringstream is(json);
             Reader::Read(root, is);
-            std::string& ss = (String&)root[0];
-            *s = ss.c_str();
-            *length = ss.size();
+            s = (String&)root[0];
             return true;
         }
         catch (...) {

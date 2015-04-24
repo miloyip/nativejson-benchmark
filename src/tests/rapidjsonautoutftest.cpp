@@ -209,14 +209,13 @@ public:
         return true;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         MemoryStream ms(json, strlen(json));
         AutoUTFInputStream<unsigned, MemoryStream> is(ms);
         Document doc;
         if (doc.ParseStream<kParseDefaultFlags, AutoUTF<unsigned> >(is).HasParseError() || !doc.IsArray() || doc.Size() != 1 || !doc[0].IsString())
             return false;
-        *s = doc[0].GetString();
-        *length = doc[0].GetStringLength();
+        s = std::string(doc[0].GetString(), doc[0].GetStringLength());
         return true;
     }
 #endif

@@ -240,7 +240,7 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         GasonParseResult pr;
         char* end = 0;
         pr.json = strdup(json);
@@ -249,8 +249,7 @@ public:
             pr.value.toNode() &&
             pr.value.toNode()->value.getTag() == JSON_STRING)
         {
-            *s = pr.value.toNode()->value.toString();
-            *length = strlen(*s);
+            s = pr.value.toNode()->value.toString();
             return true;
         }
         else

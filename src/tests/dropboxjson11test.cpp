@@ -115,13 +115,12 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         Json root;
         std::string err;
         root = Json::parse(json, err);
         if (err.empty() && root.is_array() && root.array_items().size() == 1 && root.array_items()[0].is_string()) {
-            *s = root.array_items()[0].string_value().c_str();
-            *length = root.array_items()[0].string_value().size();
+            s = root.array_items()[0].string_value();
             return true;
         }
         else

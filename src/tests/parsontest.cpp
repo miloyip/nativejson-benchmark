@@ -106,7 +106,7 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         ParsonParseResult pr;
         pr.root = json_parse_string(json);
         if (pr.root &&
@@ -114,8 +114,7 @@ public:
             json_array_get_count(json_value_get_array(pr.root)) == 1 &&
             json_value_get_type(json_array_get_value(json_value_get_array(pr.root), 0)) == JSONString)
         {
-            *s = json_value_get_string(json_array_get_value(json_value_get_array(pr.root), 0));
-            *length = strlen(*s);
+            s = json_value_get_string(json_array_get_value(json_value_get_array(pr.root), 0));
             return true;
         }
         else

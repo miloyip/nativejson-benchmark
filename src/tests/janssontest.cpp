@@ -146,7 +146,7 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         JanssonParseResult pr;
         json_error_t error;
         pr.root = json_loads(json, 0, &error);
@@ -155,8 +155,9 @@ public:
             json_array_size(pr.root) == 1 &&
             json_is_string(json_array_get(pr.root, 0)))
         {
-            *s = json_string_value(json_array_get(pr.root, 0));
-            *length = json_string_length(json_array_get(pr.root, 0));
+            s = std::string(
+                json_string_value(json_array_get(pr.root, 0)),
+                json_string_length(json_array_get(pr.root, 0)));
             return true;
         }
         else

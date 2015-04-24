@@ -110,21 +110,22 @@ public:
         return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         Ujson4cParseResult pr;
-        static std::vector<char> v; // hack for returning temp result
+        std::vector<char> v;
 		pr.root = UJDecode(json, strlen(json), NULL, &pr.state);
 		if (pr.root && UJIsArray(pr.root)) {
 			void* iter = UJBeginArray(pr.root);
 			UJObject value;
 			if (UJIterArray(&iter, &value) && UJIsString(value)) {
-				const wchar_t* w = UJReadString(value, length);
+				size_t length;
+				const wchar_t* w = UJReadString(value, &length);
 			    char* backupLocale = std::setlocale(LC_ALL, 0);
 			    std::setlocale(LC_ALL, "en_US.UTF-8");
-			    v.resize(*length * 2 + 1);
+			    v.resize(length * 2 + 1);
 			    bool ret = false;
-                if (wcstombs(&v.front(), w, *length) != (size_t)-1) {
-                	*s = &v.front();
+                if (wcstombs(&v.front(), w, length) != (size_t)-1) {
+                	s = std::string(&v.front(), length);
                 	ret = true;
                 }
 		        std::setlocale(LC_ALL, backupLocale);				

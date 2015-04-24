@@ -3,6 +3,7 @@
 #include "memorystat.h"
 
 #include <vector>
+#include <string>
 #include <cstring>
 #include <cstdlib>
 
@@ -148,10 +149,9 @@ public:
         return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         (void)json;
         (void)s;
-        (void)length;
         return false;
     }
 #endif

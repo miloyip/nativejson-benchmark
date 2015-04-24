@@ -110,16 +110,14 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         document doc = parse(literal(json));
         if (doc.is_valid() &&
             doc.get_root().get_type() == TYPE_ARRAY &&
             doc.get_root().get_length() == 1 &&
             doc.get_root().get_array_element(0).get_type() == TYPE_STRING)
         {
-            std::string ss = doc.get_root().get_array_element(0).as_string();
-            *s = ss.c_str();
-            *length = ss.length();
+            s = doc.get_root().get_array_element(0).as_string();
             return true;
         }
         else

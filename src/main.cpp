@@ -934,13 +934,13 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         {\
             bool result = false;\
             size_t expectLength = sizeof(expect) - 1;\
-            const char* actual = "";\
+            std::string actual;\
             size_t actualLength;\
-            if (test.ParseString(json, &actual, &actualLength)) \
-                result = (expectLength == actualLength) && (memcmp(expect, actual, expectLength) == 0);\
+            if (test.ParseString(json, actual)) \
+                result = (expectLength == actual.size()) && (memcmp(expect, actual.c_str(), expectLength) == 0);\
             printf("string%02d: %s\n", i, result ? "true" : "false");\
             if (!result)\
-                printf("JSON: %s\nExpect: %s (%u) \nActual: %s (%u)\n\n", json, expect, (unsigned)expectLength, actual, (unsigned)actualLength);\
+                printf("JSON: %s\nExpect: %s (%u) \nActual: %s (%u)\n\n", json, expect, (unsigned)expectLength, actual.c_str(), (unsigned)actual.size());\
             fprintf(fp, "3. Parse String,%s,string%02d,%s\n", test.GetName(), i, result ? "true" : "false");\
             i++;\
         }

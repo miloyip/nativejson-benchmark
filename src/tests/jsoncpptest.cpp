@@ -116,7 +116,7 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         Reader reader;
         Value root;
         if (reader.parse(json, root) && 
@@ -124,8 +124,7 @@ public:
             root.size() == 1 &&
             root[0].isString())
         {
-            *s = root[0].asString().c_str();
-            *length = root[0].asString().size();
+            s = root[0].asString();
             return true;
         }
         else

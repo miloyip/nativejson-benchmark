@@ -119,13 +119,11 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         Parser parser;
         Node root = parser.parseString(json);
         if (parser.getError().empty() && root.isArray() && root.getCount() == 1 && root.get(0).isString()) {
-            std::string ss = root.get(0).toString();
-            *s = ss.c_str();
-            *length = ss.size();
+            s = root.get(0).toString();
             return true;
         }
         else

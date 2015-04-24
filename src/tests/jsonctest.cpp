@@ -131,7 +131,7 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         JsoncParseResult pr;
         pr.root = json_tokener_parse(json);
         if (pr.root && 
@@ -139,8 +139,9 @@ public:
             json_object_array_length(pr.root) == 1 &&
             json_object_get_type(json_object_array_get_idx(pr.root, 0)) == json_type_string) 
         {
-            *s = json_object_get_string(json_object_array_get_idx(pr.root, 0));
-            *length = json_object_get_string_len(json_object_array_get_idx(pr.root, 0));
+            s = std::string(
+                json_object_get_string(json_object_array_get_idx(pr.root, 0)),
+                json_object_get_string_len(json_object_array_get_idx(pr.root, 0)));
             return true;
         }
         else

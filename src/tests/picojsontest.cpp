@@ -109,7 +109,7 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         value v;
         std::string err;
         parse(v, json, json + strlen(json), &err);
@@ -118,9 +118,7 @@ public:
             v.get<array>().size() == 1 &&
             v.get<array>()[0].is<std::string>())
         {
-            std::string ss = v.get<array>()[0].get<std::string>();
-            *s = ss.c_str();
-            *length = ss.size();
+            s = v.get<array>()[0].get<std::string>();
             return true;
         }
         else

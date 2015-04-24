@@ -145,7 +145,7 @@ public:
         return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         UdpjsonParseResult pr;
         json_settings settings = json_settings();
         settings.value_extra = json_builder_extra;  /* space for json-builder state */
@@ -156,8 +156,9 @@ public:
             pr.root->u.array.length == 1 &&
             pr.root->u.array.values[0]->type == json_string)
         {
-            *s = pr.root->u.array.values[0]->u.string.ptr;
-            *length = pr.root->u.array.values[0]->u.string.length;
+            s = std::string(
+                pr.root->u.array.values[0]->u.string.ptr,
+                pr.root->u.array.values[0]->u.string.length);
             return true;
         }
         return false;

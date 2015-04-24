@@ -121,12 +121,11 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         CjsonParseResult pr;
         pr.root = cJSON_Parse(json);
         if (pr.root && pr.root->type == cJSON_Array && pr.root->child && pr.root->child->type == cJSON_String) {
-            *s = pr.root->child->valuestring;
-            *length = strlen(*s);
+            s = pr.root->child->valuestring;
             return true;
         }
         else

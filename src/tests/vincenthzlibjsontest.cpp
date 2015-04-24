@@ -516,7 +516,7 @@ public:
         return ret;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         VinenthzParseResult* pr = static_cast<VinenthzParseResult*>(Parse(json, strlen(json)));
         bool ret = false;
         if (pr && 
@@ -524,8 +524,9 @@ public:
             pr->root->length == 1 &&
             pr->root->u.array[0]->type == JSON_STRING)
         {
-            *s = pr->root->u.array[0]->u.str_val;
-            *length = pr->root->u.array[0]->length;
+            s = std::string(
+                pr->root->u.array[0]->u.str_val, 
+                pr->root->u.array[0]->length);
             ret = true;
         }
         delete pr;

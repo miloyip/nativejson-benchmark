@@ -89,7 +89,17 @@ static void GenStat(Stat& stat, const Value& v) {
 
 class RapidjsonParseResult : public ParseResultBase {
 public:
+    RapidjsonParseResult(const char* json, size_t length) : buffer() {
+        (void)json;
+        (void)length;
+#ifdef TEST_INSITU
+        buffer = (char*)malloc(length + 1);
+        memcpy(buffer, json, length + 1);
+#endif
+    }
+    ~RapidjsonParseResult() { free(buffer); }
     Document document;
+    char* buffer;
 };
 
 class RapidjsonStringResult : public StringResultBase {
@@ -109,8 +119,13 @@ public:
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
-        RapidjsonParseResult* pr = new RapidjsonParseResult;
-        if (pr->document.Parse<TEST_PARSE_FLAG>(json).HasParseError()) {
+        RapidjsonParseResult* pr = new RapidjsonParseResult(json, length);
+#ifdef TEST_INSITU
+        pr->document.ParseInsitu<TEST_PARSE_FLAG>(pr->buffer);
+#else
+        pr->document.Parse<TEST_PARSE_FLAG>(json);
+#endif
+        if (pr->document.HasParseError()) {
             delete pr;
             return 0;
         }
@@ -157,8 +172,15 @@ public:
         (void)length;
         Reader reader;
         RapidjsonStringResult* sr = new RapidjsonStringResult;
-        StringStream is(json);
         Writer<StringBuffer> writer(sr->sb);
+
+#ifdef TEST_INSITU
+        RapidjsonParseResult pr(json, length);
+        InsituStringStream is(pr.buffer);
+#else
+        StringStream is(json);
+#endif
+
         if (!reader.Parse<TEST_PARSE_FLAG>(is, writer)) {
             delete sr;
             return 0;
@@ -172,7 +194,14 @@ public:
         (void)length;
         memset(stat, 0, sizeof(Stat));
         Reader reader;
+
+#ifdef TEST_INSITU
+        RapidjsonParseResult pr(json, length);
+        InsituStringStream is(pr.buffer);
+#else
         StringStream is(json);
+#endif
+
         StatHandler<> handler(*stat);
         return reader.Parse<TEST_PARSE_FLAG>(is, handler);
     }
@@ -183,28 +212,47 @@ public:
         (void)length;
         memset(stat, 0, sizeof(Stat));
         GenericReader<UTF8<>, UTF16<> > reader;
+
+#ifdef TEST_INSITU
+        RapidjsonParseResult pr(json, length);
+        InsituStringStream is(pr.buffer);
+#else
         StringStream is(json);
+#endif
         StatHandler<UTF16<> > handler(*stat);
-        return reader.Parse(is, handler);
+        return reader.Parse<TEST_PARSE_FLAG>(is, handler);
     }
 #endif
 
 #if TEST_CONFORMANCE
     virtual bool ParseDouble(const char* json, double* d) const {
         Document doc;
-        if (doc.Parse<TEST_PARSE_FLAG>(json).HasParseError() || !doc.IsArray() || doc.Size() != 1 || !doc[0].IsNumber())
-            return false;
-        *d = doc[0].GetDouble();
-        return true;
+#ifdef TEST_INSITU
+        RapidjsonParseResult pr(json, strlen(json));
+        doc.ParseInsitu<TEST_PARSE_FLAG>(pr.buffer);
+#else
+        doc.Parse<TEST_PARSE_FLAG>(json);
+#endif
+        if (!doc.HasParseError() && doc.IsArray() && doc.Size() == 1 && doc[0].IsNumber()) {
+            *d = doc[0].GetDouble();
+            return true;
+        }
+        return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         Document doc;
-        if (doc.Parse<TEST_PARSE_FLAG>(json).HasParseError() || !doc.IsArray() || doc.Size() != 1 || !doc[0].IsString())
-            return false;
-        *s = doc[0].GetString();
-        *length = doc[0].GetStringLength();
-        return true;
+#ifdef TEST_INSITU
+        RapidjsonParseResult pr(json, strlen(json));
+        doc.ParseInsitu<TEST_PARSE_FLAG>(pr.buffer);
+#else
+        doc.Parse<TEST_PARSE_FLAG>(json);
+#endif
+        if (!doc.HasParseError() && doc.IsArray() && doc.Size() == 1 && doc[0].IsString()) {
+            s = std::string(doc[0].GetString(), doc[0].GetStringLength());
+            return true;
+        }
+        return false;
     }
 #endif
 };

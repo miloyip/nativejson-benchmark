@@ -418,15 +418,14 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         YajlParseResult pr;
         pr.root = yajl_tree_parse(json, NULL, 0);
         if (YAJL_IS_ARRAY(pr.root) && 
             YAJL_GET_ARRAY(pr.root)->len == 1 && 
             YAJL_IS_STRING(YAJL_GET_ARRAY(pr.root)->values[0]))
         {
-            *s = YAJL_GET_STRING(YAJL_GET_ARRAY(pr.root)->values[0]);
-            *length = strlen(*s);
+            s = YAJL_GET_STRING(YAJL_GET_ARRAY(pr.root)->values[0]);
             return true;
         }
         else

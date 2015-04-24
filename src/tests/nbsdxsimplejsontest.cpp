@@ -121,11 +121,10 @@ public:
         return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         try {
             JSON root = JSON::Load(json);
-            *s = root[0].ToString().c_str();
-            *length = root[0].ToString().size();
+            s = root[0].ToString();
             return true;
         }
         catch (...) {
