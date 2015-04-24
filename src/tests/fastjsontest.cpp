@@ -112,7 +112,7 @@ public:
 class FastjsonTest : public TestBase {
 public:
 #if TEST_INFO
-    virtual const char* GetName() const { return "FastJson (C++)"; }
+    virtual const char* GetName() const { return "mikeando/FastJson (C++)"; }
     virtual const char* GetFilename() const { return __FILE__; }
 #endif
 
