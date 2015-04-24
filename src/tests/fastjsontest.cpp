@@ -49,34 +49,57 @@ static void GenStat(Stat& stat, const Token& token) {
     }
 }
 
-static double ParseNumbers(const Token& token) {
-    double sum = 0.0;
+static void ParseNumbers(const Token& token) {
     switch (token.type) {
     case Token::ArrayToken:
         for (ArrayEntry* child = token.array.ptr; child; child = child->next)
-            sum += ParseNumbers(child->tok);
+            ParseNumbers(child->tok);
         break;
 
     case Token::DictToken:
         for (DictEntry* child = token.dict.ptr; child; child = child->next)
-            sum += ParseNumbers(child->value_tok);
+            ParseNumbers(child->value_tok);
         break;
 
     case Token::ValueToken:
         if (token.value.type_hint == ValueType::NumberHint)
-            sum += atof(token.value.ptr);
+            atof(token.value.ptr);
         break;
 
     default:;
     }
-    return sum;
+}
+
+static void WriteNumbers(Token& token) {
+    switch (token.type) {
+    case Token::ArrayToken:
+        for (ArrayEntry* child = token.array.ptr; child; child = child->next)
+            WriteNumbers(child->tok);
+        break;
+
+    case Token::DictToken:
+        for (DictEntry* child = token.dict.ptr; child; child = child->next)
+            WriteNumbers(child->value_tok);
+        break;
+
+    case Token::ValueToken:
+        if (token.value.type_hint == ValueType::NumberHint) {
+            if (token.value.size >= sizeof(double)) {
+                char buffer[32] = { 0 };
+                double d = atof(token.value.ptr);
+                sprintf(buffer, "%17g", d);
+            }
+        }
+        break;
+
+    default:;
+    }
 }
 
 class FastjsonParseResult : public ParseResultBase {
 public:
     Token token;
     dom::Chunk chunk;
-    double sum;
 };
 
 class FastjsonStringResult : public StringResultBase {
@@ -102,7 +125,7 @@ public:
             return 0;
         }
         // Since FastJson does not parse numbers, emulate here in order to compare with other parsers.
-        pr->sum = ParseNumbers(pr->token);
+        ParseNumbers(pr->token);
     	return pr;
     }
 #endif
@@ -111,9 +134,8 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const FastjsonParseResult* pr = static_cast<const FastjsonParseResult*>(parseResult);
         FastjsonStringResult* sr = new FastjsonStringResult;
-        // Since FastJson does not parse numbers, cannot write numbers. Here just using parsing to emulate. 
-        // (parsing double is often faster than writing double)
-        double d = ParseNumbers(pr->token);
+        // Since FastJson does not write numbers, emulate here in order to compare with other parsers.
+        WriteNumbers(const_cast<Token&>(pr->token));
         sr->s = as_string(&pr->token);
         return sr;
     }
