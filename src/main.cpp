@@ -731,16 +731,16 @@ static void BenchPerformance(const TestBase& test, const TestJsonList& testJsons
 static void BenchAllPerformance(const TestJsonList& testJsons) {
     // Try to write to /result path, where template.php exists
     FILE *fp;
-    if ((fp = fopen("../../result/template.php", "r")) != NULL) {
+    if ((fp = fopen("../../result/performance.php", "r")) != NULL) {
         fclose(fp);
-        fp = fopen("../../result/" RESULT_FILENAME, "w");
+        fp = fopen("../../result/performance_" RESULT_FILENAME, "w");
     }
-    else if ((fp = fopen("../result/template.php", "r")) != NULL) {
+    else if ((fp = fopen("../result/performance.php", "r")) != NULL) {
         fclose(fp);
-        fp = fopen("../result/" RESULT_FILENAME, "w");
+        fp = fopen("../result/performance_" RESULT_FILENAME, "w");
     }
     else
-        fp = fopen(RESULT_FILENAME, "w");
+        fp = fopen("performance_" RESULT_FILENAME, "w");
 
     fputs("Type,Library,Filename,Time (ms)", fp);
 #if USE_MEMORYSTAT
@@ -1014,13 +1014,13 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
 
 static void BenchAllConformance() {
     FILE *fp;
-    if ((fp = fopen("../../result/conformance/template.php", "r")) != NULL) {
+    if ((fp = fopen("../../result/conformance.php", "r")) != NULL) {
         fclose(fp);
-        fp = fopen("../../result/conformance/conformance.csv", "w");
+        fp = fopen("../../result/conformance.csv", "w");
     }
-    else if ((fp = fopen("../result/conformance/template.php", "r")) != NULL) {
+    else if ((fp = fopen("../result/conformance.php", "r")) != NULL) {
         fclose(fp);
-        fp = fopen("../result/conformance/conformance.csv", "w");
+        fp = fopen("../result/conformance.csv", "w");
     }
     else
         fp = fopen("conformance.csv", "w");

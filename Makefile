@@ -10,7 +10,6 @@ endif
 all : bin/nativejson_release_x64_gmake
 	cd bin && ./nativejson_release_x64_gmake
 	cd result && make -f makefile
-	cd result/conformance && make -f makefile
 
 bin/nativejson_%_gmake : build/gmake/nativejson.make bin/nativejson_%_gmake.a
 	cd build/gmake && make -f nativejson.make config=$(CONFIG) verbose=$(VERBOSE)
@@ -23,8 +22,7 @@ clean :
 	rm -rf intermediate
 	rm -rf src/machine.h
 	rm -rf bin
-	rm -rf result/*.csv
-	rm -rf result/*.html
+	cd result && make -f makefile clean
 
 setup :
 	cd build && ./premake.sh && ./machine.sh

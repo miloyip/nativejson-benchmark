@@ -1,17 +1,18 @@
 <html>
 <head>
-<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
-<script src="http://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['controls', 'charteditor']}]}"></script>
-<script src="http://jquery-csv.googlecode.com/git/src/jquery.csv.js"></script>
+<link rel="stylesheet" href="../resource/combine/combine.css">
+<script src="../resource/combine/combine.js"></script>
+<!--
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+<script src="http://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart','table']}]}"></script>
+<script src="http://jquery-csv.googlecode.com/git/src/jquery.csv.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+-->
 <script>
 $(function() {
-  google.load("visualization", "1", {packages:["corechart"]});
-
   var csv = $('#textInput').val();
-  // var dt = google.visualization.arrayToDataTable($.csv.toArrays(csv, {onParseValue: $.csv.hooks.castToScalar}));
   var dt = google.visualization.arrayToDataTable($.csv.toArrays(csv));
 
   function sortCaseInsensitive(dt, column) {
@@ -123,6 +124,21 @@ $(function() {
       });   
     $(this).after(d);
   });
+
+  // Add configurations
+  var thisConfig = <?="\"".basename($argv[1], '.'.pathinfo($argv[1], PATHINFO_EXTENSION))."\""?>;
+  var configurations = [<?=
+    implode(",", 
+      array_map(
+        function ($filename) {
+          return "\"" . basename($filename, ".csv") . "\"";
+        }, glob("*.csv")))
+    ?>];
+
+  for (var i in configurations) {
+    var c = configurations[i];
+    $("#benchmark").append($("<li>", {class : (c == thisConfig ? "active" : "")}).append($("<a>", {href: c + ".html"}).append(c)));
+  }
 });
 
 function pivotTable(src) {
@@ -304,6 +320,11 @@ body { padding-top: 70px; }
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Benchmark <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu" id="benchmark">
+          </ul>
+        </li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Section <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu" id="section">
