@@ -122,7 +122,7 @@ public:
         return 0;
     }
 #endif
-/*
+
 #if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const ArduinojsonParseResult* pr = static_cast<const ArduinojsonParseResult*>(parseResult);
@@ -146,7 +146,7 @@ public:
         return sr;
     }
 #endif
-*/
+
 #if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const ArduinojsonParseResult* pr = static_cast<const ArduinojsonParseResult*>(parseResult);
