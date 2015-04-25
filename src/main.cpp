@@ -854,12 +854,12 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         TEST_DOUBLE("[123e34]", 123e34);                                  // Fast Path Cases In Disguise
         TEST_DOUBLE("[45913141877270640000.0]", 45913141877270640000.0);
         TEST_DOUBLE("[2.2250738585072011e-308]", 2.2250738585072011e-308); // http://www.exploringbinary.com/php-hangs-on-numeric-value-2-2250738585072011e-308/
-        //TEST_DOUBLE("1e-00011111111111", 0.0);
-        //TEST_DOUBLE("-1e-00011111111111", -0.0);
-        TEST_DOUBLE("1e-214748363", 0.0);
-        TEST_DOUBLE("1e-214748364", 0.0);
-        //TEST_DOUBLE("1e-21474836311", 0.0);
-        TEST_DOUBLE("0.017976931348623157e+310", 1.7976931348623157e+308); // Max double in another form
+        //TEST_DOUBLE("[1e-00011111111111]", 0.0);
+        //TEST_DOUBLE("[-1e-00011111111111]", -0.0);
+        TEST_DOUBLE("[1e-214748363]", 0.0);
+        TEST_DOUBLE("[1e-214748364]", 0.0);
+        //TEST_DOUBLE("[1e-21474836311]", 0.0);
+        TEST_DOUBLE("[0.017976931348623157e+310]", 1.7976931348623157e+308); // Max double in another form
 
         // Since
         // abs((2^-1022 - 2^-1074) - 2.2250738585072012e-308) = 3.109754131239141401123495768877590405345064751974375599... ¡Á 10^-324
@@ -912,8 +912,8 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             char n1e308[312];   // '1' followed by 308 '0'
             n1e308[0] = '[';
             n1e308[1] = '1';
-            for (int i = 2; i < 310; i++)
-                n1e308[i] = '0';
+            for (int j = 2; j < 310; j++)
+                n1e308[j] = '0';
             n1e308[310] = ']';
             n1e308[311] = '\0';
             TEST_DOUBLE(n1e308, 1E308);
@@ -941,7 +941,6 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             bool result = false;\
             size_t expectLength = sizeof(expect) - 1;\
             std::string actual;\
-            size_t actualLength;\
             if (test.ParseString(json, actual)) \
                 result = (expectLength == actual.size()) && (memcmp(expect, actual.c_str(), expectLength) == 0);\
             printf("string%02d: %s\n", i, result ? "true" : "false");\
