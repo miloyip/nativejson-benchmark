@@ -76,6 +76,7 @@ solution "benchmark"
 		
 	configuration "gmake"
 		buildoptions "-march=native -Wall -Wextra"
+		links { "boost_system", "boost_thread-mt", "boost_locale-mt" } 
 
 	project "jsonclibs"
 		kind "StaticLib"
@@ -174,6 +175,10 @@ solution "jsonstat"
 
     configuration "vs*"
         defines { "_CRT_SECURE_NO_WARNINGS" }
+
+	configuration "gmake"
+		buildoptions "-march=native -Wall -Wextra"
+		links { "boost_system", "boost_thread-mt", "boost_locale-mt" } 
 
 	project "jsonclibs2"
 		kind "StaticLib"
