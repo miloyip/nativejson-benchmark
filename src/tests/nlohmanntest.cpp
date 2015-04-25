@@ -119,12 +119,10 @@ public:
         return false;
     }
 
-    virtual bool ParseString(const char* j, const char** s, size_t *length) const {
+    virtual bool ParseString(const char* j, std::string& s) const {
         try {
             json root = json::parse(j);
-            std::string ss = root[0].get<std::string>();
-            *s = ss.c_str();
-            *length = ss.size();
+            s = root[0].get<std::string>();
             return true;
         }
         catch (...) {

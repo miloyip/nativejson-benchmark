@@ -142,11 +142,8 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, const char** s, size_t *l) const {
+    virtual bool ParseString(const char* json, std::string& s) const {
         SimplejsonParseResult pr;
-        static SimplejsonStringResult sr; // hacking for storing a converted result
-        free(sr.s);
-        sr.s = 0;
 
         char* backupLocale = std::setlocale(LC_ALL, 0);
         std::setlocale(LC_ALL, "en_US.UTF-8");
@@ -161,12 +158,12 @@ public:
         {
             std::wstring ss = pr.root->AsArray()[0]->AsString();
             size_t length = ss.size() * 2 + 1;
-            sr.s = (char*)malloc(length);
-            if (wcstombs(sr.s, ss.c_str(), length) != (size_t)-1) {
-                *s = sr.s;
-                *l = ss.size();
+            char *u  = (char*)malloc(length);
+            if (wcstombs(u, ss.c_str(), length) != (size_t)-1) {
+                s = u;
                 ret = true;
             }
+            free(u);
         }
 
         std::setlocale(LC_ALL, backupLocale);
