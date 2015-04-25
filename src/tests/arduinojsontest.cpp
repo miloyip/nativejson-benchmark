@@ -161,7 +161,6 @@ public:
         ArduinojsonParseResult pr;
         pr.buffer = strdup(json);
         JsonArray& a = pr.jsonBuffer.parseArray(pr.buffer);
-        bool ret = false;
         if (a.success() && a.size() == 1) {
             *d = (double)a[0];
             return true;
@@ -174,7 +173,6 @@ public:
         ArduinojsonParseResult pr;
         pr.buffer = strdup(json);
         JsonArray& a = pr.jsonBuffer.parseArray(pr.buffer);
-        bool ret = false;
         if (a.success() && a.size() == 1) {
             s = a[0].asString();
             return true;
