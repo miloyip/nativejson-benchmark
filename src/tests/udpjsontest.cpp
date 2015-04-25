@@ -94,7 +94,6 @@ public:
 #endif
 
     // Very slow in the current version.
-#if 0
 #if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const UdpjsonParseResult* pr = static_cast<const UdpjsonParseResult*>(parseResult);
@@ -115,7 +114,6 @@ public:
         json_serialize_ex(sr->s, pr->root, opts);
         return sr;
     }
-#endif
 #endif
 
 #if TEST_STATISTICS
