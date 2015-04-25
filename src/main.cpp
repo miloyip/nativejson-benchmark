@@ -854,6 +854,12 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         TEST_DOUBLE("[123e34]", 123e34);                                  // Fast Path Cases In Disguise
         TEST_DOUBLE("[45913141877270640000.0]", 45913141877270640000.0);
         TEST_DOUBLE("[2.2250738585072011e-308]", 2.2250738585072011e-308); // http://www.exploringbinary.com/php-hangs-on-numeric-value-2-2250738585072011e-308/
+        //TEST_DOUBLE("1e-00011111111111", 0.0);
+        //TEST_DOUBLE("-1e-00011111111111", -0.0);
+        TEST_DOUBLE("1e-214748363", 0.0);
+        TEST_DOUBLE("1e-214748364", 0.0);
+        TEST_DOUBLE("1e-21474836311", 0.0);
+        TEST_DOUBLE("0.017976931348623157e+310", 1.7976931348623157e+308); // Max double in another form
 
         // Since
         // abs((2^-1022 - 2^-1074) - 2.2250738585072012e-308) = 3.109754131239141401123495768877590405345064751974375599... ¡Á 10^-324
