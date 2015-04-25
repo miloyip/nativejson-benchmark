@@ -73,11 +73,11 @@ static char* ReadJSON(FILE *fp, size_t* length) {
 }
 
 static char* ReadJSON(const char* filename, size_t* length) {
-    FILE *fp = fopen(filename, "r");
+    FILE *fp = fopen(filename, "rb");
     if (!fp) {
         char buffer[FILENAME_MAX];
         sprintf(buffer, "../%s", filename);
-        fp = fopen(buffer, "r");
+        fp = fopen(buffer, "rb");
         if (!fp)
             return 0;
     }
@@ -1054,6 +1054,7 @@ int main(int, char* argv[]) {
     //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     //void *testWhetherMemoryLeakDetectionWorks = malloc(1);
 #endif
+
     gProgramName = argv[0];
 
     MEMORYSTAT_SCOPE();
