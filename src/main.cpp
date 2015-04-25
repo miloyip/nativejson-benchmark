@@ -14,7 +14,7 @@
 #include "resultfilename.h"
 #include "rapidjson/internal/ieee754.h"
 
-static const unsigned cTrialCount = 1;
+static const unsigned cTrialCount = 10;
 static const char* gProgramName;
 
 struct TestJson {
