@@ -12,6 +12,7 @@ all : bin/nativejson_release_x64_gmake
 	cd result && make -f makefile
 
 bin/nativejson_%_gmake : build/gmake/nativejson.make bin/nativejson_%_gmake.a
+	cd build/gmake && make -f jsonstat.make config=$(CONFIG) verbose=$(VERBOSE)
 	cd build/gmake && make -f nativejson.make config=$(CONFIG) verbose=$(VERBOSE)
 
 clean : 
@@ -30,7 +31,7 @@ setup :
 	
 build/gmake/nativejson.make : setup
 build/gmake/benchmark.make : setup
-
+build/gmake/jsonstat.make : setup
 	
 	
 bin/nativejson_release_x64_gmake.a : build/gmake/benchmark.make
