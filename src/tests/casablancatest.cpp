@@ -2,25 +2,36 @@
 
 #if ((defined(_MSC_VER) && _MSC_VER >= 1700) || (__cplusplus >= 201103L && HAS_BOOST)) && !defined(__CYGWIN__)
 
+#define _NO_ASYNCRTIMP 1
 #define CPPREST_EXCLUDE_WEBSOCKETS
 
-#include "casablanca/Release/src/pch/stdafx.h"
-
-#include "casablanca/Release/src/json/json.cpp"
-#include "casablanca/Release/src/json/json_parsing.cpp"
-#include "casablanca/Release/src/json/json_serialization.cpp"
-#include "casablanca/Release/src/utilities/asyncrt_utils.cpp"
-#include <strstream>
-#include <sstream>
-
-#ifdef _MSC_VER
+#ifdef _WIN32
+#include "casablanca/Release/src/utilities/web_utilities.cpp" // Must compile this first
+#include "casablanca/Release/src/http/common/http_msg.cpp"
+#include "casablanca/Release/src/http/common/http_helpers.cpp"
+#include "casablanca/Release/src/http/client/http_client_msg.cpp"
+#include "casablanca/Release/src/http/client/http_client_winhttp.cpp"
+#include "casablanca/Release/src/http/oauth/oauth1.cpp"
+#include "casablanca/Release/src/websockets/client/ws_client.cpp"
+#include "casablanca/Release/src/uri/uri.cpp"
+#include "casablanca/Release/src/uri/uri_builder.cpp"
+#include "casablanca/Release/src/uri/uri_parser.cpp"
+#include "casablanca/Release/src/utilities/base64.cpp"
 #pragma comment (lib, "Winhttp.lib")
 #pragma comment (lib, "Bcrypt.lib")
 #pragma comment (lib, "Crypt32.lib")
 #endif
 
+#include "casablanca/Release/src/pch/stdafx.h"
+#include "casablanca/Release/src/json/json.cpp"
+#include "casablanca/Release/src/json/json_parsing.cpp"
+#include "casablanca/Release/src/json/json_serialization.cpp"
+#include "casablanca/Release/src/utilities/asyncrt_utils.cpp"
+
+#include <strstream>
+#include <sstream>
+
 using namespace web::json;
-//using namespace utility::conversions;
 
 static void GenStat(Stat& stat, const value& v) {
     switch (v.type()) {
@@ -140,7 +151,7 @@ public:
         std::istrstream is(json);
         try {
             value root = value::parse(is);
-            s = root.at(0).as_string();
+            s = to_utf8string(root.at(0).as_string());
             return true;
         }
         catch (...) {
