@@ -3,6 +3,7 @@
 #include "fastjson/src/fastjson.cpp"
 #include "fastjson/src/fastjson2.cpp"
 #include "fastjson/src/fastjson_dom.cpp"
+#include <cstdio>
 
 using namespace fastjson;
 

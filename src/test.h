@@ -7,6 +7,47 @@
 #include <cstring>
 #include <cstdlib>
 
+#ifdef __CYGWIN__
+#include <cstdio>
+#include <cstdarg>
+// Cygwin does not define std::snprintf, std::to_string(...), etc.
+namespace std {
+
+inline int snprintf(char * s, size_t n, const char * format, ... ) {
+    va_list args;
+    va_start (args, format);
+    int ret = vsnprintf (s, n, format, args);
+    va_end (args);
+    return ret;
+}
+
+inline std::string to_string(double value) {
+    char buf[256];
+    sprintf(buf, "%f", value);
+    return std::string(buf);
+}
+
+inline long stol(const std::string& str, std::size_t* pos = 0, int base = 10) {
+    const char* s = str.c_str();
+    char *ptr;
+    long ret = strtol(s, &ptr, base);
+    if (pos)
+        *pos = ptr - s;
+    return ret;
+}
+
+inline double stod(const std::string& str, std::size_t* pos = 0) {
+    const char* s = str.c_str();
+    char *ptr;
+    double ret = strtod(s, &ptr);
+    if (pos)
+        *pos = ptr - s;
+    return ret;
+}
+
+} // namespace std
+#endif
+
 class TestBase;
 typedef std::vector<const TestBase *> TestList;
 
