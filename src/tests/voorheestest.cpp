@@ -1,6 +1,6 @@
 #include "../test.h"
 
-#if HAS_BOOST && (!defined(_MSC_VER) || _MSC_VER >= 1900) // VS2015
+#if HAS_BOOST && (!defined(_MSC_VER) || _MSC_VER >= 1900) && !defined(__i386__) // VS2015, and works on 64-bit only
 
 #include "json-voorhees/src/jsonv/algorithm_map.cpp"
 #include "json-voorhees/src/jsonv/algorithm_traverse.cpp"
