@@ -1,6 +1,6 @@
 #include "../test.h"
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1800 // Before VC2013 do not support C99 variable declaration
+#if (!defined(_MSC_VER) || _MSC_VER >= 1800) && !(defined(__CYGWIN__) && defined(__i386__)) // Before VC2013 do not support C99 variable declaration, and crash in cygwin 32-bit
 
 #include "json-c/json.h"
 
