@@ -1,0 +1,355 @@
+Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileSize (byte)
+1. Parse,ArduinoJson (C++),canada.json,821.357000,10639896,10639896,20,0
+1. Parse,ArduinoJson (C++),citm_catalog.json,9.787000,3875032,3875032,18,0
+1. Parse,ArduinoJson (C++),twitter.json,4.815000,1171464,1171464,16,0
+2. Stringify,ArduinoJson (C++),canada.json,2002.529000,2252808,6512624,15,0
+2. Stringify,ArduinoJson (C++),citm_catalog.json,22.537000,499720,1023996,12,0
+2. Stringify,ArduinoJson (C++),twitter.json,16.948000,466952,991228,12,0
+3. Prettify,ArduinoJson (C++),canada.json,2160.991000,5636092,14090212,16,0
+3. Prettify,ArduinoJson (C++),citm_catalog.json,53.054000,1204232,3301372,14,0
+3. Prettify,ArduinoJson (C++),twitter.json,28.466000,647176,1695740,13,0
+4. Statistics,ArduinoJson (C++),canada.json,0.653000,0,0,0,0
+4. Statistics,ArduinoJson (C++),citm_catalog.json,0.624000,0,0,0,0
+4. Statistics,ArduinoJson (C++),twitter.json,0.797000,0,0,0,0
+7. Code size, ArduinoJson (C++), jsonstat,0,0,0,0,25088
+1. Parse,CAJUN (C++),canada.json,4338.295000,35796184,130080692,4898827,0
+1. Parse,CAJUN (C++),citm_catalog.json,814.270000,7990620,27489740,1114316,0
+1. Parse,CAJUN (C++),twitter.json,221.717000,1928120,6522904,361362,0
+2. Stringify,CAJUN (C++),canada.json,2599.210000,4272136,12660732,334368,0
+2. Stringify,CAJUN (C++),citm_catalog.json,321.334000,892928,1941492,64872,0
+2. Stringify,CAJUN (C++),twitter.json,59.057000,675840,1724404,17602,0
+4. Statistics,CAJUN (C++),canada.json,4.472000,0,0,0,0
+4. Statistics,CAJUN (C++),citm_catalog.json,0.991000,0,0,0,0
+4. Statistics,CAJUN (C++),twitter.json,0.250000,0,0,0,0
+7. Code size, CAJUN (C++), jsonstat,0,0,0,0,68096
+1. Parse,cJSON (C),canada.json,72.956000,7356080,7356080,167192,0
+1. Parse,cJSON (C),citm_catalog.json,19.286000,2025860,2025860,64383,0
+1. Parse,cJSON (C),twitter.json,9.841000,1074072,1074072,32014,0
+2. Stringify,cJSON (C),canada.json,1541.752000,1294696,2651516,223241,0
+2. Stringify,cJSON (C),citm_catalog.json,56.309000,500320,1001104,87274,0
+2. Stringify,cJSON (C),twitter.json,30.561000,466928,934576,30092,0
+3. Prettify,cJSON (C),canada.json,1546.691000,1405872,2872908,223241,0
+3. Prettify,cJSON (C),citm_catalog.json,59.143000,789216,1578840,87274,0
+3. Prettify,cJSON (C),twitter.json,31.410000,557960,1116472,30092,0
+4. Statistics,cJSON (C),canada.json,0.849000,0,0,0,0
+4. Statistics,cJSON (C),citm_catalog.json,0.475000,0,0,0,0
+4. Statistics,cJSON (C),twitter.json,0.594000,0,0,0,0
+7. Code size, cJSON (C), jsonstat,0,0,0,0,20992
+1. Parse,dropbox/json11 (C++11),canada.json,180.507000,7131660,9449960,337482,0
+1. Parse,dropbox/json11 (C++11),citm_catalog.json,87.937000,2874268,4656324,209021,0
+1. Parse,dropbox/json11 (C++11),twitter.json,59.951000,1501140,2148476,130053,0
+2. Stringify,dropbox/json11 (C++11),canada.json,1949.707000,4194304,6291444,23,0
+2. Stringify,dropbox/json11 (C++11),citm_catalog.json,14.125000,1048576,1572852,21,0
+2. Stringify,dropbox/json11 (C++11),twitter.json,11.908000,524288,786420,20,0
+4. Statistics,dropbox/json11 (C++11),canada.json,1.269000,0,0,0,0
+4. Statistics,dropbox/json11 (C++11),citm_catalog.json,0.687000,0,0,0,0
+4. Statistics,dropbox/json11 (C++11),twitter.json,0.455000,0,0,0,0
+7. Code size, dropbox/json11 (C++11), jsonstat,0,0,0,0,59392
+1. Parse,mikeando/FastJson (C++),canada.json,93.494000,5371588,7624748,22,0
+1. Parse,mikeando/FastJson (C++),citm_catalog.json,12.203000,1517876,3299996,22,0
+1. Parse,mikeando/FastJson (C++),twitter.json,4.676000,869676,1517500,24,0
+2. Stringify,mikeando/FastJson (C++),canada.json,1381.350000,2252800,2252800,2,0
+2. Stringify,mikeando/FastJson (C++),citm_catalog.json,167.377000,503808,503808,2,0
+2. Stringify,mikeando/FastJson (C++),twitter.json,9.038000,565248,565248,2,0
+4. Statistics,mikeando/FastJson (C++),canada.json,0.747000,0,0,0,0
+4. Statistics,mikeando/FastJson (C++),citm_catalog.json,0.258000,0,0,0,0
+4. Statistics,mikeando/FastJson (C++),twitter.json,0.154000,0,0,0,0
+7. Code size, mikeando/FastJson (C++), jsonstat,0,0,0,0,82432
+1. Parse,gason (C++11),canada.json,7.902000,4940696,4940696,658,0
+1. Parse,gason (C++11),citm_catalog.json,4.064000,2388604,2388604,151,0
+1. Parse,gason (C++11),twitter.json,1.733000,872524,872524,57,0
+2. Stringify,gason (C++11),canada.json,1442.672000,1298440,3395580,14,0
+2. Stringify,gason (C++11),citm_catalog.json,224.566000,602120,1650684,13,0
+2. Stringify,gason (C++11),twitter.json,31.378000,483336,1007612,12,0
+3. Prettify,gason (C++11),canada.json,1479.232000,7340028,15794148,17,0
+3. Prettify,gason (C++11),citm_catalog.json,230.486000,1802248,3899388,15,0
+3. Prettify,gason (C++11),twitter.json,32.898000,770056,1818620,14,0
+4. Statistics,gason (C++11),canada.json,0.621000,0,0,0,0
+4. Statistics,gason (C++11),citm_catalog.json,0.606000,0,0,0,0
+4. Statistics,gason (C++11),twitter.json,0.738000,0,0,0,0
+7. Code size, gason (C++11), jsonstat,0,0,0,0,15872
+1. Parse,Jansson (C),canada.json,190.185000,6128748,6128796,224392,0
+1. Parse,Jansson (C),citm_catalog.json,61.850000,3011792,3011880,111230,0
+1. Parse,Jansson (C),twitter.json,31.094000,1186412,1186948,43822,0
+2. Stringify,Jansson (C),canada.json,1954.846000,2362184,6556492,21,0
+2. Stringify,Jansson (C),citm_catalog.json,13.413000,551272,1599852,19,0
+2. Stringify,Jansson (C),twitter.json,7.209000,492632,1016924,18,0
+3. Prettify,Jansson (C),canada.json,2029.246000,8323060,17039324,22,0
+3. Prettify,Jansson (C),citm_catalog.json,27.131000,1727224,3824380,20,0
+3. Prettify,Jansson (C),twitter.json,10.290000,767336,1815916,19,0
+4. Statistics,Jansson (C),canada.json,1.329000,0,0,0,0
+4. Statistics,Jansson (C),citm_catalog.json,1.206000,0,0,0,0
+4. Statistics,Jansson (C),twitter.json,0.714000,0,0,0,0
+7. Code size, Jansson (C), jsonstat,0,0,0,0,39936
+1. Parse,JsonBox (C++),canada.json,2579.070000,3822436,8530376,1087445,0
+1. Parse,JsonBox (C++),citm_catalog.json,260.200000,2166716,5730764,335448,0
+1. Parse,JsonBox (C++),twitter.json,114.700000,1252472,2547336,115474,0
+2. Stringify,JsonBox (C++),canada.json,2548.648000,2252800,6447092,111119,0
+2. Stringify,JsonBox (C++),citm_catalog.json,128.987000,499720,1023996,53220,0
+2. Stringify,JsonBox (C++),twitter.json,85.392000,466952,991228,35925,0
+3. Prettify,JsonBox (C++),canada.json,2460.224000,3932148,8126440,111119,0
+3. Prettify,JsonBox (C++),citm_catalog.json,108.208000,892936,1941500,53221,0
+3. Prettify,JsonBox (C++),twitter.json,71.656000,577544,1626108,35926,0
+4. Statistics,JsonBox (C++),canada.json,0.814000,0,0,0,0
+4. Statistics,JsonBox (C++),citm_catalog.json,0.527000,0,0,0,0
+4. Statistics,JsonBox (C++),twitter.json,0.342000,0,0,0,0
+7. Code size, JsonBox (C++), jsonstat,0,0,0,0,86016
+1. Parse,jsoncons (C++),canada.json,3721.467000,3574252,22729528,3950871,0
+1. Parse,jsoncons (C++),citm_catalog.json,1543.652000,1803320,7619268,3500084,0
+1. Parse,jsoncons (C++),twitter.json,249.632000,1028248,3615048,519675,0
+2. Stringify,jsoncons (C++),canada.json,2542.964000,2027520,4124820,333261,0
+2. Stringify,jsoncons (C++),citm_catalog.json,15.283000,503808,1028244,1282,0
+2. Stringify,jsoncons (C++),twitter.json,16.585000,471040,995572,4760,0
+3. Prettify,jsoncons (C++),canada.json,2536.304000,2027520,4124820,333261,0
+3. Prettify,jsoncons (C++),citm_catalog.json,15.465000,503808,1028244,1282,0
+3. Prettify,jsoncons (C++),twitter.json,16.564000,471040,995572,4760,0
+4. Statistics,jsoncons (C++),canada.json,1.489000,0,36,4,0
+4. Statistics,jsoncons (C++),citm_catalog.json,1.703000,0,68,735,0
+4. Statistics,jsoncons (C++),twitter.json,2.732000,0,476,4611,0
+7. Code size, jsoncons (C++), jsonstat,0,0,0,0,89088
+1. Parse,JsonCpp (C++),canada.json,203.815000,10262888,12516856,223267,0
+1. Parse,JsonCpp (C++),citm_catalog.json,58.896000,3010328,4793248,137169,0
+1. Parse,JsonCpp (C++),twitter.json,31.951000,1291508,1939860,65420,0
+2. Stringify,JsonCpp (C++),canada.json,2031.395000,4259828,6357228,111195,0
+2. Stringify,JsonCpp (C++),citm_catalog.json,76.579000,524288,787116,131024,0
+2. Stringify,JsonCpp (C++),twitter.json,45.153000,524288,788780,73056,0
+4. Statistics,JsonCpp (C++),canada.json,3.943000,0,36,4,0
+4. Statistics,JsonCpp (C++),citm_catalog.json,1.387000,0,68,735,0
+4. Statistics,JsonCpp (C++),twitter.json,3.070000,0,476,4611,0
+7. Code size, JsonCpp (C++), jsonstat,0,0,0,0,157696
+1. Parse,JSON Spirit (C++),canada.json,236.729000,3948556,6398028,435449,0
+1. Parse,JSON Spirit (C++),citm_catalog.json,170.418000,1822736,4748856,332263,0
+1. Parse,JSON Spirit (C++),twitter.json,36.951000,1043636,2071032,63854,0
+2. Stringify,JSON Spirit (C++),canada.json,2268.508000,2252800,6447092,111143,0
+2. Stringify,JSON Spirit (C++),citm_catalog.json,68.459000,503808,1028084,111122,0
+2. Stringify,JSON Spirit (C++),twitter.json,86.669000,692224,1740788,147333,0
+3. Prettify,JSON Spirit (C++),canada.json,2373.430000,8323060,16777180,111144,0
+3. Prettify,JSON Spirit (C++),citm_catalog.json,92.363000,2007040,4104180,111124,0
+3. Prettify,JSON Spirit (C++),twitter.json,92.043000,1024000,2072564,147333,0
+4. Statistics,JSON Spirit (C++),canada.json,1.107000,0,0,0,0
+4. Statistics,JSON Spirit (C++),citm_catalog.json,0.449000,0,0,0,0
+4. Statistics,JSON Spirit (C++),twitter.json,0.226000,0,0,0,0
+7. Code size, JSON Spirit (C++), jsonstat,0,0,0,0,82944
+1. Parse,hjiang/JSON++ (C++),canada.json,3541.261000,5204580,9710156,671832,0
+1. Parse,hjiang/JSON++ (C++),citm_catalog.json,738.379000,2799560,6363056,277605,0
+1. Parse,hjiang/JSON++ (C++),twitter.json,220.809000,1651500,2945812,141792,0
+2. Stringify,hjiang/JSON++ (C++),canada.json,3114.567000,3997684,20252748,837108,0
+2. Stringify,hjiang/JSON++ (C++),citm_catalog.json,438.515000,946936,4842188,216600,0
+2. Stringify,hjiang/JSON++ (C++),twitter.json,100.411000,575680,3356828,79142,0
+4. Statistics,hjiang/JSON++ (C++),canada.json,1.320000,0,0,0,0
+4. Statistics,hjiang/JSON++ (C++),citm_catalog.json,0.552000,0,0,0,0
+4. Statistics,hjiang/JSON++ (C++),twitter.json,0.468000,0,0,0,0
+7. Code size, hjiang/JSON++ (C++), jsonstat,0,0,0,0,80384
+1. Parse,Jzon (C++),canada.json,627.792000,12217204,16765372,1228062,0
+1. Parse,Jzon (C++),citm_catalog.json,183.297000,2798120,6378724,322999,0
+1. Parse,Jzon (C++),twitter.json,92.766000,1569532,2873160,165585,0
+2. Stringify,Jzon (C++),canada.json,30.518000,2252800,6512616,19,0
+2. Stringify,Jzon (C++),citm_catalog.json,13.350000,503808,1028084,2215,0
+2. Stringify,Jzon (C++),twitter.json,10.909000,475136,999412,7959,0
+3. Prettify,Jzon (C++),canada.json,148.690000,8323060,16777180,223246,0
+3. Prettify,Jzon (C++),citm_catalog.json,44.613000,1990664,4087804,61381,0
+3. Prettify,Jzon (C++),twitter.json,19.445000,790536,1839100,24186,0
+4. Statistics,Jzon (C++),canada.json,1.308000,0,0,0,0
+4. Statistics,Jzon (C++),citm_catalog.json,0.477000,0,0,0,0
+4. Statistics,Jzon (C++),twitter.json,0.388000,0,0,0,0
+7. Code size, Jzon (C++), jsonstat,0,0,0,0,67072
+1. Parse,nbsdx_SimpleJSON (C++11),canada.json,691.697000,34173668,70606316,1342591,0
+1. Parse,nbsdx_SimpleJSON (C++11),citm_catalog.json,273.067000,8507184,17668512,602471,0
+1. Parse,nbsdx_SimpleJSON (C++11),twitter.json,125.286000,2204700,4165724,263139,0
+2. Stringify,nbsdx_SimpleJSON (C++11),canada.json,1944.479000,1409024,3506436,989767,0
+2. Stringify,nbsdx_SimpleJSON (C++11),citm_catalog.json,389.960000,2293748,3424336,329120,0
+2. Stringify,nbsdx_SimpleJSON (C++11),twitter.json,94.258000,651264,1700748,135602,0
+3. Prettify,nbsdx_SimpleJSON (C++11),canada.json,1979.278000,1409024,3506476,989764,0
+3. Prettify,nbsdx_SimpleJSON (C++11),citm_catalog.json,393.020000,3211252,4795104,318093,0
+3. Prettify,nbsdx_SimpleJSON (C++11),twitter.json,93.089000,778240,2089980,128847,0
+4. Statistics,nbsdx_SimpleJSON (C++11),canada.json,2.514000,0,96,18,0
+4. Statistics,nbsdx_SimpleJSON (C++11),citm_catalog.json,2.730000,0,136,4114,0
+4. Statistics,nbsdx_SimpleJSON (C++11),twitter.json,13.032000,0,816,25402,0
+7. Code size, nbsdx_SimpleJSON (C++11), jsonstat,0,0,0,0,43520
+1. Parse,Nlohmann (C++11),canada.json,132.658000,4158756,6420332,170267,0
+1. Parse,Nlohmann (C++11),citm_catalog.json,32.953000,2511772,4293520,81248,0
+1. Parse,Nlohmann (C++11),twitter.json,20.072000,1368952,2016108,38847,0
+2. Stringify,Nlohmann (C++11),canada.json,3884.823000,1581056,3678284,527879,0
+2. Stringify,Nlohmann (C++11),citm_catalog.json,329.977000,602112,1798132,213751,0
+2. Stringify,Nlohmann (C++11),twitter.json,75.948000,483328,1008320,90955,0
+3. Prettify,Nlohmann (C++11),canada.json,4141.913000,7667700,16121936,919077,0
+3. Prettify,Nlohmann (C++11),citm_catalog.json,337.004000,1830912,5484532,218794,0
+3. Prettify,Nlohmann (C++11),twitter.json,77.014000,782336,2093980,89752,0
+4. Statistics,Nlohmann (C++11),canada.json,1.013000,0,0,0,0
+4. Statistics,Nlohmann (C++11),citm_catalog.json,0.843000,0,0,0,0
+4. Statistics,Nlohmann (C++11),twitter.json,0.615000,0,0,0,0
+7. Code size, Nlohmann (C++11), jsonstat,0,0,0,0,40448
+1. Parse,Parson (C),canada.json,176.427000,4909264,4919212,336060,0
+1. Parse,Parson (C),citm_catalog.json,59.318000,1807620,1807768,185585,0
+1. Parse,Parson (C),twitter.json,28.898000,922096,922260,72477,0
+4. Statistics,Parson (C),canada.json,3.219000,0,0,0,0
+4. Statistics,Parson (C),citm_catalog.json,2.453000,0,0,0,0
+4. Statistics,Parson (C),twitter.json,5.655000,0,0,0,0
+7. Code size, Parson (C), jsonstat,0,0,0,0,30208
+1. Parse,PicoJSON (C++),canada.json,558.237000,3996092,4209488,1099387,0
+1. Parse,PicoJSON (C++),citm_catalog.json,172.281000,2622652,2622680,394656,0
+1. Parse,PicoJSON (C++),twitter.json,70.446000,1602008,1602008,154333,0
+2. Stringify,PicoJSON (C++),canada.json,2008.668000,4194304,6291480,111149,0
+2. Stringify,PicoJSON (C++),citm_catalog.json,199.138000,524288,786448,16087,0
+2. Stringify,PicoJSON (C++),twitter.json,29.227000,524288,786420,14138,0
+4. Statistics,PicoJSON (C++),canada.json,0.733000,0,0,0,0
+4. Statistics,PicoJSON (C++),citm_catalog.json,0.450000,0,0,0,0
+4. Statistics,PicoJSON (C++),twitter.json,0.370000,0,0,0,0
+7. Code size, PicoJSON (C++), jsonstat,0,0,0,0,55808
+1. Parse,RapidJSON_AutoUTF (C++),canada.json,18.873000,4207124,4655536,77,0
+1. Parse,RapidJSON_AutoUTF (C++),citm_catalog.json,11.784000,1638828,1650496,36,0
+1. Parse,RapidJSON_AutoUTF (C++),twitter.json,7.483000,1048896,1056676,26,0
+2. Stringify,RapidJSON_AutoUTF (C++),canada.json,43.386000,2873356,2873628,28,0
+2. Stringify,RapidJSON_AutoUTF (C++),citm_catalog.json,4.745000,567612,567884,24,0
+2. Stringify,RapidJSON_AutoUTF (C++),twitter.json,4.072000,567612,567884,24,0
+3. Prettify,RapidJSON_AutoUTF (C++),canada.json,78.590000,9699344,9699616,31,0
+3. Prettify,RapidJSON_AutoUTF (C++),citm_catalog.json,11.729000,1915588,1915860,27,0
+3. Prettify,RapidJSON_AutoUTF (C++),twitter.json,5.372000,851396,851668,25,0
+4. Statistics,RapidJSON_AutoUTF (C++),canada.json,0.823000,0,0,0,0
+4. Statistics,RapidJSON_AutoUTF (C++),citm_catalog.json,0.331000,0,0,0,0
+4. Statistics,RapidJSON_AutoUTF (C++),twitter.json,0.214000,0,0,0,0
+5. Sax Round-trip,RapidJSON_AutoUTF (C++),canada.json,58.256000,28,2873900,30,0
+5. Sax Round-trip,RapidJSON_AutoUTF (C++),citm_catalog.json,15.533000,28,568156,26,0
+5. Sax Round-trip,RapidJSON_AutoUTF (C++),twitter.json,11.418000,28,568476,28,0
+6. SaxStatistics,RapidJSON_AutoUTF (C++),canada.json,14.999000,0,272,2,0
+6. SaxStatistics,RapidJSON_AutoUTF (C++),citm_catalog.json,10.943000,0,272,2,0
+6. SaxStatistics,RapidJSON_AutoUTF (C++),twitter.json,7.461000,0,592,4,0
+7. Code size, RapidJSON_AutoUTF (C++), jsonstat,0,0,0,0,48128
+1. Parse,RapidJSON_FullPrec (C++),canada.json,40.770000,4207124,4655536,77,0
+1. Parse,RapidJSON_FullPrec (C++),citm_catalog.json,7.910000,1638828,1650496,36,0
+1. Parse,RapidJSON_FullPrec (C++),twitter.json,5.570000,1048896,1056676,26,0
+2. Stringify,RapidJSON_FullPrec (C++),canada.json,33.240000,2873356,2873628,28,0
+2. Stringify,RapidJSON_FullPrec (C++),citm_catalog.json,2.557000,567612,567884,24,0
+2. Stringify,RapidJSON_FullPrec (C++),twitter.json,2.432000,567612,567884,24,0
+3. Prettify,RapidJSON_FullPrec (C++),canada.json,45.025000,9699344,9699616,31,0
+3. Prettify,RapidJSON_FullPrec (C++),citm_catalog.json,5.239000,1915588,1915860,27,0
+3. Prettify,RapidJSON_FullPrec (C++),twitter.json,3.235000,851396,851668,25,0
+4. Statistics,RapidJSON_FullPrec (C++),canada.json,0.822000,0,0,0,0
+4. Statistics,RapidJSON_FullPrec (C++),citm_catalog.json,0.346000,0,0,0,0
+4. Statistics,RapidJSON_FullPrec (C++),twitter.json,0.217000,0,0,0,0
+5. Sax Round-trip,RapidJSON_FullPrec (C++),canada.json,74.306000,2873356,2873900,30,0
+5. Sax Round-trip,RapidJSON_FullPrec (C++),citm_catalog.json,7.688000,567612,568156,26,0
+5. Sax Round-trip,RapidJSON_FullPrec (C++),twitter.json,5.226000,567612,568476,28,0
+6. SaxStatistics,RapidJSON_FullPrec (C++),canada.json,40.287000,0,272,2,0
+6. SaxStatistics,RapidJSON_FullPrec (C++),citm_catalog.json,5.729000,0,272,2,0
+6. SaxStatistics,RapidJSON_FullPrec (C++),twitter.json,3.416000,0,592,4,0
+7. Code size, RapidJSON_FullPrec (C++), jsonstat,0,0,0,0,34816
+1. Parse,RapidJSON_Insitu (C++),canada.json,11.854000,6458192,6906604,78,0
+1. Parse,RapidJSON_Insitu (C++),citm_catalog.json,4.512000,3350956,3362624,36,0
+1. Parse,RapidJSON_Insitu (C++),twitter.json,2.200000,1368152,1375932,22,0
+2. Stringify,RapidJSON_Insitu (C++),canada.json,33.053000,2873356,2873628,28,0
+2. Stringify,RapidJSON_Insitu (C++),citm_catalog.json,2.592000,567612,567884,24,0
+2. Stringify,RapidJSON_Insitu (C++),twitter.json,2.369000,567612,567884,24,0
+3. Prettify,RapidJSON_Insitu (C++),canada.json,44.817000,9699344,9699616,31,0
+3. Prettify,RapidJSON_Insitu (C++),citm_catalog.json,5.364000,1915588,1915860,27,0
+3. Prettify,RapidJSON_Insitu (C++),twitter.json,3.167000,851396,851668,25,0
+4. Statistics,RapidJSON_Insitu (C++),canada.json,0.813000,0,0,0,0
+4. Statistics,RapidJSON_Insitu (C++),citm_catalog.json,0.339000,0,0,0,0
+4. Statistics,RapidJSON_Insitu (C++),twitter.json,0.171000,0,0,0,0
+5. Sax Round-trip,RapidJSON_Insitu (C++),canada.json,41.371000,2873356,5124716,30,0
+5. Sax Round-trip,RapidJSON_Insitu (C++),citm_catalog.json,6.328000,567612,2345580,26,0
+5. Sax Round-trip,RapidJSON_Insitu (C++),twitter.json,4.219000,567612,1214900,26,0
+6. SaxStatistics,RapidJSON_Insitu (C++),canada.json,9.222000,0,2251088,2,0
+6. SaxStatistics,RapidJSON_Insitu (C++),citm_catalog.json,3.710000,0,1777696,2,0
+6. SaxStatistics,RapidJSON_Insitu (C++),twitter.json,2.040000,0,647016,2,0
+7. Code size, RapidJSON_Insitu (C++), jsonstat,0,0,0,0,34816
+1. Parse,RapidJSON (C++),canada.json,11.773000,4207124,4655536,77,0
+1. Parse,RapidJSON (C++),citm_catalog.json,5.481000,1638828,1650496,36,0
+1. Parse,RapidJSON (C++),twitter.json,3.094000,1048896,1056676,26,0
+2. Stringify,RapidJSON (C++),canada.json,33.493000,2873356,2873628,28,0
+2. Stringify,RapidJSON (C++),citm_catalog.json,2.554000,567612,567884,24,0
+2. Stringify,RapidJSON (C++),twitter.json,2.435000,567612,567884,24,0
+3. Prettify,RapidJSON (C++),canada.json,45.251000,9699344,9699616,31,0
+3. Prettify,RapidJSON (C++),citm_catalog.json,5.248000,1915588,1915860,27,0
+3. Prettify,RapidJSON (C++),twitter.json,3.225000,851396,851668,25,0
+4. Statistics,RapidJSON (C++),canada.json,0.821000,0,0,0,0
+4. Statistics,RapidJSON (C++),citm_catalog.json,0.334000,0,0,0,0
+4. Statistics,RapidJSON (C++),twitter.json,0.209000,0,0,0,0
+5. Sax Round-trip,RapidJSON (C++),canada.json,41.600000,2873356,2873900,30,0
+5. Sax Round-trip,RapidJSON (C++),citm_catalog.json,6.988000,567612,568156,26,0
+5. Sax Round-trip,RapidJSON (C++),twitter.json,5.141000,567612,568476,28,0
+6. SaxStatistics,RapidJSON (C++),canada.json,8.889000,0,272,2,0
+6. SaxStatistics,RapidJSON (C++),citm_catalog.json,5.228000,0,272,2,0
+6. SaxStatistics,RapidJSON (C++),twitter.json,3.345000,0,592,4,0
+7. Code size, RapidJSON (C++), jsonstat,0,0,0,0,34816
+1. Parse,sajson (C++),canada.json,8.891000,11295060,11295060,4,0
+1. Parse,sajson (C++),citm_catalog.json,5.676000,8921132,8921132,4,0
+1. Parse,sajson (C++),twitter.json,2.429000,3235032,3235032,4,0
+4. Statistics,sajson (C++),canada.json,1.066000,0,0,0,0
+4. Statistics,sajson (C++),citm_catalog.json,0.356000,0,0,0,0
+4. Statistics,sajson (C++),twitter.json,0.181000,0,0,0,0
+7. Code size, sajson (C++), jsonstat,0,0,0,0,30208
+1. Parse,SimpleJSON (C++),canada.json,140.327000,12262028,16796616,337494,0
+1. Parse,SimpleJSON (C++),citm_catalog.json,115.369000,4267296,7822952,235618,0
+1. Parse,SimpleJSON (C++),twitter.json,70.898000,2270984,3565128,147115,0
+2. Stringify,SimpleJSON (C++),canada.json,2577.834000,3155840,7418056,584121,0
+2. Stringify,SimpleJSON (C++),citm_catalog.json,412.029000,1002824,3006440,261196,0
+2. Stringify,SimpleJSON (C++),twitter.json,103.371000,1137672,2450736,117904,0
+4. Statistics,SimpleJSON (C++),canada.json,1.587000,0,0,0,0
+4. Statistics,SimpleJSON (C++),citm_catalog.json,0.494000,0,0,0,0
+4. Statistics,SimpleJSON (C++),twitter.json,0.384000,0,0,0,0
+7. Code size, SimpleJSON (C++), jsonstat,0,0,0,0,35328
+1. Parse,strdup (C),canada.json,0.184000,2251080,2251080,2,0
+1. Parse,strdup (C),citm_catalog.json,0.145000,1777688,1777688,2,0
+1. Parse,strdup (C),twitter.json,0.053000,647008,647008,2,0
+2. Stringify,strdup (C),canada.json,0.178000,2251080,2251080,2,0
+2. Stringify,strdup (C),citm_catalog.json,0.141000,1777688,1777688,2,0
+2. Stringify,strdup (C),twitter.json,0.053000,647008,647008,2,0
+1. Parse,udp/json-parser (C),canada.json,103.831000,8248076,8248076,223233,0
+1. Parse,udp/json-parser (C),citm_catalog.json,36.069000,2320244,2320244,51205,0
+1. Parse,udp/json-parser (C),twitter.json,12.215000,1188364,1188364,20237,0
+2. Stringify,udp/json-parser (C),canada.json,2577.220000,1043624,1043624,2,0
+2. Stringify,udp/json-parser (C),citm_catalog.json,9.162000,500728,500728,2,0
+2. Stringify,udp/json-parser (C),twitter.json,3.297000,472968,472968,2,0
+3. Prettify,udp/json-parser (C),canada.json,2583.367000,7995380,7995380,2,0
+3. Prettify,udp/json-parser (C),citm_catalog.json,10.131000,1929504,1929504,2,0
+3. Prettify,udp/json-parser (C),twitter.json,3.544000,835280,835280,2,0
+4. Statistics,udp/json-parser (C),canada.json,1.141000,0,0,0,0
+4. Statistics,udp/json-parser (C),citm_catalog.json,0.333000,0,0,0,0
+4. Statistics,udp/json-parser (C),twitter.json,0.183000,0,0,0,0
+7. Code size, udp/json-parser (C), jsonstat,0,0,0,0,27136
+1. Parse,ujson4c (C),canada.json,11.227000,4177964,8680080,10,0
+1. Parse,ujson4c (C),citm_catalog.json,5.518000,2080808,5636140,9,0
+1. Parse,ujson4c (C),twitter.json,2.457000,2080808,3374788,9,0
+4. Statistics,ujson4c (C),canada.json,2.720000,0,0,0,0
+4. Statistics,ujson4c (C),citm_catalog.json,0.675000,0,0,0,0
+4. Statistics,ujson4c (C),twitter.json,0.338000,0,0,0,0
+7. Code size, ujson4c (C), jsonstat,0,0,0,0,24064
+1. Parse,Vinenthz/libjson (C),canada.json,187.233000,4246124,4262788,334389,0
+1. Parse,Vinenthz/libjson (C),citm_catalog.json,61.259000,1655796,1672468,153901,0
+1. Parse,Vinenthz/libjson (C),twitter.json,27.705000,987076,1003748,72620,0
+2. Stringify,Vinenthz/libjson (C),canada.json,1946.612000,4194328,4194328,13,0
+2. Stringify,Vinenthz/libjson (C),citm_catalog.json,12.473000,524312,524312,10,0
+2. Stringify,Vinenthz/libjson (C),twitter.json,7.894000,524312,524312,10,0
+3. Prettify,Vinenthz/libjson (C),canada.json,1942.985000,4194328,4194328,13,0
+3. Prettify,Vinenthz/libjson (C),citm_catalog.json,12.551000,524312,524312,10,0
+3. Prettify,Vinenthz/libjson (C),twitter.json,7.916000,524312,524312,10,0
+4. Statistics,Vinenthz/libjson (C),canada.json,0.919000,0,0,0,0
+4. Statistics,Vinenthz/libjson (C),citm_catalog.json,0.395000,0,0,0,0
+4. Statistics,Vinenthz/libjson (C),twitter.json,0.338000,0,0,0,0
+5. Sax Round-trip,Vinenthz/libjson (C),canada.json,32.769000,4194328,4198688,15,0
+5. Sax Round-trip,Vinenthz/libjson (C),citm_catalog.json,20.215000,524312,528672,12,0
+5. Sax Round-trip,Vinenthz/libjson (C),twitter.json,12.254000,524312,528672,12,0
+6. SaxStatistics,Vinenthz/libjson (C),canada.json,23.925000,0,4360,2,0
+6. SaxStatistics,Vinenthz/libjson (C),citm_catalog.json,13.741000,0,4360,2,0
+6. SaxStatistics,Vinenthz/libjson (C),twitter.json,5.737000,0,4360,2,0
+7. Code size, Vinenthz/libjson (C), jsonstat,0,0,0,0,26112
+1. Parse,YAJL (C),canada.json,226.144000,9133036,9135380,501567,0
+1. Parse,YAJL (C),citm_catalog.json,68.793000,2250892,2255288,189685,0
+1. Parse,YAJL (C),twitter.json,27.259000,1125572,1129968,77047,0
+2. Stringify,YAJL (C),canada.json,2151.607000,4198472,4198472,15,0
+2. Stringify,YAJL (C),citm_catalog.json,11.779000,528456,528456,12,0
+2. Stringify,YAJL (C),twitter.json,5.031000,528464,528464,12,0
+3. Prettify,YAJL (C),canada.json,2236.434000,16846892,16846892,17,0
+3. Prettify,YAJL (C),citm_catalog.json,31.288000,2101320,2101320,14,0
+3. Prettify,YAJL (C),twitter.json,9.242000,1052744,1052744,13,0
+4. Statistics,YAJL (C),canada.json,1.515000,0,0,0,0
+4. Statistics,YAJL (C),citm_catalog.json,0.611000,0,0,0,0
+4. Statistics,YAJL (C),twitter.json,0.646000,0,0,0,0
+5. Sax Round-trip,YAJL (C),canada.json,2256.651000,4198472,4202868,22,0
+5. Sax Round-trip,YAJL (C),citm_catalog.json,19.538000,528456,532852,19,0
+5. Sax Round-trip,YAJL (C),twitter.json,7.501000,528456,532852,19,0
+6. SaxStatistics,YAJL (C),canada.json,87.196000,0,4396,7,0
+6. SaxStatistics,YAJL (C),citm_catalog.json,8.732000,0,4396,7,0
+6. SaxStatistics,YAJL (C),twitter.json,3.143000,0,4396,7,0
+7. Code size, YAJL (C), jsonstat,0,0,0,0,38912
