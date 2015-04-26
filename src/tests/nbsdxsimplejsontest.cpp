@@ -1,6 +1,6 @@
 #include "../test.h"
 
-#ifndef _MSC_VER // VC have compilation error
+#if !defined(_MSC_VER) && !defined(__i386__) // VC have compilation error, crash in 32-bit
 
 #include "nbsdxSimpleJSON/json.hpp"
 
