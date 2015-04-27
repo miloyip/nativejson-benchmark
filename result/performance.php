@@ -50,6 +50,15 @@ $(function() {
     }
   }
 
+  function createSortEvent(type, dt, chart) {
+    return function(e) {
+      if (e.column == 0 || e.column == 1) {
+        var t = dt.clone();
+        drawBarChart(type, t, chart, [{column: e.column, desc: !e.ascending }]);
+      }
+    }
+  }
+
   addSection("0. Overall");
 
   var overallDiv = document.createElement("div");
@@ -75,8 +84,9 @@ $(function() {
       AddToOverall(sizedt);
       sortCaseInsensitive(sizedt, 0);
       addSubsection(sizedt.getColumnLabel(1));
-      drawTable(type, sizedt.clone(), false);
-      drawBarChart(type, sizedt);
+      var sizeTable = drawTable(type, sizedt.clone(), false);
+      var sizeChart = drawBarChart(type, sizedt.clone());
+      google.visualization.events.addListener(sizeTable, 'sort', createSortEvent(type, sizedt, sizeChart));
     }
     else {
       addSubsection("Time");
@@ -91,15 +101,6 @@ $(function() {
       sortCaseInsensitive(timedt, 0);
       var timeTable = drawTable(type, timedt.clone(), true);
       var timeChart = drawBarChart(type, timedt.clone());
-
-      function createSortEvent(type, dt, chart) {
-        return function(e) {
-          if (e.column == 0 || e.column == 1) {
-            var t = dt.clone();
-            drawBarChart(type, t, chart, [{column: e.column, desc: !e.ascending }]);
-          }
-        }
-      }
       google.visualization.events.addListener(timeTable, 'sort', createSortEvent(type, timedt, timeChart));
 
       // Per JSON
@@ -125,7 +126,7 @@ $(function() {
           sortCaseInsensitive(memorydt, 0);
           addSubsection(memorydt.getColumnLabel(1));
           var memoryTable = drawTable(type, memorydt.clone(), false);
-          var memoryChart = drawBarChart(type, memorydt);
+          var memoryChart = drawBarChart(type, memorydt.clone());
 
           google.visualization.events.addListener(memoryTable, 'sort', createSortEvent(type, memorydt, memoryChart));
         }
