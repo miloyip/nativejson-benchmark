@@ -5,6 +5,4 @@
 /thirdparty/include/yajl
 /result/*.csv
 /result/*.html
-/result/conformance/*.csv
-/result/conformance/*.html
 src/machine.h
