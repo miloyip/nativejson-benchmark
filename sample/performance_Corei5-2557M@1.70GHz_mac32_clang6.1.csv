@@ -11,7 +11,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,ArduinoJson (C++),canada.json,0.775000,0,0,0,0
 4. Statistics,ArduinoJson (C++),citm_catalog.json,0.520000,0,0,0,0
 4. Statistics,ArduinoJson (C++),twitter.json,0.375000,0,0,0,0
-7. Code size, ArduinoJson (C++), jsonstat,0,0,0,0,40944
+7. Code size,ArduinoJson (C++),jsonstat,0,0,0,0,40944
 1. Parse,CAJUN (C++),canada.json,1980.723000,234160112,495050688,3837856,0
 1. Parse,CAJUN (C++),citm_catalog.json,282.983000,8918208,29031504,641280,0
 1. Parse,CAJUN (C++),twitter.json,102.622000,2309616,8642048,249868,0
@@ -21,7 +21,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,CAJUN (C++),canada.json,5.998000,0,0,0,0
 4. Statistics,CAJUN (C++),citm_catalog.json,0.694000,0,0,0,0
 4. Statistics,CAJUN (C++),twitter.json,0.262000,0,0,0,0
-7. Code size, CAJUN (C++), jsonstat,0,0,0,0,85352
+7. Code size,CAJUN (C++),jsonstat,0,0,0,0,85352
 1. Parse,C++ REST SDK (C++11),canada.json,219.190000,3894176,3894208,392464,0
 1. Parse,C++ REST SDK (C++11),citm_catalog.json,29.011000,1466064,1466080,73089,0
 1. Parse,C++ REST SDK (C++11),twitter.json,13.603000,1135936,1136064,31411,0
@@ -31,7 +31,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,C++ REST SDK (C++11),canada.json,3.016000,0,32,1,0
 4. Statistics,C++ REST SDK (C++11),citm_catalog.json,0.754000,0,64,719,0
 4. Statistics,C++ REST SDK (C++11),twitter.json,1.016000,0,464,2594,0
-7. Code size, C++ REST SDK (C++11), jsonstat,0,0,0,0,142828
+7. Code size,C++ REST SDK (C++11),jsonstat,0,0,0,0,142828
 1. Parse,cJSON (C),canada.json,29.384000,8024816,8024816,167192,0
 1. Parse,cJSON (C),citm_catalog.json,10.458000,2265312,2265312,64383,0
 1. Parse,cJSON (C),twitter.json,6.456000,1193440,1193440,32014,0
@@ -44,7 +44,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,cJSON (C),canada.json,0.971000,0,0,0,0
 4. Statistics,cJSON (C),citm_catalog.json,0.410000,0,0,0,0
 4. Statistics,cJSON (C),twitter.json,0.311000,0,0,0,0
-7. Code size, cJSON (C), jsonstat,0,0,0,0,26684
+7. Code size,cJSON (C),jsonstat,0,0,0,0,26684
 1. Parse,dropbox/json11 (C++11),canada.json,132.447000,6707056,9025232,337437,0
 1. Parse,dropbox/json11 (C++11),citm_catalog.json,28.529000,2620240,4722208,105189,0
 1. Parse,dropbox/json11 (C++11),twitter.json,19.569000,1388512,2036224,56661,0
@@ -54,7 +54,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,dropbox/json11 (C++11),canada.json,1.513000,0,0,0,0
 4. Statistics,dropbox/json11 (C++11),citm_catalog.json,0.637000,0,0,0,0
 4. Statistics,dropbox/json11 (C++11),twitter.json,0.354000,0,0,0,0
-7. Code size, dropbox/json11 (C++11), jsonstat,0,0,0,0,75248
+7. Code size,dropbox/json11 (C++11),jsonstat,0,0,0,0,75248
 1. Parse,mikeando/FastJson (C++),canada.json,24.730000,5448096,7701248,22,0
 1. Parse,mikeando/FastJson (C++),citm_catalog.json,9.658000,1962112,4063712,22,0
 1. Parse,mikeando/FastJson (C++),twitter.json,4.294000,1183360,1831168,24,0
@@ -64,7 +64,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,mikeando/FastJson (C++),canada.json,0.884000,0,0,0,0
 4. Statistics,mikeando/FastJson (C++),citm_catalog.json,0.362000,0,0,0,0
 4. Statistics,mikeando/FastJson (C++),twitter.json,0.215000,0,0,0,0
-7. Code size, mikeando/FastJson (C++), jsonstat,0,0,0,0,58292
+7. Code size,mikeando/FastJson (C++),jsonstat,0,0,0,0,58292
 1. Parse,gason (C++11),canada.json,10.288000,4939808,4939808,658,0
 1. Parse,gason (C++11),citm_catalog.json,3.979000,2711584,2711584,151,0
 1. Parse,gason (C++11),twitter.json,1.934000,872480,872480,57,0
@@ -77,7 +77,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,gason (C++11),canada.json,1.039000,0,0,0,0
 4. Statistics,gason (C++11),citm_catalog.json,0.489000,0,0,0,0
 4. Statistics,gason (C++11),twitter.json,0.338000,0,0,0,0
-7. Code size, gason (C++11), jsonstat,0,0,0,0,20272
+7. Code size,gason (C++11),jsonstat,0,0,0,0,20272
 1. Parse,Jansson (C),canada.json,169.725000,5680288,5680336,224392,0
 1. Parse,Jansson (C),citm_catalog.json,48.444000,3077136,3077216,111230,0
 1. Parse,Jansson (C),twitter.json,23.297000,1219648,1220192,43822,0
@@ -90,7 +90,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,Jansson (C),canada.json,1.675000,0,0,0,0
 4. Statistics,Jansson (C),citm_catalog.json,1.446000,0,0,0,0
 4. Statistics,Jansson (C),twitter.json,0.529000,0,0,0,0
-7. Code size, Jansson (C), jsonstat,0,0,0,0,60232
+7. Code size,Jansson (C),jsonstat,0,0,0,0,60232
 1. Parse,JeayeSON (C++14),canada.json,240.437000,4406688,15112352,499017,0
 1. Parse,JeayeSON (C++14),citm_catalog.json,85.775000,2047792,8396112,253298,0
 1. Parse,JeayeSON (C++14),twitter.json,44.962000,1262112,4433440,129268,0
@@ -100,7 +100,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,JeayeSON (C++14),canada.json,1.189000,0,0,0,0
 4. Statistics,JeayeSON (C++14),citm_catalog.json,0.454000,0,0,0,0
 4. Statistics,JeayeSON (C++14),twitter.json,0.300000,0,0,0,0
-7. Code size, JeayeSON (C++14), jsonstat,0,0,0,0,75764
+7. Code size,JeayeSON (C++14),jsonstat,0,0,0,0,75764
 1. Parse,JsonBox (C++),canada.json,592.513000,4334304,9059312,974652,0
 1. Parse,JsonBox (C++),citm_catalog.json,130.706000,2032976,6538624,261150,0
 1. Parse,JsonBox (C++),twitter.json,62.815000,1231040,2895808,102061,0
@@ -113,7 +113,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,JsonBox (C++),canada.json,0.926000,0,0,0,0
 4. Statistics,JsonBox (C++),citm_catalog.json,0.350000,0,0,0,0
 4. Statistics,JsonBox (C++),twitter.json,0.226000,0,0,0,0
-7. Code size, JsonBox (C++), jsonstat,0,0,0,0,136068
+7. Code size,JsonBox (C++),jsonstat,0,0,0,0,136068
 1. Parse,jsoncons (C++),canada.json,1208.958000,3378688,23526960,3835292,0
 1. Parse,jsoncons (C++),citm_catalog.json,948.891000,1231088,7518784,3574418,0
 1. Parse,jsoncons (C++),twitter.json,230.708000,918816,4057952,741190,0
@@ -126,7 +126,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,jsoncons (C++),canada.json,1.862000,0,32,1,0
 4. Statistics,jsoncons (C++),citm_catalog.json,1.839000,0,64,719,0
 4. Statistics,jsoncons (C++),twitter.json,1.111000,0,464,2594,0
-7. Code size, jsoncons (C++), jsonstat,0,0,0,0,88548
+7. Code size,jsoncons (C++),jsonstat,0,0,0,0,88548
 1. Parse,JsonCpp (C++),canada.json,187.953000,8921568,13431296,223254,0
 1. Parse,JsonCpp (C++),citm_catalog.json,28.245000,2611984,7121728,115700,0
 1. Parse,JsonCpp (C++),twitter.json,16.697000,1245120,2519024,54411,0
@@ -136,7 +136,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,JsonCpp (C++),canada.json,2.921000,0,32,1,0
 4. Statistics,JsonCpp (C++),citm_catalog.json,0.857000,0,64,719,0
 4. Statistics,JsonCpp (C++),twitter.json,1.000000,0,464,2594,0
-7. Code size, JsonCpp (C++), jsonstat,0,0,0,0,242528
+7. Code size,JsonCpp (C++),jsonstat,0,0,0,0,242528
 1. Parse,json-c (C),canada.json,210.483000,19890720,19891856,390651,0
 1. Parse,json-c (C),citm_catalog.json,37.998000,7220608,7221776,131793,0
 1. Parse,json-c (C),twitter.json,15.784000,1923120,1924736,49446,0
@@ -149,7 +149,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,json-c (C),canada.json,4.663000,0,0,0,0
 4. Statistics,json-c (C),citm_catalog.json,0.998000,0,0,0,0
 4. Statistics,json-c (C),twitter.json,0.312000,0,0,0,0
-7. Code size, json-c (C), jsonstat,0,0,0,0,52316
+7. Code size,json-c (C),jsonstat,0,0,0,0,52316
 1. Parse,JSON Spirit (C++),canada.json,186.401000,5817440,8355776,435435,0
 1. Parse,JSON Spirit (C++),citm_catalog.json,146.954000,1780048,5730592,312738,0
 1. Parse,JSON Spirit (C++),twitter.json,50.582000,1075712,2820992,108189,0
@@ -162,7 +162,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,JSON Spirit (C++),canada.json,1.659000,0,0,0,0
 4. Statistics,JSON Spirit (C++),citm_catalog.json,0.555000,0,0,0,0
 4. Statistics,JSON Spirit (C++),twitter.json,0.341000,0,0,0,0
-7. Code size, JSON Spirit (C++), jsonstat,0,0,0,0,258552
+7. Code size,JSON Spirit (C++),jsonstat,0,0,0,0,258552
 1. Parse,hjiang/JSON++ (C++),canada.json,390.069000,7465904,11971504,448011,0
 1. Parse,hjiang/JSON++ (C++),citm_catalog.json,86.322000,2737504,6997344,101193,0
 1. Parse,hjiang/JSON++ (C++),twitter.json,35.578000,1459360,3142848,55239,0
@@ -172,7 +172,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,hjiang/JSON++ (C++),canada.json,1.404000,0,0,0,0
 4. Statistics,hjiang/JSON++ (C++),citm_catalog.json,0.650000,0,0,0,0
 4. Statistics,hjiang/JSON++ (C++),twitter.json,0.322000,0,0,0,0
-7. Code size, hjiang/JSON++ (C++), jsonstat,0,0,0,0,92372
+7. Code size,hjiang/JSON++ (C++),jsonstat,0,0,0,0,92372
 1. Parse,Jzon (C++),canada.json,290.326000,11976032,18236624,612962,0
 1. Parse,Jzon (C++),citm_catalog.json,80.996000,2034064,6041024,86205,0
 1. Parse,Jzon (C++),twitter.json,43.224000,1219488,2924608,62222,0
@@ -185,7 +185,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,Jzon (C++),canada.json,1.776000,0,32,1,0
 4. Statistics,Jzon (C++),citm_catalog.json,0.968000,0,64,719,0
 4. Statistics,Jzon (C++),twitter.json,1.259000,0,464,2594,0
-7. Code size, Jzon (C++), jsonstat,0,0,0,0,109112
+7. Code size,Jzon (C++),jsonstat,0,0,0,0,109112
 1. Parse,Nlohmann (C++11),canada.json,133.162000,3813312,8318928,170260,0
 1. Parse,Nlohmann (C++11),citm_catalog.json,23.193000,1884592,6390224,63615,0
 1. Parse,Nlohmann (C++11),twitter.json,17.956000,1155776,2581216,40532,0
@@ -198,14 +198,14 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,Nlohmann (C++11),canada.json,1.782000,0,32,2,0
 4. Statistics,Nlohmann (C++11),citm_catalog.json,1.942000,0,64,4485,0
 4. Statistics,Nlohmann (C++11),twitter.json,3.016000,0,464,9820,0
-7. Code size, Nlohmann (C++11), jsonstat,0,0,0,0,41432
+7. Code size,Nlohmann (C++11),jsonstat,0,0,0,0,41432
 1. Parse,Parson (C),canada.json,161.409000,4777696,4778016,336060,0
 1. Parse,Parson (C),citm_catalog.json,37.263000,1846400,1846512,185585,0
 1. Parse,Parson (C),twitter.json,16.177000,952192,952304,72477,0
 4. Statistics,Parson (C),canada.json,5.106000,0,0,0,0
 4. Statistics,Parson (C),citm_catalog.json,2.523000,0,0,0,0
 4. Statistics,Parson (C),twitter.json,2.273000,0,0,0,0
-7. Code size, Parson (C), jsonstat,0,0,0,0,37996
+7. Code size,Parson (C),jsonstat,0,0,0,0,37996
 1. Parse,PicoJSON (C++),canada.json,259.400000,3787984,3977136,545672,0
 1. Parse,PicoJSON (C++),citm_catalog.json,68.839000,1862944,1862976,226421,0
 1. Parse,PicoJSON (C++),twitter.json,30.184000,1174656,1533568,87648,0
@@ -215,7 +215,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,PicoJSON (C++),canada.json,1.065000,0,0,0,0
 4. Statistics,PicoJSON (C++),citm_catalog.json,0.442000,0,0,0,0
 4. Statistics,PicoJSON (C++),twitter.json,0.298000,0,0,0,0
-7. Code size, PicoJSON (C++), jsonstat,0,0,0,0,34472
+7. Code size,PicoJSON (C++),jsonstat,0,0,0,0,34472
 1. Parse,RapidJSON_AutoUTF (C++),canada.json,24.398000,2995344,3339408,59,0
 1. Parse,RapidJSON_AutoUTF (C++),citm_catalog.json,16.389000,1122960,1131152,27,0
 1. Parse,RapidJSON_AutoUTF (C++),twitter.json,10.435000,792720,798352,21,0
@@ -234,7 +234,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 6. SaxStatistics,RapidJSON_AutoUTF (C++),canada.json,21.203000,0,272,2,0
 6. SaxStatistics,RapidJSON_AutoUTF (C++),citm_catalog.json,13.481000,0,272,2,0
 6. SaxStatistics,RapidJSON_AutoUTF (C++),twitter.json,8.757000,0,1040,4,0
-7. Code size, RapidJSON_AutoUTF (C++), jsonstat,0,0,0,0,33892
+7. Code size,RapidJSON_AutoUTF (C++),jsonstat,0,0,0,0,33892
 1. Parse,RapidJSON_FullPrec (C++),canada.json,32.710000,2962560,3261568,59,0
 1. Parse,RapidJSON_FullPrec (C++),citm_catalog.json,5.687000,1122944,1131136,27,0
 1. Parse,RapidJSON_FullPrec (C++),twitter.json,4.552000,792704,798336,21,0
@@ -253,7 +253,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 6. SaxStatistics,RapidJSON_FullPrec (C++),canada.json,29.295000,0,272,2,0
 6. SaxStatistics,RapidJSON_FullPrec (C++),citm_catalog.json,4.823000,0,272,2,0
 6. SaxStatistics,RapidJSON_FullPrec (C++),twitter.json,3.889000,0,1040,4,0
-7. Code size, RapidJSON_FullPrec (C++), jsonstat,0,0,0,0,31232
+7. Code size,RapidJSON_FullPrec (C++),jsonstat,0,0,0,0,31232
 1. Parse,RapidJSON_Insitu (C++),canada.json,12.154000,5215360,5514368,60,0
 1. Parse,RapidJSON_Insitu (C++),citm_catalog.json,4.285000,3309696,3317888,27,0
 1. Parse,RapidJSON_Insitu (C++),twitter.json,2.483000,1314432,1320064,17,0
@@ -272,7 +272,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 6. SaxStatistics,RapidJSON_Insitu (C++),canada.json,9.954000,0,2252832,2,0
 6. SaxStatistics,RapidJSON_Insitu (C++),citm_catalog.json,3.538000,0,2252832,2,0
 6. SaxStatistics,RapidJSON_Insitu (C++),twitter.json,2.388000,0,634912,2,0
-7. Code size, RapidJSON_Insitu (C++), jsonstat,0,0,0,0,31232
+7. Code size,RapidJSON_Insitu (C++),jsonstat,0,0,0,0,31232
 1. Parse,RapidJSON (C++),canada.json,12.623000,2962560,3261568,59,0
 1. Parse,RapidJSON (C++),citm_catalog.json,5.917000,1122944,1131136,27,0
 1. Parse,RapidJSON (C++),twitter.json,4.861000,792704,798336,21,0
@@ -291,14 +291,14 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 6. SaxStatistics,RapidJSON (C++),canada.json,8.881000,0,272,2,0
 6. SaxStatistics,RapidJSON (C++),citm_catalog.json,4.402000,0,272,2,0
 6. SaxStatistics,RapidJSON (C++),twitter.json,3.801000,0,1040,4,0
-7. Code size, RapidJSON (C++), jsonstat,0,0,0,0,31232
+7. Code size,RapidJSON (C++),jsonstat,0,0,0,0,31232
 1. Parse,sajson (C++),canada.json,12.420000,11882560,11882560,4,0
 1. Parse,sajson (C++),citm_catalog.json,5.158000,9785408,9785408,4,0
 1. Parse,sajson (C++),twitter.json,1.959000,3727424,3727424,4,0
 4. Statistics,sajson (C++),canada.json,1.064000,0,0,0,0
 4. Statistics,sajson (C++),citm_catalog.json,0.357000,0,0,0,0
 4. Statistics,sajson (C++),twitter.json,0.214000,0,0,0,0
-7. Code size, sajson (C++), jsonstat,0,0,0,0,34656
+7. Code size,sajson (C++),jsonstat,0,0,0,0,34656
 1. Parse,SimpleJSON (C++),canada.json,69.741000,11824864,20864304,337489,0
 1. Parse,SimpleJSON (C++),citm_catalog.json,56.850000,4493696,11404720,230280,0
 1. Parse,SimpleJSON (C++),twitter.json,39.339000,2782400,5658480,137659,0
@@ -308,14 +308,14 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,SimpleJSON (C++),canada.json,1.324000,0,0,0,0
 4. Statistics,SimpleJSON (C++),citm_catalog.json,0.780000,0,0,0,0
 4. Statistics,SimpleJSON (C++),twitter.json,0.482000,0,0,0,0
-7. Code size, SimpleJSON (C++), jsonstat,0,0,0,0,54192
+7. Code size,SimpleJSON (C++),jsonstat,0,0,0,0,54192
 1. Parse,strdup (C),canada.json,0.583000,2875408,2875408,2,0
 1. Parse,strdup (C),citm_catalog.json,0.240000,1835024,1835024,2,0
 1. Parse,strdup (C),twitter.json,0.049000,851984,851984,2,0
 2. Stringify,strdup (C),canada.json,0.547000,3223568,3223568,2,0
 2. Stringify,strdup (C),citm_catalog.json,0.475000,2875408,2875408,2,0
 2. Stringify,strdup (C),twitter.json,0.060000,634896,634896,2,0
-7. Code size, strdup (C), jsonstat,0,0,0,0,15632
+7. Code size,strdup (C),jsonstat,0,0,0,0,15632
 1. Parse,udp/json-parser (C),canada.json,58.146000,6474656,6474656,223233,0
 1. Parse,udp/json-parser (C),citm_catalog.json,29.577000,1910400,1910400,51205,0
 1. Parse,udp/json-parser (C),twitter.json,9.972000,1196256,1196256,20237,0
@@ -328,14 +328,14 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 4. Statistics,udp/json-parser (C),canada.json,0.971000,0,0,0,0
 4. Statistics,udp/json-parser (C),citm_catalog.json,0.340000,0,0,0,0
 4. Statistics,udp/json-parser (C),twitter.json,0.228000,0,0,0,0
-7. Code size, udp/json-parser (C), jsonstat,0,0,0,0,34668
+7. Code size,udp/json-parser (C),jsonstat,0,0,0,0,34668
 1. Parse,ujson4c (C),canada.json,11.750000,5935120,14942224,10,0
 1. Parse,ujson4c (C),citm_catalog.json,5.003000,5935120,12845072,10,0
 1. Parse,ujson4c (C),twitter.json,2.807000,3059728,5935120,9,0
 4. Statistics,ujson4c (C),canada.json,4.478000,0,0,0,0
 4. Statistics,ujson4c (C),citm_catalog.json,0.904000,0,0,0,0
 4. Statistics,ujson4c (C),twitter.json,0.409000,0,0,0,0
-7. Code size, ujson4c (C), jsonstat,0,0,0,0,26448
+7. Code size,ujson4c (C),jsonstat,0,0,0,0,26448
 1. Parse,Vinenthz/libjson (C),canada.json,149.449000,3801696,3818352,334389,0
 1. Parse,Vinenthz/libjson (C),citm_catalog.json,42.732000,1724528,1741184,153901,0
 1. Parse,Vinenthz/libjson (C),twitter.json,16.441000,1035408,1052064,72620,0
@@ -354,7 +354,7 @@ Type,Library,Filename,Time (ms),Memory (byte),MemoryPeak (byte),AllocCount,FileS
 6. SaxStatistics,Vinenthz/libjson (C),canada.json,24.283000,0,4352,2,0
 6. SaxStatistics,Vinenthz/libjson (C),citm_catalog.json,16.932000,0,4352,2,0
 6. SaxStatistics,Vinenthz/libjson (C),twitter.json,6.443000,0,4352,2,0
-7. Code size, Vinenthz/libjson (C), jsonstat,0,0,0,0,25656
+7. Code size,Vinenthz/libjson (C),jsonstat,0,0,0,0,25656
 1. Parse,YAJL (C),canada.json,161.522000,9994784,9997104,501567,0
 1. Parse,YAJL (C),citm_catalog.json,34.421000,2324288,2328656,189685,0
 1. Parse,YAJL (C),twitter.json,14.030000,1135104,1139472,77047,0

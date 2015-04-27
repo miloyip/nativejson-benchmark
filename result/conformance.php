@@ -261,10 +261,10 @@ function sanitize(svg) {
 </script>
 <style type="text/css">
 @media (min-width: 800px) {
-  .container {
+/*  .container {
     max-width: 800px;
   }
-}
+*/}
 textarea {
   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
