@@ -6,6 +6,8 @@
 #  define RAPIDJSON_SSE42      
 #elif defined(__SSE2__)        
 #  define RAPIDJSON_SSE2
+#elif defined(_MSC_VER) // Turn on SSE4.2 for VC
+#  define RAPIDJSON_SSE42
 #endif
 
 #ifndef TEST_PARSE_FLAG
