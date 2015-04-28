@@ -68,6 +68,7 @@ Library | Language | Version | Notes
 [jansson](https://github.com/akheron/jansson) | C | v2.7
 [jeayeson](https://github.com/jeaye/jeayeson) | C++14
 [json-c](https://github.com/json-c/json-c) | C |
+[jsoncons](https://github.com/danielaparker/jsoncons) | C++11 | 0.97.1
 [json-voorhees](https://github.com/tgockel/json-voorhees) | C++ | v1.0.0
 [json spirit](http://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) | C++ | 4.08 | Need Boost
 [Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.1
@@ -75,7 +76,7 @@ Library | Language | Version | Notes
 [JSON++](https://github.com/hjiang/jsonxx) | C++ | 
 [Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
 [nbsdx/SimpleJSON](https://github.com/nbsdx/SimpleJSON) | C++11 |
-[Nlohmann](https://github.com/nlohmann/json) | C++11
+[Nlohmann/json](https://github.com/nlohmann/json) | C++11
 [parson](https://github.com/kgabis/parson) | C | 
 [picojson](https://github.com/kazuho/picojson) | C++ | 1.3.0
 [RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.0.1 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
