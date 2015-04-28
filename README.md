@@ -1,14 +1,16 @@
 # Native JSON Benchmark
 
-Copyright(c) 2014 Milo Yip (miloyip@gmail.com)
+Copyright(c) 2014-2015 Milo Yip (miloyip@gmail.com)
 
 ## Introduction
 
-This benchmark evaluates the performance of 20 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
+This benchmark evaluates the conformance and performance of 26 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
+
+Performance should be concerned only if the results are correct. This benchmark also test the conformance of library towards the JSON standards ([RFC7159], [ECMA-404]).
 
 Performance of JSON parsing/generation may be critical for server-side applications, mobile/embedded systems, or any application that requires processing of large size or number of JSONs. Native (C/C++) libraries are important because they should provide the best possible performance, while other languages may create bindings of native libraries.
 
-The results show that several performance measurements varies in a large scales among libraries. For example, the parsing time can be over 100 times. These differences came from many factors, including design and implementation details. For example, memory allocation strategies, design of variant type for JSON, number-string conversions, etc.
+The results show that several performance measurements vary in large scale among libraries. For example, the parsing time can be over 100 times. These differences came from many factors, including design and implementation details. For example, memory allocation strategies, design of variant type for JSON, number-string conversions, etc.
 
 This benchmark may be useful for optimizing existing libraries and developing new, high-performance libraries.
 
@@ -16,9 +18,20 @@ This benchmark may be useful for optimizing existing libraries and developing ne
 
 The original author (Milo Yip) of this benchmark is also the primary author of [RapidJSON](https://github.com/miloyip/rapidjson).
 
-Although the development of benchmark is tried to be as objective and fair as possible, every benchmarks have their drawbacks, and are limited to particular testing procedures, datasets and platforms. And also, this benchmark does not compare additional features that a library may support, or the user-friendliness of APIs, securities, cross-platform, etc. The author encourage users to benchmarks with their own data sets and platforms.
+Although the development of benchmark is attempted to be as objective and fair as possible, every benchmarks have their drawbacks, and are limited to particular testing procedures, datasets and platforms. And also, this benchmark does not compare additional features that a library may support, or the user-friendliness of APIs, securities, cross-platform, etc. The author encourage users to benchmarks with their own data sets and platforms.
 
 ## Benchmarks and Measurements
+
+### Conformance
+
+Benchmark        | Description
+-----------------|---------------------------------------------------
+Parse Validation | Use [JSON_checker](http://www.json.org/JSON_checker/) test suite to test whether the library can identify valid and invalid JSONs. (`fail01.json` is excluded as it is relaxed in [RFC7159]. `fail18.json` is excluded as depth of JSON is not specified.)
+Parse Double     | 66 JSONs, each with a decimal value in an array, are parsed. The parsed `double` values are compared to the correct answer.
+Parse String     | 9 JSONs, each with a string value in an array, are parsed. The parsed strings are compared to the correct answer.
+Roundtrip        | 27 condensed JSONs are parsed and stringified. The results are compared to the original JSONs.
+
+### Performance
 
 Benchmark      | Description
 ---------------|----------------------------------------------------
@@ -34,7 +47,7 @@ All benchmarks contain the following measurements:
 
 Measurement | Description
 ------------|----------------------------------------------------
-Time        | duration in millisecond
+Time        | Duration in millisecond
 Memory      | Memory consumption in bytes for the result data structure.
 MemoryPeak  | Peak memory consumption in bytes throughout the parsing process.
 AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new` et al.)
@@ -45,22 +58,29 @@ Currently 20 libraries are successfully benchmarked. They are listed in alphabet
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
+[ArduinoJson](https://github.com/bblanchon/ArduinoJson) | C++ | v4.2-3
 [CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
-[Casablanca](https://casablanca.codeplex.com/) (C++ REST SDK) | C++11 | 2.1.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
+[Casablanca](https://casablanca.codeplex.com/) (C++ REST SDK) | C++11 | 2.5.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform. Fail to roundtrip `twitter.json`.
 [cJSON](http://sourceforge.net/projects/cjson/) | C | 2013-08-19 |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ |
 [gason](https://github.com/vivkin/gason) | C++11 | 
-[jansson](https://github.com/akheron/jansson) | C | 2.6
+[jansson](https://github.com/akheron/jansson) | C | v2.7
+[jeayeson](https://github.com/jeaye/jeayeson) | C++14
 [json-c](https://github.com/json-c/json-c) | C |
+[json-voorhees](https://github.com/tgockel/json-voorhees) | C++ | v1.0.0
 [json spirit](http://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) | C++ | 4.08 | Need Boost
-[Json Box](https://github.com/anhero/JsonBox) | C++ | 0.4.4
-[JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ | 
+[Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.1
+[JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ |  1.0.0
 [JSON++](https://github.com/hjiang/jsonxx) | C++ | 
+[Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
+[nbsdx/SimpleJSON](https://github.com/nbsdx/SimpleJSON) | C++11 |
+[Nlohmann](https://github.com/nlohmann/json) | C++11
 [parson](https://github.com/kgabis/parson) | C | 
-[picojson](https://github.com/kazuho/picojson) | C++ | 1.1.1
-[RapidJSON](https://github.com/miloyip/rapidjson) | C++ | 
-[simplejson](https://github.com/MJPA/SimpleJSON) | C++ | 
+[picojson](https://github.com/kazuho/picojson) | C++ | 1.3.0
+[RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.0.1 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
+[sajson](https://github.com/chadaustin/sajson) | C++ | 
+[SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
@@ -68,7 +88,7 @@ udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.co
 
 Libraries with Git repository are included as submodule in `thirdparty` path. Other libraries are add as files in `thirdparty` path.
 
-All libraries are latest version on 8 Sep 2014. The exact commit of submodule can be navigated at [here](https://github.com/miloyip/nativejson-benchmark/tree/master/thirdparty).
+All libraries are latest version on 25 Apr 2015. The exact commit of submodule can be navigated at [here](https://github.com/miloyip/nativejson-benchmark/tree/master/thirdparty).
 
 To measure the overheads of the benchmark process, a `strdup` test is added for comparison. It simply allocate and copy the input string in Parse and Stringify benchmark.
 
@@ -105,7 +125,49 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 9. The results in CSV format will be written to `result/`.
 10. Run GNU `make` in `result/` to generate results in HTML.
 
-## Results
+For simplicity, on Linux/OSX users can simply run `make` at project root to  run 4-10 above.
+
+## Sample Results
+
+A collection of benchmarks results can be viewed [HERE](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/conformance.html). Select "Benchmark" from the menu to check available benchmark configurations. The presentation is powered by [Google Charts](https://developers.google.com/chart/) with interactivity.
+
+The followings are some snapshots from the results of an iMac (Corei5-3330S@2.70GHz) with clang 6.1_1 64-bit.
+
+### Conformance
+
+![Conformance](sample/conformance_overall_Result.png)
+
+This is the average score of 4 conformance benchmarks. Higher is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/conformance.html).
+
+### Parsing Time
+
+![Parsing Time](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Time_(ms).png)
+
+This is the total duration of parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#1. Parse)
+
+### Parsing Memory
+
+![Parsing Time](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Time_(ms).png)
+
+This is the total memory after parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#1. Parse)
+
+### Stringify Time
+
+![Stringify Time](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_2._Stringify_Time_(ms).png)
+
+This is the total duration of stringifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#2. Stringify)
+
+### Prettify Time
+
+![Prettify Time](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_2._Prettify_Time_(ms).png)
+
+This is the total duration of prettifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#2. Stringify)
+
+### Code Size
+
+![Code Size](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_7._Code_size_FileSize_(byte).png)
+
+The is the size of executable program, which parses a JSON from `stdin` to a DOM and then computes the statistics of the DOM. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#7. Code size)
 
 ## FAQ
 
@@ -135,3 +197,6 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
  * [vjson](https://code.google.com/p/vjson/) (Replaced by gason)
  * [YAJL](http://lloyd.github.com/yajl/)
  * [Jansson](http://www.digip.org/jansson/)
+
+[RFC7159]: http://www.ietf.org/rfc/rfc7159.txt
+[ECMA-404]: http://www.ecma-international.org/publications/standards/Ecma-404.htm
