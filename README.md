@@ -148,7 +148,7 @@ This is the total duration of parsing 3 JSONs to DOM representation, sorted in a
 
 ### Parsing Memory
 
-![Parsing Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Time_(ms).png)
+![Parsing Memory](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Memory_(byte).png)
 
 This is the total memory after parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#1. Parse)
 
