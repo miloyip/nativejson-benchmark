@@ -1,5 +1,10 @@
 #include "../test.h"
 
+#if defined(_MSC_VER) && _MSC_VER <= 1700
+#define isnan(x) _isnan(x)
+#define isinf(x) (!_finite(x))
+#endif
+
 #include "ArduinoJson/src/DynamicJsonBuffer.cpp"
 #include "ArduinoJson/src/JsonArray.cpp"
 #include "ArduinoJson/src/JsonBuffer.cpp"

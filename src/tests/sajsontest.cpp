@@ -1,3 +1,4 @@
+#if ((defined(_MSC_VER) && _MSC_VER >= 1700) || (__cplusplus >= 201103L))
 #include "../test.h"
 
 #include "sajson/include/sajson.h"
@@ -127,3 +128,4 @@ public:
 };
 
 REGISTER_TEST(SajsonTest);
+#endif
