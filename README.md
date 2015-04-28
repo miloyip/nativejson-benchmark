@@ -141,31 +141,31 @@ This is the average score of 4 conformance benchmarks. Higher is better. [Detail
 
 ### Parsing Time
 
-![Parsing Time](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Time_(ms).png)
+![Parsing Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Time_(ms).png)
 
 This is the total duration of parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#1. Parse)
 
 ### Parsing Memory
 
-![Parsing Time](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Time_(ms).png)
+![Parsing Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Time_(ms).png)
 
 This is the total memory after parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#1. Parse)
 
 ### Stringify Time
 
-![Stringify Time](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_2._Stringify_Time_(ms).png)
+![Stringify Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_2._Stringify_Time_(ms).png)
 
 This is the total duration of stringifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#2. Stringify)
 
 ### Prettify Time
 
-![Prettify Time](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_2._Prettify_Time_(ms).png)
+![Prettify Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_2._Prettify_Time_(ms).png)
 
 This is the total duration of prettifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#2. Stringify)
 
 ### Code Size
 
-![Code Size](performance_Corei5-3330S@2.70GHz_mac64_clang6.1_7._Code_size_FileSize_(byte).png)
+![Code Size](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_7._Code_size_FileSize_(byte).png)
 
 The is the size of executable program, which parses a JSON from `stdin` to a DOM and then computes the statistics of the DOM. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#7. Code size)
 
