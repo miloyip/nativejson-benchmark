@@ -4,7 +4,7 @@ Copyright(c) 2014-2015 Milo Yip (miloyip@gmail.com)
 
 ## Introduction
 
-This benchmark evaluates the conformance and performance of 26 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
+This benchmark evaluates the conformance and performance of 28 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
 
 Performance should be concerned only if the results are correct. This benchmark also test the conformance of library towards the JSON standards ([RFC7159], [ECMA-404]).
 
