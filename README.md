@@ -161,7 +161,7 @@ This is the total duration of stringifying 3 DOMs to JSONs, sorted in ascending 
 
 ![Prettify Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_3._Prettify_Time_(ms).png)
 
-This is the total duration of prettifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#2. Stringify)
+This is the total duration of prettifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#2. Prettify)
 
 ### Code Size
 
