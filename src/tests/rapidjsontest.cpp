@@ -8,11 +8,6 @@
 #  define RAPIDJSON_SSE2
 #endif
 
-// Turn on SSE4.2 for VC
-#if defined(_MSC_VER)
-#define RAPIDJSON_SSE42
-#endif
-
 #ifndef TEST_PARSE_FLAG
 #define TEST_PARSE_FLAG kParseDefaultFlags
 #endif
