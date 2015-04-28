@@ -2,9 +2,6 @@
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1800 // Before VC2013 do not support C99 variable declaration
 
-// It generates linking error on VS2013. No need multithread.
-#define InterlockedCompareExchange(a,b,c)
-
 #include "json-c/arraylist.c"
 #include "json-c/debug.c"
 #include "json-c/json_c_version.c"
