@@ -18,7 +18,7 @@ $(function() {
   var dt = google.visualization.arrayToDataTable($.csv.toArrays(csv, {onParseValue: $.csv.hooks.castToScalar}));
 
   function sortCaseInsensitive(dt, column) {
-    for (var row = 0; row < timedt.getNumberOfRows(); row++) {
+    for (var row = 0; row < dt.getNumberOfRows(); row++) {
       var s = dt.getValue(row, column);
       dt.setValue(row, column, s.toUpperCase());
       dt.setFormattedValue(row, column, s);
@@ -26,8 +26,48 @@ $(function() {
     dt.sort(column);
   }
 
+  function AddToOverall(dt) {
+    if (overallDt == null) {
+      overallDt = dt.clone();
+    }
+    else {
+      var col1 = [];
+      for (var i = 1; i < overallDt.getNumberOfColumns(); i++)
+        col1.push(i);
+      overallDt = google.visualization.data.join(overallDt, dt, 'full', [[0, 0]], col1, [1]);
+    }
+
+    var newCol = overallDt.getNumberOfColumns() - 1;
+    overallDt.setColumnLabel(newCol, type + ' ' + overallDt.getColumnLabel(newCol))
+    var formatter1 = new google.visualization.NumberFormat({ fractionDigits: 0 });
+    formatter1.format(overallDt, newCol);
+
+    for (var row = 0; row < overallDt.getNumberOfRows(); row++) {
+      if (overallDt.getValue(row, newCol) == null) {
+        overallDt.setValue(row, newCol, Number.POSITIVE_INFINITY);
+        overallDt.setFormattedValue(row, newCol, "");
+      }
+    }
+  }
+
+  function createSortEvent(type, dt, chart) {
+    return function(e) {
+      if (e.column == 0 || e.column == 1) {
+        var t = dt.clone();
+        drawBarChart(type, t, chart, [{column: e.column, desc: !e.ascending }]);
+      }
+    }
+  }
+
+  addSection("0. Overall");
+
+  var overallDiv = document.createElement("div");
+  overallDiv.className = "tablechart";
+  $("#main").append(overallDiv);
+
   // Per type sections
   var types = dt.getDistinctValues(0);
+  var overallDt;
   for (var i in types) {
     var type = types[i];
     addSection(type);
@@ -41,10 +81,12 @@ $(function() {
         [1], 
         [{"column": 7, "aggregation": google.visualization.data.sum, 'type': 'number' }]
       );
+      AddToOverall(sizedt);
       sortCaseInsensitive(sizedt, 0);
       addSubsection(sizedt.getColumnLabel(1));
-      drawTable(type, sizedt.clone(), false);
-      drawBarChart(type, sizedt);
+      var sizeTable = drawTable(type, sizedt.clone(), false);
+      var sizeChart = drawBarChart(type, sizedt.clone());
+      google.visualization.events.addListener(sizeTable, 'sort', createSortEvent(type, sizedt, sizeChart));
     }
     else {
       addSubsection("Time");
@@ -55,10 +97,11 @@ $(function() {
         [{"column": 3, "aggregation": google.visualization.data.sum, 'type': 'number' }]
       );
 
+      AddToOverall(timedt);
       sortCaseInsensitive(timedt, 0);
-
-      drawTable(type, timedt.clone(), true);
-      drawBarChart(type, timedt);
+      var timeTable = drawTable(type, timedt.clone(), true);
+      var timeChart = drawBarChart(type, timedt.clone());
+      google.visualization.events.addListener(timeTable, 'sort', createSortEvent(type, timedt, timeChart));
 
       // Per JSON
       drawPivotBarChart(
@@ -79,14 +122,21 @@ $(function() {
             [1], 
             [{"column": column, "aggregation": google.visualization.data.sum, 'type': 'number' }]
           );
+          AddToOverall(memorydt);
           sortCaseInsensitive(memorydt, 0);
           addSubsection(memorydt.getColumnLabel(1));
-          drawTable(type, memorydt.clone(), false);
-          drawBarChart(type, memorydt);
+          var memoryTable = drawTable(type, memorydt.clone(), false);
+          var memoryChart = drawBarChart(type, memorydt.clone());
+
+          google.visualization.events.addListener(memoryTable, 'sort', createSortEvent(type, memorydt, memoryChart));
         }
       }
     }
   }
+
+  var overallTable = new google.visualization.Table(overallDiv);
+  sortCaseInsensitive(overallDt, 0);
+  overallTable.draw(overallDt);
 
   $(".chart").each(function() {
     var chart = $(this);
@@ -176,31 +226,33 @@ function drawTable(type, data, isSpeedup) {
     redrawTable(0);
     table.setSelection([{ row: 0, column: null}]);
 
-    function redrawTable(selectedRow) {
-        var s = table.getSortInfo();
-        // Compute relative time using the first row as basis
-        var basis = data.getValue(selectedRow, 1);
-        for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
-          data.setValue(rowIndex, 2, isSpeedup ? basis / data.getValue(rowIndex, 1) : data.getValue(rowIndex, 1) / basis);
+  function redrawTable(selectedRow) {
+      var s = table.getSortInfo();
+      // Compute relative time using the first row as basis
+      var basis = data.getValue(selectedRow, 1);
+      for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
+        data.setValue(rowIndex, 2, isSpeedup ? basis / data.getValue(rowIndex, 1) : data.getValue(rowIndex, 1) / basis);
 
-        var formatter = new google.visualization.NumberFormat({suffix: 'x'});
-        formatter.format(data, 2); // Apply formatter to second column
+      var formatter = new google.visualization.NumberFormat({suffix: 'x'});
+      formatter.format(data, 2); // Apply formatter to second column
 
-        table.draw(data, s != null ? {sortColumn: s.column, sortAscending: s.ascending} : null);
-    }
+      table.draw(data, s != null ? {sortColumn: s.column, sortAscending: s.ascending} : null);
+  }
 
-    google.visualization.events.addListener(table, 'select',
-    function() {
-        var selection = table.getSelection();
-        if (selection.length > 0) {
-            var item = selection[0];
-            if (item.row != null)
-                redrawTable(item.row);
-        }
-    });
+  google.visualization.events.addListener(table, 'select',
+  function() {
+      var selection = table.getSelection();
+      if (selection.length > 0) {
+          var item = selection[0];
+          if (item.row != null)
+              redrawTable(item.row);
+      }
+  });
+
+  return table;
 }
 
-function drawBarChart(type, data) {
+function drawBarChart(type, data, chart, sortOptions) {
   // Using same colors as in series
   var colors = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
   var h = data.getNumberOfRows() * 20;
@@ -213,17 +265,29 @@ function drawBarChart(type, data) {
     legend: { position: "none" },
   };
 
-  data.addColumn({ type: "string", role: "style" })
-  for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
+  data.addColumn({ type: "string", role: "style" });
+  data.addColumn({ type: "number", role: "annotation" });
+  for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++) {
     data.setValue(rowIndex, 2, colors[rowIndex]);
+    data.setValue(rowIndex, 3, data.getValue(rowIndex, 1));
+  }
 
-  var div = document.createElement("div");
-  div.className = "chart";
-  $(div).data("filename", type + "_" + data.getColumnLabel(1));
-  $("#main").append(div);
-  var chart = new google.visualization.BarChart(div);
+  if (sortOptions != null)
+    data.sort(sortOptions); // sort after assigning colors
+
+  var formatter1 = new google.visualization.NumberFormat({ fractionDigits: 0 });
+  formatter1.format(data, 3);
+
+  if (chart == null) {
+    var div = document.createElement("div");
+    div.className = "chart";
+    $(div).data("filename", type + "_" + data.getColumnLabel(1));
+    $("#main").append(div);
+    chart = new google.visualization.BarChart(div);
+  }
 
   chart.draw(data, options);
+  return chart;
 }
 
 
@@ -292,16 +356,16 @@ function sanitize(svg) {
 </script>
 <style type="text/css">
 @media (min-width: 800px) {
-  .container {
+/*  .container {
     max-width: 800px;
-  }
+  }*/
 }
 textarea {
   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
 .tablechart {
-  width: 500px;
-  margin: auto;
+/*  width: 500px;
+*/  margin: auto;
   padding-top: 20px;
   padding-bottom: 20px;
 }

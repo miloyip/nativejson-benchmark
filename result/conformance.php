@@ -203,8 +203,14 @@ function drawBarChart(type, data, div) {
   };
 
   data.addColumn({ type: "string", role: "style" })
-  for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++)
+  data.addColumn({ type: "number", role: "annotation" });
+  for (var rowIndex = 0; rowIndex < data.getNumberOfRows(); rowIndex++) {
     data.setValue(rowIndex, 2, colors[rowIndex]);
+    data.setValue(rowIndex, 3, data.getValue(rowIndex, 1));
+  }
+
+  var perecentFormatter = new google.visualization.NumberFormat({pattern:'###%'});
+  perecentFormatter.format(data, 3);
 
   if (div == null) {
     div = document.createElement("div");
@@ -261,10 +267,10 @@ function sanitize(svg) {
 </script>
 <style type="text/css">
 @media (min-width: 800px) {
-  .container {
+/*  .container {
     max-width: 800px;
   }
-}
+*/}
 textarea {
   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }

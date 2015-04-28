@@ -703,7 +703,7 @@ static void BenchCodeSize(const TestBase& test, const TestJsonList& testJsons, F
         fseek(fp2, 0, SEEK_END);
         unsigned fileSize = (unsigned)ftell(fp2);
         printf("jsonstat file size = %u\n", fileSize);
-        fprintf(fp, "7. Code size, %s, jsonstat,0", test.GetName());
+        fprintf(fp, "7. Code size,%s,jsonstat,0", test.GetName());
 #if USE_MEMORYSTAT
         fprintf(fp, ",0,0,0");
 #endif
