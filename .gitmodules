@@ -80,3 +80,6 @@
 [submodule "thirdparty/sajson"]
 	path = thirdparty/sajson
 	url = https://github.com/chadaustin/sajson.git
+[submodule "thirdparty/jvar"]
+	path = thirdparty/jvar
+	url = https://github.com/YasserAsmi/jvar.git
