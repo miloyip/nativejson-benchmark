@@ -83,3 +83,6 @@
 [submodule "thirdparty/jvar"]
 	path = thirdparty/jvar
 	url = https://github.com/YasserAsmi/jvar.git
+[submodule "thirdparty/taocppjson"]
+	path = thirdparty/taocppjson
+	url = https://github.com/taocpp/json.git
