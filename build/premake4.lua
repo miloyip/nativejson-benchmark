@@ -114,6 +114,7 @@ solution "benchmark"
             "../thirdparty/jsoncons/src",
             "../thirdparty/ArduinoJson/include",
             "../thirdparty/include/jeayeson/include/dummy",
+			"../thirdparty/jvar/include",
         }
 
 		files { 
@@ -167,6 +168,7 @@ solution "jsonstat"
         "../thirdparty/jsoncons/src",
         "../thirdparty/ArduinoJson/include",
         "../thirdparty/include/jeayeson/include/dummy",
+        "../thirdparty/jvar/include",
     }
 
     configuration "release"

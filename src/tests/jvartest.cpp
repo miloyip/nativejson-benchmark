@@ -1,5 +1,5 @@
 
-#include "jvar/include/jvar.h"
+#include "jvar.h"
 
 #include "jvar/src/util.cpp"
 #include "jvar/src/var.cpp"
