@@ -67,7 +67,7 @@
 [submodule "thirdparty/ArduinoJson"]
 	path = thirdparty/ArduinoJson
 	url = https://github.com/bblanchon/ArduinoJson.git
-	
+
 [submodule "thirdparty/jeayeson"]
 	path = thirdparty/jeayeson
 	url = https://github.com/jeaye/jeayeson.git
@@ -86,3 +86,6 @@
 [submodule "thirdparty/taocppjson"]
 	path = thirdparty/taocppjson
 	url = https://github.com/taocpp/json.git
+[submodule "thirdparty/configuru"]
+	path = thirdparty/configuru
+	url = https://github.com/emilk/Configuru.git
