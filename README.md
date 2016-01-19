@@ -54,7 +54,7 @@ AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new
 
 ## Libraries
 
-Currently 20 libraries are successfully benchmarked. They are listed in alphabetic order:
+Currently 31 libraries are successfully benchmarked. They are listed in alphabetic order:
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
@@ -62,6 +62,7 @@ Library | Language | Version | Notes
 [CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
 [Casablanca](https://casablanca.codeplex.com/) (C++ REST SDK) | C++11 | 2.5.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform. Fail to roundtrip `twitter.json`.
 [cJSON](http://sourceforge.net/projects/cjson/) | C | 2013-08-19 |
+[Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ |
 [gason](https://github.com/vivkin/gason) | C++11 | 
@@ -72,24 +73,26 @@ Library | Language | Version | Notes
 [json-voorhees](https://github.com/tgockel/json-voorhees) | C++ | v1.0.0
 [json spirit](http://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) | C++ | 4.08 | Need Boost
 [Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.1
-[JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ |  1.0.0
+[JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ | 1.0.0
 [JSON++](https://github.com/hjiang/jsonxx) | C++ | 
+[jvar](https://github.com/YasserAsmi/jvar) | C++ | gcc/clang only |
 [Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
 [nbsdx/SimpleJSON](https://github.com/nbsdx/SimpleJSON) | C++11 |
-[Nlohmann/json](https://github.com/nlohmann/json) | C++11
+[Nlohmann/json](https://github.com/nlohmann/json) | C++11 | v1.0.0
 [parson](https://github.com/kgabis/parson) | C | 
 [picojson](https://github.com/kazuho/picojson) | C++ | 1.3.0
 [RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.0.1 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
 [sajson](https://github.com/chadaustin/sajson) | C++ | 
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
+[taocppjson] | C++ |
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
 [YAJL](https://github.com/lloyd/yajl) | C | 2.1.0
 
 Libraries with Git repository are included as submodule in `thirdparty` path. Other libraries are add as files in `thirdparty` path.
 
-All libraries are latest version on 25 Apr 2015. The exact commit of submodule can be navigated at [here](https://github.com/miloyip/nativejson-benchmark/tree/master/thirdparty).
+The exact commit of submodule can be navigated at [here](https://github.com/miloyip/nativejson-benchmark/tree/master/thirdparty).
 
 To measure the overheads of the benchmark process, a `strdup` test is added for comparison. It simply allocate and copy the input string in Parse and Stringify benchmark.
 
