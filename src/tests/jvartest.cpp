@@ -1,3 +1,4 @@
+#if defined(__clang__) || defined(__GNUC__)
 
 #include "jvar.h"
 
@@ -171,3 +172,5 @@ public:
 };
 
 REGISTER_TEST(JvarTest);
+
+#endif

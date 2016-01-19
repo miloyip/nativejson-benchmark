@@ -2,7 +2,6 @@
 #include "../test.h"
 
 #ifdef _MSC_VER
-#define noexcept
 #define snprintf _snprintf
 #endif
 
