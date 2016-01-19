@@ -116,10 +116,10 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 ## Build and Run
 
 1. Execute `git submodule update --init` to download all submodules (libraries).
-2. Obtain [premake4](http://industriousone.com/premake/download).
-3. Copy premake4 executable to `build/` path (or system path).
+2. Obtain [premake5](http://industriousone.com/premake/download).
+3. Copy premake5 executable to `build/` path (or system path).
 4. Run `premake.bat` or `premake.sh` in `build/`
-5. On Windows, build the solution at `build/vs2008/` or `/vs2010/`.
+5. On Windows, build the solution at `build/vs2015/`.
 6. On other platforms, run GNU `make -f benchmark.make config=release32 && make -f nativejson.make` (or `release64`) at `build/gmake/`
 7. Optional: run `buuild/machine.sh` for UNIX or CYGWIN to use CPU info to generate prefix of result filename.
 8. Run the `nativejson_release_...` executable is generated at `bin/`

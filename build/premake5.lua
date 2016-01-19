@@ -1,0 +1,178 @@
+function setTargetObjDir(outDir)
+	targetdir(outDir)
+	objdir(string.lower("../intermediate/%{cfg.shortname}/%{cfg.platform}"))
+	targetsuffix(string.lower("_%{cfg.shortname}_%{cfg.platform}"))
+end
+
+function copyfiles(dstDir, srcWildcard)
+	os.mkdir(dstDir)
+	local matches = os.matchfiles(srcWildcard)
+	for _, f in ipairs(matches) do 
+		local filename = string.match(f, ".-([^\\/]-%.?[^%.\\/]*)$")
+		os.copyfile(f, dstDir .. "/" .. filename)
+	end
+end
+
+solution "benchmark"
+	configurations { "debug", "release" }
+	platforms { "x32", "x64" }
+
+	location ("./" .. (_ACTION or ""))
+	language "C++"
+	flags { "ExtraWarnings" }
+	defines { "__STDC_FORMAT_MACROS=1" }
+	
+	configuration "debug"
+		defines { "DEBUG" }
+		flags { "Symbols" }
+
+	configuration "release"
+		defines { "NDEBUG" }
+		flags { "Optimize" }
+
+	configuration "vs*"
+		defines { "_CRT_SECURE_NO_WARNINGS" }
+		
+	configuration "gmake"
+		buildoptions "-march=native -Wall -Wextra"
+		links { "boost_system", "boost_thread-mt", "boost_locale-mt" } 
+
+	project "jsonclibs"
+		kind "StaticLib"
+
+        includedirs {
+            "../thirdparty/",
+            "../thirdparty/include/",
+            "../thirdparty/ujson4c/3rdparty/",
+			"../thirdparty/udp-json-parser/"
+        }
+
+		files { 
+			"../src/**.c",
+		}
+
+		setTargetObjDir("../bin")
+
+		copyfiles("../thirdparty/include/yajl", "../thirdparty/yajl/src/api/*.h")
+
+	project "nativejson"
+		kind "ConsoleApp"
+
+        includedirs {
+            "../thirdparty/",
+            "../thirdparty/casablanca/Release/include/",
+            "../thirdparty/casablanca/Release/src/pch",
+            "../thirdparty/fastjson/include/",
+            "../thirdparty/jsonbox/include/",
+            "../thirdparty/jsoncpp/include/",
+            "../thirdparty/rapidjson/include/",
+            "../thirdparty/udp-json-parser/",
+            "../thirdparty/include/",
+            "../thirdparty/json-voorhees/include",
+            "../thirdparty/json-voorhees/src",
+            "../thirdparty/jsoncons/src",
+            "../thirdparty/ArduinoJson/include",
+            "../thirdparty/include/jeayeson/include/dummy",
+			"../thirdparty/jvar/include",
+        }
+
+		files { 
+			"../src/*.h",
+			"../src/*.cpp",
+			"../src/tests/*.cpp",
+		}
+
+		libdirs { "../bin" }
+
+		setTargetObjDir("../bin")
+
+		-- linkLib("jsonclibs")
+		links "jsonclibs"
+
+		configuration "gmake"
+			buildoptions "-std=c++14"
+
+solution "jsonstat"
+    configurations { "release" }
+    platforms { "x32", "x64" }
+    location ("./" .. (_ACTION or ""))
+    language "C++"
+    flags { "ExtraWarnings" }
+
+    defines {
+    	"USE_MEMORYSTAT=0",
+    	"TEST_PARSE=1",
+    	"TEST_STRINGIFY=0",
+    	"TEST_PRETTIFY=0",
+    	"TEST_TEST_STATISTICS=1",
+    	"TEST_SAXROUNDTRIP=0",
+    	"TEST_SAXSTATISTICS=0",
+    	"TEST_SAXSTATISTICSUTF16=0",
+    	"TEST_CONFORMANCE=0",
+    	"TEST_INFO=0"
+	}
+
+    includedirs {
+        "../thirdparty/",
+        "../thirdparty/casablanca/Release/include/",
+        "../thirdparty/casablanca/Release/src/pch",
+        "../thirdparty/fastjson/include/",
+        "../thirdparty/jsonbox/include/",
+        "../thirdparty/jsoncpp/include/",
+        "../thirdparty/rapidjson/include/",
+        "../thirdparty/udp-json-parser/",
+        "../thirdparty/include/",
+        "../thirdparty/json-voorhees/include",
+        "../thirdparty/json-voorhees/src",
+        "../thirdparty/jsoncons/src",
+        "../thirdparty/ArduinoJson/include",
+        "../thirdparty/include/jeayeson/include/dummy",
+        "../thirdparty/jvar/include",
+    }
+
+    configuration "release"
+        defines { "NDEBUG" }
+        flags { "Optimize", "EnableSSE2" }
+
+    configuration "vs*"
+        defines { "_CRT_SECURE_NO_WARNINGS" }
+
+	configuration "gmake"
+		buildoptions "-march=native -Wall -Wextra"
+		links { "boost_system", "boost_thread-mt", "boost_locale-mt" } 
+
+	project "jsonclibs2"
+		kind "StaticLib"
+
+        includedirs {
+            "../thirdparty/",
+            "../thirdparty/include/",
+            "../thirdparty/ujson4c/3rdparty/",
+			"../thirdparty/udp-json-parser/"
+        }
+
+		files { 
+			"../src/**.c",
+		}
+
+        setTargetObjDir("../bin/jsonstat")
+
+		copyfiles("../thirdparty/include/yajl", "../thirdparty/yajl/src/api/*.h")
+
+    local testfiles = os.matchfiles("../src/tests/*.cpp")
+    for _, testfile in ipairs(testfiles) do
+        project("jsonstat_" .. path.getbasename(testfile))
+            kind "ConsoleApp"
+            files { 
+            	"../src/jsonstat/jsonstatmain.cpp",
+            	"../src/memorystat.cpp",
+            	testfile
+			}
+			libdirs { "../bin/jsonstat" }
+			-- linkLib("jsonclibs2")
+			links "jsonclibs2"
+            setTargetObjDir("../bin/jsonstat")
+
+			configuration "gmake"
+				buildoptions "-std=c++14"
+    end
