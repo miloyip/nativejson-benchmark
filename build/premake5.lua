@@ -24,7 +24,7 @@ solution "benchmark"
 	
 	configuration "release"
 		defines { "NDEBUG" }
-		flags { "Optimize" }
+		optimize "Full"
 
 	configuration "vs*"
 		defines { "_CRT_SECURE_NO_WARNINGS" }
@@ -128,7 +128,7 @@ solution "jsonstat"
 
     configuration "release"
         defines { "NDEBUG" }
-        flags { "Optimize", "EnableSSE2" }
+        optimize "Full"
 
     configuration "vs*"
         defines { "_CRT_SECURE_NO_WARNINGS" }
@@ -165,7 +165,6 @@ solution "jsonstat"
             	testfile
 			}
 			libdirs { "../bin/jsonstat" }
-			-- linkLib("jsonclibs2")
 			links "jsonclibs2"
             setTargetObjDir("../bin/jsonstat")
 
