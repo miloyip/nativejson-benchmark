@@ -1,3 +1,3 @@
 #!/bin/sh
-premake4 gmake
+premake5 gmake
 sed -i '' 's/,-x//' gmake/*.make

@@ -1,7 +1,7 @@
 function setTargetObjDir(outDir)
 	targetdir(outDir)
-	objdir(string.lower("../intermediate/%{cfg.shortname}/%{cfg.platform}"))
-	targetsuffix(string.lower("_%{cfg.shortname}_%{cfg.platform}"))
+	objdir(string.lower("../intermediate/%{cfg.shortname}/" .. _ACTION))
+	targetsuffix(string.lower("_%{cfg.shortname}_" .. _ACTION))
 end
 
 function copyfiles(dstDir, srcWildcard)
@@ -14,7 +14,7 @@ function copyfiles(dstDir, srcWildcard)
 end
 
 solution "benchmark"
-	configurations { "debug", "release" }
+	configurations { "release" }
 	platforms { "x32", "x64" }
 
 	location ("./" .. (_ACTION or ""))
@@ -22,10 +22,6 @@ solution "benchmark"
 	flags { "ExtraWarnings" }
 	defines { "__STDC_FORMAT_MACROS=1" }
 	
-	configuration "debug"
-		defines { "DEBUG" }
-		flags { "Symbols" }
-
 	configuration "release"
 		defines { "NDEBUG" }
 		flags { "Optimize" }

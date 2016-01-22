@@ -1,5 +1,5 @@
 ifeq ($(CONFIG),)
-	CONFIG = release64
+	CONFIG = release_x64
 endif
 
 ifeq ($(VERBOSE),)
