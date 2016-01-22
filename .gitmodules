@@ -89,3 +89,6 @@
 [submodule "thirdparty/configuru"]
 	path = thirdparty/configuru
 	url = https://github.com/emilk/Configuru.git
+[submodule "thirdparty/sheredom-jsonh"]
+	path = thirdparty/sheredom-jsonh
+	url = https://github.com/sheredom/json.h.git
