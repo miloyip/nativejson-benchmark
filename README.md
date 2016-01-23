@@ -87,7 +87,7 @@ Library | Language | Version | Notes
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
 [scheredom/json.h](https://github.com/sheredom/json.h) | C |
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
-[taocppjson] | C++ |
+[taocppjson](https://github.com/taocpp/json) | C++ |
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
 [YAJL](https://github.com/lloyd/yajl) | C | 2.1.0
