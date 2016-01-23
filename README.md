@@ -4,7 +4,7 @@ Copyright(c) 2014-2015 Milo Yip (miloyip@gmail.com)
 
 ## Introduction
 
-This benchmark evaluates the conformance and performance of 32 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
+This benchmark evaluates the conformance and performance of 33 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
 
 Performance should be concerned only if the results are correct. This benchmark also test the conformance of library towards the JSON standards ([RFC7159], [ECMA-404]).
 
@@ -54,7 +54,7 @@ AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new
 
 ## Libraries
 
-Currently 32 libraries are successfully benchmarked. They are listed in alphabetic order:
+Currently 33 libraries are successfully benchmarked. They are listed in alphabetic order:
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
@@ -75,6 +75,7 @@ Library | Language | Version | Notes
 [Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.1
 [JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ | 1.0.0
 [JSON++](https://github.com/hjiang/jsonxx) | C++ | 
+[jsmn](https://github.com/zserge/jsmn) | C |
 [jvar](https://github.com/YasserAsmi/jvar) | C++ | gcc/clang only |
 [Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
 [nbsdx/SimpleJSON](https://github.com/nbsdx/SimpleJSON) | C++11 |
