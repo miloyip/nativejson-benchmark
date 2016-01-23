@@ -92,3 +92,6 @@
 [submodule "thirdparty/sheredom-jsonh"]
 	path = thirdparty/sheredom-jsonh
 	url = https://github.com/sheredom/json.h.git
+[submodule "thirdparty/jsmn"]
+	path = thirdparty/jsmn
+	url = https://github.com/zserge/jsmn.git
