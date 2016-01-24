@@ -3,6 +3,9 @@
 #include "../test.h"
 
 #define CONFIGURU_IMPLEMENTATION 1
+#include <algorithm>
+#include <atomic>
+#include <limits>
 #include <memory>
 #include "configuru/configuru.hpp"
 
