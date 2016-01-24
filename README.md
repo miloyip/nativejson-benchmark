@@ -2,6 +2,8 @@
 
 Copyright(c) 2014-2015 Milo Yip (miloyip@gmail.com)
 
+[![Build Status](https://travis-ci.org/miloyip/nativejson-benchmark.svg?branch=master)](https://travis-ci.org/miloyip/nativejson-benchmark)
+
 ## Introduction
 
 This benchmark evaluates the conformance and performance of 34 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
