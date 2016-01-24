@@ -3,6 +3,7 @@
 #include "../test.h"
 
 #define CONFIGURU_IMPLEMENTATION 1
+#include <limits>
 #include "configuru/configuru.hpp"
 
 using namespace configuru;
