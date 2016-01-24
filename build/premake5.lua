@@ -94,7 +94,7 @@ solution "benchmark"
 		links "jsonclibs"
 
 		configuration "gmake"
-			buildoptions "-std=c++14"
+			buildoptions "-std=c++14 -stdlib=libc++"
 
 solution "jsonstat"
     configurations { "release" }
@@ -176,5 +176,5 @@ solution "jsonstat"
             setTargetObjDir("../bin/jsonstat")
 
 			configuration "gmake"
-				buildoptions "-std=c++14"
+				buildoptions "-std=c++14 -stdlib=libc++"
     end
