@@ -94,7 +94,7 @@ solution "benchmark"
 		links "jsonclibs"
 
 		configuration "gmake"
-			buildoptions "-std=c++14 -stdlib=libc++"
+			buildoptions "-std=c++14 -lstdc++"
 
 solution "jsonstat"
     configurations { "release" }
