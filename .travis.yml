@@ -17,14 +17,14 @@ before_install:
 addons:
     apt:
         sources:
-		    - boost-latest
+            - boost-latest
             - llvm-toolchain-precise-3.7
             - ubuntu-toolchain-r-test
         packages:
             - clang-3.7
             - g++-5
             - gcc-5
-		    - libboost1.55-all-dev
+            - libboost1.55-all-dev
 
 install:
     - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
