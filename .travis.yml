@@ -24,6 +24,7 @@ addons:
             - g++-5
             - gcc-5
             - libboost1.55-all-dev
+            - php5
 
 install:
     - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
