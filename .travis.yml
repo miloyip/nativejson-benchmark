@@ -4,5 +4,31 @@ compiler:
  - clang
  - gcc
 
+before_install:
+  # Download and build premake5 from source; the Travis environment doesn't have the right version of glibc6 for the prebuilt binaries to work.
+  - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha6/premake-5.0.0-alpha6-src.zip -O premake.zip
+  - unzip premake.zip
+  - cd premake-5.0.0-alpha6/build/gmake.unix
+  - make config=release
+  - cd ../../..
+  - mv premake-5.0.0-alpha6/bin/release/premake5 build/premake5
+
+addons:
+    apt:
+        sources:
+            - boost-latest
+            - llvm-toolchain-precise-3.7
+            - ubuntu-toolchain-r-test
+        packages:
+            - clang-3.7
+            - g++-5
+            - gcc-5
+            - libboost1.55-all-dev
+            - php5-cli
+
+install:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+
 script:
   - make

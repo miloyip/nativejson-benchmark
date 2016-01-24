@@ -1,3 +1,3 @@
 #!/bin/sh
 premake5 gmake
-sed -i '' 's/,-x//' gmake/*.make
+sed -i.bak 's/,-x//' gmake/*.make
