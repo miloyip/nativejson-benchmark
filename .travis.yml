@@ -13,5 +13,19 @@ before_install:
   - cd ../../..
   - mv premake-5.0.0-alpha6/bin/release/premake5 build/premake5
 
+addons:
+    apt:
+        sources:
+            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
+        packages:
+            - clang-3.7
+            - g++-5
+            - gcc-5
+
+install:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+
 script:
   - make
