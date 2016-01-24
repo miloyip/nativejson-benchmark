@@ -1,5 +1,7 @@
 #include "../test.h"
 
+#if !defined(__GNUC__) || defined(__clang__) // gcc crash in Travis https://github.com/udp/json-builder/issues/7
+
 extern "C" {
 
 #include "udp-json-parser/json.h"
@@ -165,3 +167,5 @@ public:
 };
 
 REGISTER_TEST(UdpjsonTest);
+
+#endif
