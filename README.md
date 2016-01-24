@@ -66,7 +66,7 @@ Library | Language | Version | Notes
 [cJSON](http://sourceforge.net/projects/cjson/) | C | 2013-08-19 |
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
-[FastJson](https://github.com/mikeando/fastjson) | C++ |
+[FastJson](https://github.com/mikeando/fastjson) | C++ | Not parsing number per se, so do it as post-process.
 [gason](https://github.com/vivkin/gason) | C++11 | 
 [jansson](https://github.com/akheron/jansson) | C | v2.7
 [jeayeson](https://github.com/jeaye/jeayeson) | C++14
@@ -77,7 +77,7 @@ Library | Language | Version | Notes
 [Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.1
 [JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ | 1.0.0
 [JSON++](https://github.com/hjiang/jsonxx) | C++ | 
-[jsmn](https://github.com/zserge/jsmn) | C |
+[jsmn](https://github.com/zserge/jsmn) | C | Not parsing number per se, so do it as post-process.
 [jvar](https://github.com/YasserAsmi/jvar) | C++ | gcc/clang only |
 [Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
 [nbsdx/SimpleJSON](https://github.com/nbsdx/SimpleJSON) | C++11 |
@@ -88,7 +88,7 @@ Library | Language | Version | Notes
 [RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.0.1 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
 [sajson](https://github.com/chadaustin/sajson) | C++ | 
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
-[scheredom/json.h](https://github.com/sheredom/json.h) | C |
+[scheredom/json.h](https://github.com/sheredom/json.h) | C | Not parsing number per se, so do it as post-process.
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
 [taocppjson](https://github.com/taocpp/json) | C++ |
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
@@ -108,6 +108,7 @@ Library   | Issue
 [libjson](http://sourceforge.net/projects/libjson/) | Unable to parse UTF-8 string
 [lastjson](https://github.com/lastfm/last.json) | 
 [StiX Json](https://bitbucket.org/StiX/stix-json) |
+[boost property_tree](http://www.boost.org/doc/libs/1_60_0/doc/html/property_tree.html) | number, true, false, null types are converted into string.
 
 ## JSON data
 
@@ -186,11 +187,25 @@ The is the size of executable program, which parses a JSON from `stdin` to a DOM
 
    Use `submodule add https://...xxx.git thirdparty/xxx` to add the libary's repository as a submobule. If that is not possible, just copy the files into 'thirdparty/xxx'.
 
-   For C libary, add a `xxx_all.c` in `src/cjsonlibs`, which `#include` all the necessary `.c` files of the library. And then create a `tests/xxxtest.cpp`.
+   For C libary, add a `xxx_all.c` in `src/cjsonlibs`, which `#include` all the necessary `.c` files of the library. And then create a `tests/xxxtest.cpp`.it
 
    For C++ library, just need to create a `tests/xxxtest.cpp`, which `#include` all the necessary `.cpp` files of the library.
 
    You may find a existing library which similar to your case as a start of implementing `tests/xxxtest.cpp`.
+
+   Please submit a pull request if the integration work properly.
+
+2. What if the build process is failed, or the benchmark crashes?
+
+   This happens on some platforms as not every libaray is stable for all platforms.
+
+   You can simply delete the local `tests/xxxtest.cpp` and re-run the build.
+
+   BTW, if you are adding a library, you can remove all `tests/xxxtest.cpp` except `tests/rapidjsontest.cpp` and your test. This make the build process fast. RapidJSON's test is needed as a reference to compare statistics results only.
+
+3. On which platform the benchmark can be run?
+
+   The author tests it on OSX/clang, Winwdows/vs2015, Ubuntu/clang3.7+gcc5.0 (via Travis CI). The benchmark may work in other platforms as well but you will need to generate the build files via premake5, and resolve any potential issues.
 
 ## Other native JSON benchmarks
 
