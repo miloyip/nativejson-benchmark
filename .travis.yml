@@ -12,7 +12,6 @@ before_install:
   - make config=release
   - cd ../../..
   - mv premake-5.0.0-alpha6/bin/release/premake5 build/premake5
-  - apt-get update
 
 addons:
     apt:
