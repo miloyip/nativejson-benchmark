@@ -13,6 +13,15 @@ function copyfiles(dstDir, srcWildcard)
 	end
 end
 
+function gmake_common()
+    buildoptions "-march=native -Wall -Wextra"
+    links { "boost_system", "boost_thread-mt", "boost_locale-mt" } 
+    if (os.findlib("PocoJSON")) then
+        defines { "HAS_POCO=1" }
+        links { "PocoFoundation", "PocoJSON" }
+    end
+end
+
 solution "benchmark"
 	configurations { "release" }
 	platforms { "x32", "x64" }
@@ -30,8 +39,7 @@ solution "benchmark"
 		defines { "_CRT_SECURE_NO_WARNINGS" }
 		
 	configuration "gmake"
-		buildoptions "-march=native -Wall -Wextra"
-		links { "boost_system", "boost_thread-mt", "boost_locale-mt" } 
+		gmake_common()
 
 	project "jsonclibs"
 		kind "StaticLib"
@@ -134,8 +142,7 @@ solution "jsonstat"
         defines { "_CRT_SECURE_NO_WARNINGS" }
 
 	configuration "gmake"
-		buildoptions "-march=native -Wall -Wextra"
-		links { "boost_system", "boost_thread-mt", "boost_locale-mt" } 
+        gmake_common()
 
 	project "jsonclibs2"
 		kind "StaticLib"

@@ -5,6 +5,11 @@
 #define HAS_BOOST 1
 #endif
 
+// Define this if installed POCO
+#ifndef HAS_POCO
+#define HAS_POCO 0
+#endif
+
 // Define this to profile memory usage in tests
 #ifndef USE_MEMORYSTAT
 #define USE_MEMORYSTAT 1
