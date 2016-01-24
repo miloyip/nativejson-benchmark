@@ -15,7 +15,20 @@ end
 
 function gmake_common()
     buildoptions "-march=native -Wall -Wextra"
-    links { "boost_system", "boost_thread-mt", "boost_locale-mt" } 
+    links { "boost_system" }
+
+    if (os.findlib("boost_thread")) then
+        links  { "boost_thread" }
+    elseif (os.findlib("boost_thread-mt")) then
+        links  { "boost_thread-mt" }
+    end
+
+    if (os.findlib("boost_locale")) then
+        links  { "boost_locale" }
+    elseif (os.findlib("boost_locale-mt")) then
+        links  { "boost_locale-mt" }
+    end
+
     if (os.findlib("PocoJSON")) then
         defines { "HAS_POCO=1" }
         links { "PocoFoundation", "PocoJSON" }
