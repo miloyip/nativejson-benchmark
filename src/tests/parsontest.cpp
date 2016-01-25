@@ -61,6 +61,15 @@ public:
     JSON_Value *root;
 };
 
+class ParsonStringResult : public StringResultBase {
+public:
+    ParsonStringResult() : s() {}
+    ~ParsonStringResult() { free(s); }
+    virtual const char* c_str() const { return s; }
+    
+    char* s;
+};
+
 class ParsonTest : public TestBase {
 public:
 #if TEST_INFO
@@ -78,6 +87,24 @@ public:
             return 0;
         }
     	return pr;
+    }
+#endif
+
+#if TEST_STRINGIFY
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        const ParsonParseResult* pr = static_cast<const ParsonParseResult*>(parseResult);
+        ParsonStringResult* sr = new ParsonStringResult;
+        sr->s = json_serialize_to_string(pr->root);
+        return sr;
+    }
+#endif
+
+#if TEST_PRETTIFY
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+        const ParsonParseResult* pr = static_cast<const ParsonParseResult*>(parseResult);
+        ParsonStringResult* sr = new ParsonStringResult;
+        sr->s = json_serialize_to_string(pr->root);
+        return sr;
     }
 #endif
 
