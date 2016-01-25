@@ -66,7 +66,7 @@ Library | Language | Version | Notes
 [cJSON](http://sourceforge.net/projects/cjson/) | C | 2013-08-19 |
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
-[FastJson](https://github.com/mikeando/fastjson) | C++ | Not parsing number per se, so do it as post-process.
+[FastJson](https://github.com/mikeando/fastjson) | C++ | | Not parsing number per se, so do it as post-process.
 [gason](https://github.com/vivkin/gason) | C++11 | 
 [jansson](https://github.com/akheron/jansson) | C | v2.7
 [jeayeson](https://github.com/jeaye/jeayeson) | C++14
@@ -77,7 +77,7 @@ Library | Language | Version | Notes
 [Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.1
 [JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ | 1.0.0
 [JSON++](https://github.com/hjiang/jsonxx) | C++ | 
-[jsmn](https://github.com/zserge/jsmn) | C | Not parsing number per se, so do it as post-process.
+[jsmn](https://github.com/zserge/jsmn) | C | | Not parsing number per se, so do it as post-process.
 [jvar](https://github.com/YasserAsmi/jvar) | C++ | gcc/clang only |
 [Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
 [nbsdx/SimpleJSON](https://github.com/nbsdx/SimpleJSON) | C++11 |
@@ -88,7 +88,7 @@ Library | Language | Version | Notes
 [RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.0.1 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
 [sajson](https://github.com/chadaustin/sajson) | C++ | 
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
-[scheredom/json.h](https://github.com/sheredom/json.h) | C | Not parsing number per se, so do it as post-process.
+[scheredom/json.h](https://github.com/sheredom/json.h) | C | | Not parsing number per se, so do it as post-process.
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
 [taocppjson](https://github.com/taocpp/json) | C++ |
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
