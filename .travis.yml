@@ -23,7 +23,7 @@ addons:
             - clang-3.7
             - g++-5
             - gcc-5
-            - libboost1.55-all-dev
+            - libboost-all-dev
             - php5-cli
 
 install:
