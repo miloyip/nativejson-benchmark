@@ -1,4 +1,4 @@
-#if defined(__clang__) || defined(__GNUC__)
+#if (defined(__clang__) || defined(__GNUC__)) && defined(__x86_64__)
 
 #include "../test.h"
 #include "taocppjson/include/tao/json.hh"

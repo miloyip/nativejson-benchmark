@@ -2,6 +2,7 @@
 
 #if HAS_POCO
 
+#include "Poco/Dynamic/Var.h"
 #include "Poco/JSON/Array.h"
 #include "Poco/JSON/Parser.h"
 #include "Poco/JSON/Stringifier.h"
