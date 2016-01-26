@@ -4,10 +4,66 @@ compiler:
  - clang
  - gcc
 
-env:
-  matrix:
-    - CONFIG=release_x64
-    - CONFIG=release_x32
+matrix:
+  include:
+    - compiler: gcc
+      env: CONFIG=release_x64
+      addons:
+        apt:
+          sources:
+            - boost-latest
+            - llvm-toolchain-precise-3.7
+            - ubuntu-toolchain-r-test
+          packages:
+            - cpp-4.6
+            - g++-5-multilib
+            - gcc-5-multilib
+            - libboost-all-dev
+            - php5-cli
+
+    - compiler: gcc
+      env: CONFIG=release_x32
+      addons:
+        apt:
+          sources:
+            - boost-latest
+            - llvm-toolchain-precise-3.7
+            - ubuntu-toolchain-r-test
+          packages:
+            - cpp-4.6
+            - g++-5-multilib
+            - gcc-5-multilib
+            - linux-libc-dev:i386
+            - libboost-all-dev:i386
+            - php5-cli
+    - compiler: clang
+      env: CONFIG=release_x64
+      addons:
+        apt:
+          sources:
+            - boost-latest
+            - llvm-toolchain-precise-3.7
+            - ubuntu-toolchain-r-test
+          packages:
+            - cpp-4.6
+            - clang-3.7
+            - libboost-all-dev
+            - php5-cli
+
+    - compiler: clang
+      env: CONFIG=release_x32
+      addons:
+        apt:
+          sources:
+            - boost-latest
+            - llvm-toolchain-precise-3.7
+            - ubuntu-toolchain-r-test
+          packages:
+            - cpp-4.6
+            - clang-3.7
+            - linux-libc-dev:i386
+            - libboost-all-dev:i386
+            - php5-cli
 
 before_install:
   # Download and build premake5 from source; the Travis environment doesn't have the right version of glibc6 for the prebuilt binaries to work.
@@ -17,22 +73,6 @@ before_install:
   - make config=release
   - cd ../../..
   - mv premake-5.0.0-alpha6/bin/release/premake5 build/premake5
-
-addons:
-    apt:
-        sources:
-            - boost-latest
-            - llvm-toolchain-precise-3.7
-            - ubuntu-toolchain-r-test
-        packages:
-            - cpp-4.6
-            - clang-3.7
-            - g++-5-multilib
-            - gcc-5-multilib
-            - linux-libc-dev:i386
-            - libboost-all-dev
-            - libboost-all-dev:i386
-            - php5-cli
 
 install:
     - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
