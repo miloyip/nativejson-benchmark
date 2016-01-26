@@ -25,7 +25,7 @@ addons:
             - llvm-toolchain-precise-3.7
             - ubuntu-toolchain-r-test
         packages:
-            - cpp-5
+            - cpp-4.6
             - clang-3.7
             - g++-5-multilib
             - gcc-5-multilib
