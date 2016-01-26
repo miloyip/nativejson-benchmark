@@ -29,7 +29,8 @@ addons:
             - g++-5-multilib
             - gcc-5-multilib
             - linux-libc-dev:i386
-            - libboost1.55-all-dev
+            - libboost-all-dev
+            - libboost-all-dev:i386
             - php5-cli
 
 install:
