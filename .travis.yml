@@ -4,6 +4,11 @@ compiler:
  - clang
  - gcc
 
+env:
+  matrix:
+    - CONFIG=release_x64
+    - CONFIG=release_x32
+
 before_install:
   # Download and build premake5 from source; the Travis environment doesn't have the right version of glibc6 for the prebuilt binaries to work.
   - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha6/premake-5.0.0-alpha6-src.zip -O premake.zip
@@ -31,4 +36,4 @@ install:
     - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
 
 script:
-  - make
+  - make CONFIG=$CONFIG
