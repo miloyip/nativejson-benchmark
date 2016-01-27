@@ -135,7 +135,7 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 9. The results in CSV format will be written to `result/`.
 10. Run GNU `make` in `result/` to generate results in HTML.
 
-For simplicity, on Linux/OSX users can simply run `make` (or `make config=release_x32`) at project root to run 4-10 above.
+For simplicity, on Linux/OSX users can simply run `make` (or `make CONFIG=release_x32`) at project root to run 4-10 above.
 
 Boost and POCO need to be installed by user manually.
 
