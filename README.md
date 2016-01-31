@@ -90,7 +90,7 @@ Library | Language | Version | Notes
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
 [scheredom/json.h](https://github.com/sheredom/json.h) | C | | Not parsing number per se, so do it as post-process.
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
-[taocppjson](https://github.com/taocpp/json) | C++ |
+[taocppjson](https://github.com/taocpp/json) | C++11 | 0.0.1
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
 [YAJL](https://github.com/lloyd/yajl) | C | 2.1.0
