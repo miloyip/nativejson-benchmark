@@ -1,25 +1,22 @@
 #include "../test.h"
 
-#if defined(_MSC_VER) && _MSC_VER <= 1700
-#define isnan(x) _isnan(x)
-#define isinf(x) (!_finite(x))
-#endif
+#include <string>
+#include <sstream>
 
-#include "ArduinoJson/src/DynamicJsonBuffer.cpp"
+#define ARDUINOJSON_ENABLE_STD_STREAM 1
+#include "ArduinoJson/include/ArduinoJson.h"
 #include "ArduinoJson/src/JsonArray.cpp"
 #include "ArduinoJson/src/JsonBuffer.cpp"
 #include "ArduinoJson/src/JsonObject.cpp"
 #include "ArduinoJson/src/JsonVariant.cpp"
 #include "ArduinoJson/src/Arduino/Print.cpp"
+#include "ArduinoJson/src/Internals/Comments.cpp"
+#include "ArduinoJson/src/Internals/Encoding.cpp"
 #include "ArduinoJson/src/Internals/IndentedPrint.cpp"
 #include "ArduinoJson/src/Internals/JsonParser.cpp"
 #include "ArduinoJson/src/Internals/List.cpp"
 #include "ArduinoJson/src/Internals/Prettyfier.cpp"
-#include "ArduinoJson/src/Internals/QuotedString.cpp"
-#include "ArduinoJson/src/Internals/StringBuilder.cpp"
-#include "ArduinoJson/test/Printers.cpp"
-#include <string>
-#include <sstream>
+#include "ArduinoJson/src/Internals/StaticStringBuilder.cpp"
 
 using namespace ArduinoJson;
 
@@ -100,7 +97,7 @@ public:
                             delete pr;
                             return 0;
                         }
-                        pr->root.set(o);
+                        pr->root = o;
                     }
                     return pr;
                 case '[':
@@ -110,7 +107,7 @@ public:
                             delete pr;
                             return 0;
                         }
-                        pr->root.set(a);
+                        pr->root = a;
                     }
                     return pr;
                 case ' ':
