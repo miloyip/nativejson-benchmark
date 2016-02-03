@@ -39,6 +39,11 @@ function gmake_common()
         defines { "HAS_POCO=1" }
         links { "PocoFoundation", "PocoJSON" }
     end
+
+    if (os.findlib("folly")) then
+        defines { "HAS_FOLLY=1" }
+        links { "folly" }
+    end
 end
 
 solution "benchmark"

@@ -68,6 +68,11 @@ before_install:
   - make config=release
   - cd ../../..
   - mv premake-5.0.0-alpha6/bin/release/premake5 build/premake5
+  - pushd .
+  - git clone https://github.com/facebook/folly     
+  - cd folly/folly/build
+  - ./deps_ubuntu_12.04.sh
+  - popd
 
 install:
     - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
