@@ -72,6 +72,9 @@ public:
 
 class ParsonTest : public TestBase {
 public:
+    ParsonTest() {
+        json_set_allocation_functions(malloc, free);
+    }
 #if TEST_INFO
     virtual const char* GetName() const { return "Parson (C)"; }
     virtual const char* GetFilename() const { return __FILE__; }
