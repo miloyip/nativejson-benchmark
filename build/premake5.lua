@@ -44,6 +44,14 @@ function gmake_common()
         defines { "HAS_FOLLY=1" }
         links { "folly" }
     end
+
+    configuration "macosx"
+        if (os.isdir("/usr/local/opt/qt5/include")) then
+            defines { "HAS_QT=1" }
+            links { "QtCore.framework" }
+            includedirs { "/usr/local/opt/qt5/include" }
+            linkoptions { "-F /usr/local/opt/qt5/lib" }
+        end
 end
 
 solution "benchmark"
