@@ -6,7 +6,7 @@ Copyright(c) 2014-2016 Milo Yip (miloyip@gmail.com)
 
 ## Introduction
 
-This benchmark evaluates the conformance and performance of 36 open-source C/C++ libraries with JSON parsing/generation capabilities. Performance means speed, memory, and code size.
+This benchmark evaluates the conformance and performance of 37 open-source C/C++ libraries with JSON parsing/generation capabilities. Performance means speed, memory, and code size.
 
 Performance should be concerned only if the results are correct. This benchmark also test the conformance of library towards the JSON standards ([RFC7159], [ECMA-404]).
 
@@ -56,7 +56,7 @@ AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new
 
 ## Libraries
 
-Currently 36 libraries are successfully benchmarked. They are listed in alphabetic order:
+Currently 37 libraries are successfully benchmarked. They are listed in alphabetic order:
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
@@ -94,6 +94,7 @@ Library | Language | Version | Notes
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
 [taocppjson](https://github.com/taocpp/json) | C++11 | 0.0.1
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
+[V8](https://github.com/v8/v8) | C++ | 4.8.271.17
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
 [YAJL](https://github.com/lloyd/yajl) | C | 2.1.0
 

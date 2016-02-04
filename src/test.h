@@ -119,6 +119,11 @@ public:
         return strcmp(name_, rhs.name_) < 0;
     }
 
+    // For each operation, call SetUp() before and TearDown() after.
+    // It is mainly for libraries require huge initialize time (e.g. Creating Isolate in V8).
+    virtual void SetUp() const {}
+    virtual void TearDown() const {}
+
 #if TEST_INFO
     virtual const char* GetName() const = 0;
     virtual const char* GetFilename() const = 0;

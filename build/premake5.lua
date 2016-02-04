@@ -45,12 +45,22 @@ function gmake_common()
         links { "folly" }
     end
 
+    if (os.findlib("v8")) then
+        defines { "HAS_V8=1" }
+        links { "v8_base", "v8_libbase", "v8_libplatform", "v8_nosnapshot" }
+    end
+
     configuration "macosx"
         if (os.isdir("/usr/local/opt/qt5/include")) then
             defines { "HAS_QT=1" }
             links { "QtCore.framework" }
             includedirs { "/usr/local/opt/qt5/include" }
             linkoptions { "-F /usr/local/opt/qt5/lib" }
+        end
+
+        -- Temp fix for OSX brew + V8 include path issue
+        if (os.isdir("/usr/local/opt/v8/")) then
+            includedirs { "/usr/local/opt/v8/" }
         end
 end
 
