@@ -1,6 +1,6 @@
 #include "../test.h"
 
-#if 1//HAS_V8
+#if HAS_V8
 
 #include "libplatform/libplatform.h"
 #include "v8.h"
