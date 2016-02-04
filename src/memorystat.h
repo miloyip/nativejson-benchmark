@@ -32,23 +32,23 @@ public:
 
     void* Malloc(size_t size) {
         void* p = malloc(size);
-        MallocStat(p);
+        MallocStat(GetMallocSize(p));
         return p;
     }
 
     void* Realloc(void* ptr, size_t size) {
         if (ptr)
-            FreeStat(ptr);
+            FreeStat(GetMallocSize(ptr));
 
         void *p = realloc(ptr, size);
 
-        ReallocStat(p);
+        ReallocStat(GetMallocSize(p));
         return p;
     }
 
     void Free(void* ptr) {
         if (ptr) {
-            FreeStat(ptr);
+            FreeStat(GetMallocSize(ptr));
             free(ptr);
         }
     }
@@ -61,22 +61,21 @@ public:
         return old;
     }
 
-    void MallocStat(void* p) {
-        stat_->currentSize += GetMallocSize(p);
+    void MallocStat(size_t size) {
+        stat_->currentSize += size;
         if (stat_->peakSize < stat_->currentSize)
             stat_->peakSize = stat_->currentSize;
         stat_->mallocCount++;
     }
 
-    void ReallocStat(void *p) {
-        stat_->currentSize += GetMallocSize(p);
+    void ReallocStat(size_t size) {
+        stat_->currentSize += size;
         if (stat_->peakSize < stat_->currentSize)
             stat_->peakSize = stat_->currentSize;
         stat_->reallocCount++;
     }
 
-    void FreeStat(void *p) {
-        size_t size = GetMallocSize(p);
+    void FreeStat(size_t size) {
         stat_->currentSize -= size;
         stat_->freeCount++;
     }

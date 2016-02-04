@@ -7,6 +7,8 @@
 
 using namespace v8;
 
+// Note: V8 does not support custom allocator for all allocation.
+// Use Isolate::GetHeapStatistics() for memory statistics.
 class ArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
 public:
     virtual void* Allocate(size_t length) {
@@ -60,10 +62,16 @@ static void GenStat(Stat& stat, Local<Value> v) {
 
 class V8ParseResult : public ParseResultBase {
 public:
+    V8ParseResult() : heapUsage() {}
     ~V8ParseResult() {
         root.Reset();
+
+#if USE_MEMORYSTAT
+        Memory::Instance().FreeStat(heapUsage);
+#endif
     }
     Persistent<Value> root;
+    size_t heapUsage;
 };
 
 class V8StringResult : public StringResultBase {
@@ -81,7 +89,15 @@ public:
         platform = platform::CreateDefaultPlatform();
         V8::InitializePlatform(platform);
         V8::Initialize();
+    }
 
+    ~V8Test() {
+        V8::Dispose();
+        V8::ShutdownPlatform();
+        delete platform;
+    }
+
+    virtual void SetUp() const {
         Isolate::CreateParams create_params;
         create_params.array_buffer_allocator = &allocator;
         isolate = Isolate::New(create_params);
@@ -90,12 +106,9 @@ public:
         context_.Reset(isolate, Context::New(isolate));
     }
 
-    ~V8Test() {
+    virtual void TearDown() const {
         context_.Reset();
         isolate->Dispose();
-        V8::Dispose();
-        V8::ShutdownPlatform();
-        delete platform;
     }
 
 #if TEST_INFO
@@ -110,6 +123,11 @@ public:
         Context::Scope context_scope(context);
         Isolate::Scope isolate_scope(isolate);
 
+#if USE_MEMORYSTAT
+        HeapStatistics hs;
+        isolate->GetHeapStatistics(&hs);
+#endif
+        
         Local<Object> global = context->Global();
         Local<Object> JSON = Local<Object>::Cast(global->Get(context, String::NewFromUtf8(isolate, "JSON")).ToLocalChecked());
         Local<Function> parse = Local<Function>::Cast(JSON->Get(context, String::NewFromUtf8(isolate, "parse")).ToLocalChecked());
@@ -118,6 +136,13 @@ public:
         if (!result.IsEmpty()) {
             V8ParseResult* pr = new V8ParseResult;
             pr->root.Reset(isolate, result.ToLocalChecked());
+
+#if USE_MEMORYSTAT
+            HeapStatistics hs2;
+            isolate->GetHeapStatistics(&hs2);
+            pr->heapUsage = hs2.used_heap_size() - hs.used_heap_size();
+            Memory::Instance().MallocStat(pr->heapUsage);
+#endif
             return pr;
         }
         else
@@ -182,9 +207,9 @@ public:
 // #endif
 
     Platform* platform;
-    ArrayBufferAllocator allocator;
-    Isolate* isolate;
-    Persistent<Context> context_;
+    mutable ArrayBufferAllocator allocator;
+    mutable Isolate* isolate;
+    mutable Persistent<Context> context_;
 };
 
 REGISTER_TEST(V8Test);

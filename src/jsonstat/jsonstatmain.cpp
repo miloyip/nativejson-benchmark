@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
 	fclose(fp);
 
 	const TestBase& test = *TestManager::Instance().GetTests().front();
+    test.SetUp();
 
     ParseResultBase* dom = test.Parse(json, length);
     free(json);
@@ -30,6 +31,7 @@ int main(int argc, char* argv[]) {
     if (!test.Statistics(dom, &stat)) {
         printf("Not support Statistics\n");
         delete dom;
+        test.TearDown();
         return 3;
     }
 
@@ -46,5 +48,6 @@ int main(int argc, char* argv[]) {
     printf("elementCount: %10u\n", (unsigned)stat.elementCount);
     printf("stringLength: %10u\n", (unsigned)stat.stringLength);    
 
+    test.TearDown();
     return 0;
 }
