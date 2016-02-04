@@ -76,9 +76,16 @@ public:
 
 class V8StringResult : public StringResultBase {
 public:
+    V8StringResult() : heapUsage() {}
+    ~V8StringResult() {
+#if USE_MEMORYSTAT
+        Memory::Instance().FreeStat(heapUsage);
+#endif        
+    }
     virtual const char* c_str() const { return s.c_str(); }
 
     std::string s;
+    size_t heapUsage;
 };
 
 class V8Test : public TestBase {
@@ -151,23 +158,79 @@ public:
 
 #endif
 
-// #if TEST_STRINGIFY
-//     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
-//         const V8ParseResult* pr = static_cast<const V8ParseResult*>(parseResult);
-//         V8StringResult* sr = new V8StringResult;
-//         sr->s = toJson(pr->root);
-//         return sr;
-//     }
-// #endif
+#if TEST_STRINGIFY
+    virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
+        const V8ParseResult* pr = static_cast<const V8ParseResult*>(parseResult);
+        HandleScope handle_scope(isolate);
+        Local<Context> context = Local<Context>::New(isolate, context_);
+        Context::Scope context_scope(context);
+        Isolate::Scope isolate_scope(isolate);
+        
+#if USE_MEMORYSTAT
+        HeapStatistics hs;
+        isolate->GetHeapStatistics(&hs);
+#endif
 
-// #if TEST_PRETTIFY
-//     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
-//         const V8ParseResult* pr = static_cast<const V8ParseResult*>(parseResult);
-//         V8StringResult* sr = new V8StringResult;
-//         sr->s = toPrettyJson(pr->root);
-//         return sr;
-//     }
-// #endif
+        Local<Object> global = context->Global();
+        Local<Object> JSON = Local<Object>::Cast(global->Get(context, String::NewFromUtf8(isolate, "JSON")).ToLocalChecked());
+        Local<Function> parse = Local<Function>::Cast(JSON->Get(context, String::NewFromUtf8(isolate, "stringify")).ToLocalChecked());
+        Local<Value> argv[1] = { Local<Value>::New(isolate, pr->root) };
+        MaybeLocal<Value> result = parse->Call(context, global, 1, argv);
+        if (!result.IsEmpty()) {
+            V8StringResult* sr = new V8StringResult;
+
+#if USE_MEMORYSTAT
+            HeapStatistics hs2;
+            isolate->GetHeapStatistics(&hs2);
+            sr->heapUsage = hs2.used_heap_size() - hs.used_heap_size();
+            Memory::Instance().MallocStat(sr->heapUsage);
+#endif
+
+            String::Utf8Value u(result.ToLocalChecked());
+            sr->s = std::string(*u, u.length());
+            return sr;
+        }
+        else
+            return 0;
+    }
+#endif
+
+#if TEST_PRETTIFY
+    virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
+        const V8ParseResult* pr = static_cast<const V8ParseResult*>(parseResult);
+        HandleScope handle_scope(isolate);
+        Local<Context> context = Local<Context>::New(isolate, context_);
+        Context::Scope context_scope(context);
+        Isolate::Scope isolate_scope(isolate);
+        
+#if USE_MEMORYSTAT
+        HeapStatistics hs;
+        isolate->GetHeapStatistics(&hs);
+#endif
+
+        Local<Object> global = context->Global();
+        Local<Object> JSON = Local<Object>::Cast(global->Get(context, String::NewFromUtf8(isolate, "JSON")).ToLocalChecked());
+        Local<Function> parse = Local<Function>::Cast(JSON->Get(context, String::NewFromUtf8(isolate, "stringify")).ToLocalChecked());
+        Local<Value> argv[3] = { Local<Value>::New(isolate, pr->root), Null(isolate), Integer::New(isolate, 4) };
+        MaybeLocal<Value> result = parse->Call(context, global, 3, argv);
+        if (!result.IsEmpty()) {
+            V8StringResult* sr = new V8StringResult;
+
+#if USE_MEMORYSTAT
+            HeapStatistics hs2;
+            isolate->GetHeapStatistics(&hs2);
+            sr->heapUsage = hs2.used_heap_size() - hs.used_heap_size();
+            Memory::Instance().MallocStat(sr->heapUsage);
+#endif
+
+            String::Utf8Value u(result.ToLocalChecked());
+            sr->s = std::string(*u, u.length());
+            return sr;
+        }
+        else
+            return 0;
+    }
+#endif
 
 #if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
@@ -182,29 +245,49 @@ public:
     }
 #endif
 
-// #if TEST_CONFORMANCE
-//     virtual bool ParseDouble(const char* json, double* d) const {
-//         try {
-//             dynamic v = parseJson(StringPiece(json));
-//             *d = v[0].getDouble();
-//             return true;
-//         }
-//         catch (...) {
-//         }
-//         return false;
-//     }
+#if TEST_CONFORMANCE
+    virtual bool ParseDouble(const char* json, double* d) const {
+        HandleScope handle_scope(isolate);
+        Local<Context> context = Local<Context>::New(isolate, context_);
+        Context::Scope context_scope(context);
+        Isolate::Scope isolate_scope(isolate);
+        
+        Local<Object> global = context->Global();
+        Local<Object> JSON = Local<Object>::Cast(global->Get(context, String::NewFromUtf8(isolate, "JSON")).ToLocalChecked());
+        Local<Function> parse = Local<Function>::Cast(JSON->Get(context, String::NewFromUtf8(isolate, "parse")).ToLocalChecked());
+        Local<Value> argv[1] = { String::NewFromUtf8(isolate, json, NewStringType::kNormal).ToLocalChecked() };
+        MaybeLocal<Value> result = parse->Call(context, global, 1, argv);
+        if (!result.IsEmpty()) {
+            Local<Array> a = Local<Array>::Cast(result.ToLocalChecked());
+            Local<Number> n = Local<Number>::Cast(a->Get(0));
+            *d = n->Value();
+            return true;
+        }
+        else
+            return false;
+    }
 
-//     virtual bool ParseString(const char* json, std::string& s) const {
-//         try {
-//             dynamic v = parseJson(StringPiece(json));
-//             s = v[0].getString().toStdString();
-//             return true;
-//         }
-//         catch (...) {
-//         }
-//         return false;
-//     }
-// #endif
+    virtual bool ParseString(const char* json, std::string& s) const {
+        HandleScope handle_scope(isolate);
+        Local<Context> context = Local<Context>::New(isolate, context_);
+        Context::Scope context_scope(context);
+        Isolate::Scope isolate_scope(isolate);
+        
+        Local<Object> global = context->Global();
+        Local<Object> JSON = Local<Object>::Cast(global->Get(context, String::NewFromUtf8(isolate, "JSON")).ToLocalChecked());
+        Local<Function> parse = Local<Function>::Cast(JSON->Get(context, String::NewFromUtf8(isolate, "parse")).ToLocalChecked());
+        Local<Value> argv[1] = { String::NewFromUtf8(isolate, json, NewStringType::kNormal).ToLocalChecked() };
+        MaybeLocal<Value> result = parse->Call(context, global, 1, argv);
+        if (!result.IsEmpty()) {
+            Local<Array> a = Local<Array>::Cast(result.ToLocalChecked());
+            String::Utf8Value u(Local<String>::Cast(a->Get(0)));
+            s = std::string(*u, u.length());
+            return true;
+        }
+        else
+            return false;
+    }
+#endif
 
     Platform* platform;
     mutable ArrayBufferAllocator allocator;
