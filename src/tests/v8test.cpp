@@ -60,24 +60,9 @@ static void GenStat(Stat& stat, Local<Value> v) {
 
 class V8ParseResult : public ParseResultBase {
 public:
-    V8ParseResult() {
-        Isolate::CreateParams create_params;
-        create_params.array_buffer_allocator = &allocator;
-        isolate = Isolate::New(create_params);
-        Isolate::Scope isolate_scope(isolate);
-        HandleScope handle_scope(isolate);
-        context_.Reset(isolate, Context::New(isolate));
-    }
-
     ~V8ParseResult() {
         root.Reset();
-        context_.Reset();
-        isolate->Dispose();
     }
-
-    ArrayBufferAllocator allocator;
-    Isolate* isolate;
-    Persistent<Context> context_;
     Persistent<Value> root;
 };
 
@@ -96,9 +81,18 @@ public:
         platform = platform::CreateDefaultPlatform();
         V8::InitializePlatform(platform);
         V8::Initialize();
+
+        Isolate::CreateParams create_params;
+        create_params.array_buffer_allocator = &allocator;
+        isolate = Isolate::New(create_params);
+        Isolate::Scope isolate_scope(isolate);
+        HandleScope handle_scope(isolate);
+        context_.Reset(isolate, Context::New(isolate));
     }
 
     ~V8Test() {
+        context_.Reset();
+        isolate->Dispose();
         V8::Dispose();
         V8::ShutdownPlatform();
         delete platform;
@@ -111,29 +105,23 @@ public:
 
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
-        V8ParseResult* pr = new V8ParseResult;
+        HandleScope handle_scope(isolate);
+        Local<Context> context = Local<Context>::New(isolate, context_);
+        Context::Scope context_scope(context);
+        Isolate::Scope isolate_scope(isolate);
 
-        {
-            Isolate* isolate = pr->isolate;
-
-            HandleScope handle_scope(isolate);
-            Local<Context> context = Local<Context>::New(pr->isolate, pr->context_);
-            Context::Scope context_scope(context);
-            Isolate::Scope isolate_scope(isolate);
-
-            Local<Object> global = context->Global();
-            Local<Object> JSON = Local<Object>::Cast(global->Get(context, String::NewFromUtf8(isolate, "JSON")).ToLocalChecked());
-            Local<Function> parse = Local<Function>::Cast(JSON->Get(context, String::NewFromUtf8(isolate, "parse")).ToLocalChecked());
-            Local<Value> argv[1] = { String::NewFromUtf8(isolate, json, NewStringType::kNormal, length).ToLocalChecked() };
-            MaybeLocal<Value> result = parse->Call(context, global, 1, argv);
-            if (!result.IsEmpty()) {
-                pr->root.Reset(isolate, result.ToLocalChecked());
-                return pr;
-            }
+        Local<Object> global = context->Global();
+        Local<Object> JSON = Local<Object>::Cast(global->Get(context, String::NewFromUtf8(isolate, "JSON")).ToLocalChecked());
+        Local<Function> parse = Local<Function>::Cast(JSON->Get(context, String::NewFromUtf8(isolate, "parse")).ToLocalChecked());
+        Local<Value> argv[1] = { String::NewFromUtf8(isolate, json, NewStringType::kNormal, length).ToLocalChecked() };
+        MaybeLocal<Value> result = parse->Call(context, global, 1, argv);
+        if (!result.IsEmpty()) {
+            V8ParseResult* pr = new V8ParseResult;
+            pr->root.Reset(isolate, result.ToLocalChecked());
+            return pr;
         }
-
-        delete pr;
-        return 0;
+        else
+            return 0;
     }
 
 #endif
@@ -158,12 +146,11 @@ public:
 
 #if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
-        const V8ParseResult* pr = static_cast<const V8ParseResult*>(parseResult);
-        Isolate* isolate = pr->isolate;
         HandleScope handle_scope(isolate);
-        Local<Context> context = Local<Context>::New(isolate, pr->context_);
+        Local<Context> context = Local<Context>::New(isolate, context_);
         Context::Scope context_scope(context);
         Isolate::Scope isolate_scope(isolate);
+        const V8ParseResult* pr = static_cast<const V8ParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, Local<Value>::New(isolate, pr->root));
         return true;
@@ -195,6 +182,9 @@ public:
 // #endif
 
     Platform* platform;
+    ArrayBufferAllocator allocator;
+    Isolate* isolate;
+    Persistent<Context> context_;
 };
 
 REGISTER_TEST(V8Test);
