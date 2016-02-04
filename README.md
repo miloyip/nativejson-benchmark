@@ -6,7 +6,7 @@ Copyright(c) 2014-2016 Milo Yip (miloyip@gmail.com)
 
 ## Introduction
 
-This benchmark evaluates the conformance and performance of 35 open-source C/C++ JSON parser/generator libraries. Performance means speed, memory, and code size.
+This benchmark evaluates the conformance and performance of 36 open-source C/C++ libraries with JSON parsing/generation capabilities. Performance means speed, memory, and code size.
 
 Performance should be concerned only if the results are correct. This benchmark also test the conformance of library towards the JSON standards ([RFC7159], [ECMA-404]).
 
@@ -56,7 +56,7 @@ AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new
 
 ## Libraries
 
-Currently 35 libraries are successfully benchmarked. They are listed in alphabetic order:
+Currently 36 libraries are successfully benchmarked. They are listed in alphabetic order:
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
@@ -86,6 +86,7 @@ Library | Language | Version | Notes
 [parson](https://github.com/kgabis/parson) | C | 
 [picojson](https://github.com/kazuho/picojson) | C++ | 1.3.0
 [POCO](https://github.com/pocoproject/poco) | C++ | | Need installation |
+[Qt](http://www.qt.io/) | C++ | 5.5.1 | Need installation |
 [RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.0.1 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
 [sajson](https://github.com/chadaustin/sajson) | C++ | 
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
