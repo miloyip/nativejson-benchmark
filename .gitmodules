@@ -95,3 +95,6 @@
 [submodule "thirdparty/jsmn"]
 	path = thirdparty/jsmn
 	url = https://github.com/zserge/jsmn.git
+[submodule "thirdparty/pjson"]
+	path = thirdparty/pjson
+	url = https://github.com/ony/pjson.git
