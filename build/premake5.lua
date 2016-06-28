@@ -90,6 +90,7 @@ solution "benchmark"
             "../thirdparty/",
             "../thirdparty/include/",
             "../thirdparty/ujson4c/3rdparty/",
+            "../thirdparty/pjson/inc/",
 			"../thirdparty/udp-json-parser/"
         }
 
@@ -120,6 +121,7 @@ solution "benchmark"
             "../thirdparty/ArduinoJson/include",
             "../thirdparty/include/jeayeson/include/dummy",
 			"../thirdparty/jvar/include",
+            "../thirdparty/pjson/inc",
         }
 
 		files { 
@@ -174,6 +176,7 @@ solution "jsonstat"
         "../thirdparty/ArduinoJson/include",
         "../thirdparty/include/jeayeson/include/dummy",
         "../thirdparty/jvar/include",
+        "../thirdparty/pjson/inc",
     }
 
     configuration "release"

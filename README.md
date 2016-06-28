@@ -85,6 +85,7 @@ Library | Language | Version | Notes
 [Nlohmann/json](https://github.com/nlohmann/json) | C++11 | v1.1.0
 [parson](https://github.com/kgabis/parson) | C | 
 [picojson](https://github.com/kazuho/picojson) | C++ | 1.3.0
+[pjson](https://github.com/ony/pjson) | C | | No numbers parsing, no DOM interface
 [POCO](https://github.com/pocoproject/poco) | C++ | | Need installation |
 [Qt](http://www.qt.io/) | C++ | 5.5.1 | Need installation |
 [RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.0.1 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
