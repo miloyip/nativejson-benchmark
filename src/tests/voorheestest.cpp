@@ -92,10 +92,9 @@ public:
 
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
-        (void)length;
         VoorheesParseResult* pr = new VoorheesParseResult;
         try {
-            pr->root = parse(json);
+            pr->root = parse(string_view(json, length));
         }
         catch (...) {
             delete pr;
