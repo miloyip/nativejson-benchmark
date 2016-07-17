@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 premake5 gmake
 
 # This is probably necessary only on OSX because premake generates
