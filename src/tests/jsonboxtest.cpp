@@ -2,14 +2,12 @@
 
 #if !defined(_MSC_VER) // runtime crash in Visual Studio
 
-#include "jsonbox/src/Array.cpp"
 #include "jsonbox/src/Convert.cpp"
 #include "jsonbox/src/Escaper.cpp"
 #include "jsonbox/src/IndentCanceller.cpp"
 #include "jsonbox/src/Indenter.cpp"
 #include "jsonbox/src/JsonParsingError.cpp"
 #include "jsonbox/src/JsonWritingError.cpp"
-#include "jsonbox/src/Object.cpp"
 #include "jsonbox/src/SolidusEscaper.cpp"
 #include "jsonbox/src/Value.cpp"
 
