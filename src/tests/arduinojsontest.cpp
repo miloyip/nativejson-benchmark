@@ -4,21 +4,10 @@
 #include <sstream>
 
 #define ARDUINOJSON_ENABLE_STD_STREAM 1
-#include "ArduinoJson/include/ArduinoJson.h"
-#include "ArduinoJson/src/JsonArray.cpp"
-#include "ArduinoJson/src/JsonBuffer.cpp"
-#include "ArduinoJson/src/JsonObject.cpp"
-#include "ArduinoJson/src/JsonVariant.cpp"
-#include "ArduinoJson/src/Arduino/Print.cpp"
-#include "ArduinoJson/src/Internals/Comments.cpp"
-#include "ArduinoJson/src/Internals/Encoding.cpp"
-#include "ArduinoJson/src/Internals/IndentedPrint.cpp"
-#include "ArduinoJson/src/Internals/JsonParser.cpp"
-#include "ArduinoJson/src/Internals/List.cpp"
-#include "ArduinoJson/src/Internals/Prettyfier.cpp"
-#include "ArduinoJson/src/Internals/StaticStringBuilder.cpp"
+#include "ArduinoJson/include/ArduinoJson.hpp"
 
 using namespace ArduinoJson;
+using namespace ArduinoJson::Internals;
 
 static void GenStat(Stat& stat, const JsonVariant& v) {
     if (v.is<const JsonArray&>()) {
