@@ -6,6 +6,7 @@
 #define _LIB	// static link
 #endif
 
+#include "json-voorhees/src/jsonv/algorithm_compare.cpp"
 #include "json-voorhees/src/jsonv/algorithm_map.cpp"
 #include "json-voorhees/src/jsonv/algorithm_traverse.cpp"
 #include "json-voorhees/src/jsonv/array.cpp"
@@ -14,6 +15,7 @@
 #include "json-voorhees/src/jsonv/demangle.cpp"
 #include "json-voorhees/src/jsonv/detail.cpp"
 #include "json-voorhees/src/jsonv/encode.cpp"
+#include "json-voorhees/src/jsonv/functional.cpp"
 #include "json-voorhees/src/jsonv/object.cpp"
 #include "json-voorhees/src/jsonv/parse.cpp"
 #include "json-voorhees/src/jsonv/path.cpp"
