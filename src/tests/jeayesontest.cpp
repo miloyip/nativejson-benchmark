@@ -80,10 +80,10 @@ public:
         for (size_t i = 0; i < length; i++) {
             switch (json[i]) {
                 case '{':
-                    pr->root = map_t(json);
+                    pr->root = json_map(json);
                     return pr;
                 case '[':
-                    pr->root = array_t(json);
+                    pr->root = json_array{json};
                     return pr;
                 case ' ':
                 case '\t':
@@ -121,7 +121,7 @@ public:
 #if TEST_CONFORMANCE
     virtual bool ParseDouble(const char* json, double* d) const {
         try {
-            *d = array_t(json)[0].as<double>();
+            *d = json_array{json}[0].as<double>();
             return true;
         }
         catch (...) {
@@ -131,7 +131,7 @@ public:
 
     virtual bool ParseString(const char* json, std::string& s) const {
         try {
-            s = array_t(json)[0].as<std::string>();
+            s = json_array{json}[0].as<std::string>();
             return true;
         }
         catch (...) {
