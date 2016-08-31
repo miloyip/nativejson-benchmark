@@ -78,25 +78,27 @@ public:
 	virtual const char* GetFilename() const { return __FILE__; }
 #endif
 
-#if TEST_PARSE
-    virtual ParseResultBase* Parse(const char* json, size_t length) const {
-	    std::unique_ptr<PJsonParseResult> pr(new PJsonParseResult);
-		if (SaxStatistics(json, length, &pr->stat))
-			return pr.release();
-		else
-			return nullptr;
-	}
-#endif
+// pjson does not support parsing to DOM, so Parse() and Statistics() are disabled.
 
-#if TEST_STATISTICS
-    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
-	    const PJsonParseResult* pr = static_cast<const PJsonParseResult*>(parseResult);
-        *stat = pr->stat;
-        return true;
-    }
-#endif
+// #if TEST_PARSE
+//     virtual ParseResultBase* Parse(const char* json, size_t length) const {
+// 	    std::unique_ptr<PJsonParseResult> pr(new PJsonParseResult);
+// 		if (SaxStatistics(json, length, &pr->stat))
+// 			return pr.release();
+// 		else
+// 			return nullptr;
+// 	}
+// #endif
 
-#if TEST_PARSE || TEST_SAXSTATISTICS
+// #if TEST_STATISTICS
+//     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
+// 	    const PJsonParseResult* pr = static_cast<const PJsonParseResult*>(parseResult);
+//         *stat = pr->stat;
+//         return true;
+//     }
+// #endif
+
+#if /*TEST_PARSE ||*/ TEST_SAXSTATISTICS
 	virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
 		setlocale(LC_CTYPE, "en_US.utf8");
 		memset(stat, 0, sizeof(Stat));
