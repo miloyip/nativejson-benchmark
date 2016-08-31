@@ -79,9 +79,7 @@ public:
         (void)length;
         TunnuzParseResult* pr = new TunnuzParseResult;
         try {
-            printf("Parse begin\n");
             pr->root = parse_string(json);
-            printf("Parse end\n");
         }
         catch (...) {
             delete pr;
