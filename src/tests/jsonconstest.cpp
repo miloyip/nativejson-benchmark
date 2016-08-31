@@ -8,15 +8,15 @@ using namespace jsoncons;
 
 static void GenStat(Stat& stat, const json& v) {
     switch (v.type()) {
-    case value_type::array_t:
+    case value_types::array_t:
         for (json::const_array_iterator itr = v.begin_elements(); itr != v.end_elements(); ++itr)
             GenStat(stat, *itr);
         stat.arrayCount++;
         stat.elementCount += v.size();
         break;
 
-    case value_type::empty_object_t:
-    case value_type::object_t:
+    case value_types::empty_object_t:
+    case value_types::object_t:
         for (json::const_object_iterator itr = v.begin_members(); itr != v.end_members(); ++itr) {
             GenStat(stat, itr->value());
             stat.stringLength += itr->name().size();
@@ -26,25 +26,30 @@ static void GenStat(Stat& stat, const json& v) {
         stat.stringCount += v.size();
         break;
 
-    case value_type::string_t: 
+    case value_types::string_t: 
         stat.stringCount++;
         stat.stringLength += v.as_string().size();
         break;
 
-    case value_type::double_t:
-    case value_type::longlong_t:
-    case value_type::ulonglong_t:
+    case value_types::small_string_t:
+        stat.stringCount++;
+        stat.stringLength += v.as_string().size();
+        break;
+
+    case value_types::double_t:
+    case value_types::integer_t:
+    case value_types::uinteger_t:
         stat.numberCount++;
         break;
 
-    case value_type::bool_t:
+    case value_types::bool_t:
         if (v.as_bool())
             stat.trueCount++;
         else
             stat.falseCount++;
         break;
 
-    case value_type::null_t:
+    case value_types::null_t:
         stat.nullCount++;
         break;
     }
