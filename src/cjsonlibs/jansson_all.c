@@ -1,3 +1,5 @@
+#include "../memorystat.h"
+
 #include "jansson_renaming.h"
 
 #include "jansson/src/dump.c"
