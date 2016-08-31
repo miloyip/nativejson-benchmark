@@ -30,6 +30,7 @@ static void GenStat(Stat& stat, const json& v) {
         break;
 
     case json::value_t::number_integer:
+    case json::value_t::number_unsigned:
     case json::value_t::number_float:
         stat.numberCount++;
         break;
