@@ -66,8 +66,8 @@ before_install:
   - unzip premake.zip
   - cd premake-5.0.0-alpha6/build/gmake.unix
   - make config=release
-  - sudo make install
   - cd ../../..
+  - sudo mv premake-5.0.0-alpha6/bin/release/premake5 /usr/bin
   # - mv premake-5.0.0-alpha6/bin/release/premake5 build/premake5
 
 install:
