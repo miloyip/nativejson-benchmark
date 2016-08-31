@@ -84,6 +84,17 @@ static char* ReadJSON(const char* filename, size_t* length) {
     return ReadJSON(fp, length);
 }
 
+static void makeValidFilename(char *filename) {
+    while (*filename) {
+        switch (*filename) {
+            case '/':
+                *filename = '_';
+                break;
+        }
+        filename++;
+    }
+}
+
 static bool ReadFiles(const char* path, TestJsonList& testJsons) {
     char fullpath[FILENAME_MAX];
     sprintf(fullpath, path, "data.txt");
@@ -230,6 +241,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
             // Write out json1 for diagnosis
             char filename[FILENAME_MAX];
             sprintf(filename, "%s_%s", test.GetName(), itr->filename);
+            makeValidFilename(filename);
             FILE* fp = fopen(filename, "wb");
             fwrite(json1->c_str(), strlen(json1->c_str()), 1, fp);
             fclose(fp);
@@ -271,6 +283,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
             // Write out json1 for diagnosis
             char filename[FILENAME_MAX];
             sprintf(filename, "%s_%s", test.GetName(), itr->filename);
+            makeValidFilename(filename);
             FILE* fp = fopen(filename, "wb");
             fwrite(json1->c_str(), strlen(json1->c_str()), 1, fp);
             fclose(fp);

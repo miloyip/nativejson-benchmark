@@ -77,7 +77,7 @@ Library | Language | Version | Notes
 [json spirit](http://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) | C++ | 4.08 | Need Boost
 [Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.1
 [JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ | 1.0.0
-[JSON++](https://github.com/hjiang/jsonxx) | C++ | 
+[hjiang/JSON++](https://github.com/hjiang/jsonxx) | C++ | 
 [jsmn](https://github.com/zserge/jsmn) | C | | Not parsing number per se, so do it as post-process.
 [jvar](https://github.com/YasserAsmi/jvar) | C++ | gcc/clang only |
 [Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
@@ -94,6 +94,7 @@ Library | Language | Version | Notes
 [sheredom/json.h](https://github.com/sheredom/json.h) | C | | Not parsing number per se, so do it as post-process.
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
 [taocpp/json](https://github.com/taocpp/json) | C++11 | 1.0.0-beta.1 | Uses [PEGTL](https://github.com/ColinH/PEGTL) for parsing
+[tunnuz/JSON++](https://github.com/tunnuz/json) | C++ |
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
 [V8](https://github.com/v8/v8) | C++ | 4.8.271.17
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8

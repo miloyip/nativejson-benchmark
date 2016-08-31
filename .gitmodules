@@ -98,3 +98,6 @@
 [submodule "thirdparty/pjson"]
 	path = thirdparty/pjson
 	url = https://github.com/ony/pjson.git
+[submodule "thirdparty/tunnuz"]
+	path = thirdparty/tunnuz
+	url = https://github.com/tunnuz/json.git
