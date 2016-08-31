@@ -28,12 +28,13 @@ static void GenStat(Stat& stat, const tao::json::value& v){
          stat.stringLength += v.get_string().size();
          break;
 
-      case tao::json::type::INT64:
+      case tao::json::type::SIGNED:
+      case tao::json::type::UNSIGNED:
       case tao::json::type::DOUBLE:
          stat.numberCount++;
          break;
 
-      case tao::json::type::BOOL_:
+      case tao::json::type::BOOL:
          if (v.get_bool())
             stat.trueCount++;
          else
@@ -110,7 +111,7 @@ public:
    virtual bool ParseDouble(const char* j, double* d) const {
       try {
          auto root = tao::json::from_string(j);
-         *d = root[0].get_double();
+         *d = root.get_array()[0].get_double();
          return true;
       }
       catch (...) {
@@ -121,7 +122,7 @@ public:
    virtual bool ParseString(const char* j, std::string& s) const {
       try {
          auto root = tao::json::from_string(j);
-         s = root[0].get_string();
+         s = root.get_array()[0].get_string();
          return true;
       }
       catch (...) {
