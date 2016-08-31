@@ -101,3 +101,6 @@
 [submodule "thirdparty/tunnuz"]
 	path = thirdparty/tunnuz
 	url = https://github.com/tunnuz/json.git
+[submodule "thirdparty/cpprestsdk"]
+	path = thirdparty/cpprestsdk
+	url = https://github.com/Microsoft/cpprestsdk.git

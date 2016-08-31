@@ -62,7 +62,7 @@ Library | Language | Version | Notes
 --------|----------|---------|-------------------
 [ArduinoJson](https://github.com/bblanchon/ArduinoJson) | C++ | 5.0.8
 [CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
-[Casablanca](https://casablanca.codeplex.com/) (C++ REST SDK) | C++11 | 2.5.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform. Fail to roundtrip `twitter.json`.
+[C++ REST SDK](https://github.com/Microsoft/cpprestsdk) | C++11 | v2.8.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
 [cJSON](https://github.com/DaveGamble/cJSON) | C | 2013-08-19 |
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 

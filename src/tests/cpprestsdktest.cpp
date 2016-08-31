@@ -1,37 +1,14 @@
 #include "../test.h"
 
-#if ((defined(_MSC_VER) && _MSC_VER >= 1700) || (__cplusplus >= 201103L && HAS_BOOST)) && !defined(__CYGWIN__)
+#if HAS_CPPREST
 
-#define _NO_ASYNCRTIMP 1
-#define CPPREST_EXCLUDE_WEBSOCKETS
-
-#ifdef _WIN32
-#include "casablanca/Release/src/utilities/web_utilities.cpp" // Must compile this first
-#include "casablanca/Release/src/http/common/http_msg.cpp"
-#include "casablanca/Release/src/http/common/http_helpers.cpp"
-#include "casablanca/Release/src/http/client/http_client_msg.cpp"
-#include "casablanca/Release/src/http/client/http_client_winhttp.cpp"
-#include "casablanca/Release/src/http/oauth/oauth1.cpp"
-#include "casablanca/Release/src/websockets/client/ws_client.cpp"
-#include "casablanca/Release/src/uri/uri.cpp"
-#include "casablanca/Release/src/uri/uri_builder.cpp"
-#include "casablanca/Release/src/uri/uri_parser.cpp"
-#include "casablanca/Release/src/utilities/base64.cpp"
-#pragma comment (lib, "Winhttp.lib")
-#pragma comment (lib, "Bcrypt.lib")
-#pragma comment (lib, "Crypt32.lib")
-#endif
-
-#include "casablanca/Release/src/pch/stdafx.h"
-#include "casablanca/Release/src/json/json.cpp"
-#include "casablanca/Release/src/json/json_parsing.cpp"
-#include "casablanca/Release/src/json/json_serialization.cpp"
-#include "casablanca/Release/src/utilities/asyncrt_utils.cpp"
+#include "cpprest/json.h"
 
 #include <strstream>
 #include <sstream>
 
 using namespace web::json;
+using namespace utility::conversions;
 
 static void GenStat(Stat& stat, const value& v) {
     switch (v.type()) {
@@ -74,19 +51,19 @@ static void GenStat(Stat& stat, const value& v) {
     }
 }
 
-class CasablancaParseResult : public ParseResultBase {
+class CpprestsdkParseResult : public ParseResultBase {
 public:
     value root;
 };
 
-class CasablancaStringResult : public StringResultBase {
+class CpprestsdkStringResult : public StringResultBase {
 public:
     virtual const char* c_str() const { return s.c_str(); }
 
     std::string s;
 };
 
-class CasablancaTest : public TestBase {
+class CpprestsdkTest : public TestBase {
 public:
 #if TEST_INFO
     virtual const char* GetName() const { return "C++ REST SDK (C++11)"; }
@@ -96,7 +73,7 @@ public:
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
-        CasablancaParseResult* pr = new CasablancaParseResult;
+        CpprestsdkParseResult* pr = new CpprestsdkParseResult;
 		std::istrstream is (json);
         try {
             pr->root = value::parse(is);
@@ -116,8 +93,8 @@ public:
 
 #if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
-        const CasablancaParseResult* pr = static_cast<const CasablancaParseResult*>(parseResult);
-		CasablancaStringResult* sr = new CasablancaStringResult;
+        const CpprestsdkParseResult* pr = static_cast<const CpprestsdkParseResult*>(parseResult);
+		CpprestsdkStringResult* sr = new CpprestsdkStringResult;
         std::ostringstream os;
         pr->root.serialize(os);
         sr->s = os.str();
@@ -127,7 +104,7 @@ public:
 
 #if TEST_STATISTICS
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
-        const CasablancaParseResult* pr = static_cast<const CasablancaParseResult*>(parseResult);
+        const CpprestsdkParseResult* pr = static_cast<const CpprestsdkParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->root);
         return true;
@@ -161,6 +138,6 @@ public:
 #endif
 };
 
-REGISTER_TEST(CasablancaTest);
+REGISTER_TEST(CpprestsdkTest);
 
 #endif

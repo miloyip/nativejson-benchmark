@@ -50,6 +50,11 @@ function gmake_common()
         links { "v8_base", "v8_libbase", "v8_libplatform", "v8_nosnapshot" }
     end
 
+    if (os.findlib("libcpprest")) then
+        defines { "HAS_CPPREST=1" }
+        links { "cpprest"}
+    end
+
     configuration "macosx"
         if (os.isdir("/usr/local/opt/qt5/include")) then
             defines { "HAS_QT=1" }
@@ -107,8 +112,6 @@ solution "benchmark"
 
         includedirs {
             "../thirdparty/",
-            "../thirdparty/casablanca/Release/include/",
-            "../thirdparty/casablanca/Release/src/pch",
             "../thirdparty/fastjson/include/",
             "../thirdparty/jsonbox/include/",
             "../thirdparty/jsoncpp/include/",
@@ -162,8 +165,6 @@ solution "jsonstat"
 
     includedirs {
         "../thirdparty/",
-        "../thirdparty/casablanca/Release/include/",
-        "../thirdparty/casablanca/Release/src/pch",
         "../thirdparty/fastjson/include/",
         "../thirdparty/jsonbox/include/",
         "../thirdparty/jsoncpp/include/",
