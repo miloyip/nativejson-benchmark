@@ -77,22 +77,28 @@ public:
         (void)length;
         JeayesonParseResult* pr = new JeayesonParseResult;
         // Determine object or array
-        for (size_t i = 0; i < length; i++) {
-            switch (json[i]) {
-                case '{':
-                    pr->root = json_map(json);
-                    return pr;
-                case '[':
-                    pr->root = json_array{json};
-                    return pr;
-                case ' ':
-                case '\t':
-                case '\n':
-                case '\r':
-                    continue;
+        try {
+            for (size_t i = 0; i < length; i++) {
+                switch (json[i]) {
+                    case '{':
+                        pr->root = json_map{json_data{json}};
+                        return pr;
+                    case '[':
+                        pr->root = json_array{json_data{json}};
+                        return pr;
+                    case ' ':
+                    case '\t':
+                    case '\n':
+                    case '\r':
+                        continue;
+                }
+                break; // Unknown first non-whitespace character
             }
-            break; // Unknown first non-whitespace character
         }
+        catch (...)
+        {
+        }
+        
         delete pr;
         return 0;
     }
@@ -121,7 +127,7 @@ public:
 #if TEST_CONFORMANCE
     virtual bool ParseDouble(const char* json, double* d) const {
         try {
-            *d = json_array{json}[0].as<double>();
+            *d = json_array{json_data{json}}[0].as<json_float>();
             return true;
         }
         catch (...) {
@@ -131,7 +137,7 @@ public:
 
     virtual bool ParseString(const char* json, std::string& s) const {
         try {
-            s = json_array{json}[0].as<std::string>();
+            s = json_array{json_data{json}}[0].as<std::string>();
             return true;
         }
         catch (...) {
