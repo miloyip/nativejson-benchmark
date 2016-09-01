@@ -133,10 +133,10 @@ public:
             root = parse_string(json);
         
             if (root.type() == ARRAY &&
-                Object(root).size() == 1 &&
-                Object(root)[0].type() == STRING)
+                Array(root).size() == 1 &&
+                Array(root)[0].type() == STRING)
             {
-                s = Object(root)[0].as_string();
+                s = Array(root)[0].as_string();
                 return true;
             }
         }
