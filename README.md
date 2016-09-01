@@ -82,7 +82,7 @@ Library | Language | Version | Notes
 [jvar](https://github.com/YasserAsmi/jvar) | C++ | gcc/clang only |
 [Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
 [nbsdx/SimpleJSON](https://github.com/nbsdx/SimpleJSON) | C++11 |
-[Nlohmann/json](https://github.com/nlohmann/json) | C++11 | v1.1.0
+[Nlohmann/json](https://github.com/nlohmann/json) | C++11 | v2.0.3
 [parson](https://github.com/kgabis/parson) | C | 
 [picojson](https://github.com/kazuho/picojson) | C++ | 1.3.0
 [pjson](https://github.com/ony/pjson) | C | | No numbers parsing, no DOM interface
