@@ -6,7 +6,7 @@ Copyright(c) 2014-2016 Milo Yip (miloyip@gmail.com)
 
 ## Introduction
 
-This benchmark evaluates the conformance and performance of 37 open-source C/C++ libraries with JSON parsing/generation capabilities. Performance means speed, memory, and code size.
+This benchmark evaluates the conformance and performance of 39 open-source C/C++ libraries with JSON parsing/generation capabilities. Performance means speed, memory, and code size.
 
 Performance should be concerned only if the results are correct. This benchmark also test the conformance of library towards the JSON standards ([RFC7159], [ECMA-404]).
 
@@ -56,30 +56,30 @@ AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new
 
 ## Libraries
 
-Currently 37 libraries are successfully benchmarked. They are listed in alphabetic order:
+Currently 39 libraries are successfully benchmarked. They are listed in alphabetic order:
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
-[ArduinoJson](https://github.com/bblanchon/ArduinoJson) | C++ | 5.0.8
+[ArduinoJson](https://github.com/bblanchon/ArduinoJson) | C++ | 5.6.6
 [CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
 [C++ REST SDK](https://github.com/Microsoft/cpprestsdk) | C++11 | v2.8.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
 [cJSON](https://github.com/DaveGamble/cJSON) | C | 2013-08-19 |
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ | | Not parsing number per se, so do it as post-process.
-[folly](https://github.com/facebook/folly) | C++11 | Need installation |
+[folly](https://github.com/facebook/folly) | C++11 | | Need installation |
 [gason](https://github.com/vivkin/gason) | C++11 | 
 [jansson](https://github.com/akheron/jansson) | C | v2.7
 [jeayeson](https://github.com/jeaye/jeayeson) | C++14
-[json-c](https://github.com/json-c/json-c) | C |
+[json-c](https://github.com/json-c/json-c) | C | 0.12.1
 [jsoncons](https://github.com/danielaparker/jsoncons) | C++11 | 0.97.1
-[json-voorhees](https://github.com/tgockel/json-voorhees) | C++ | v1.0.0
+[json-voorhees](https://github.com/tgockel/json-voorhees) | C++ | v1.1.1
 [json spirit](http://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) | C++ | 4.08 | Need Boost
-[Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.1
+[Json Box](https://github.com/anhero/JsonBox) | C++ | 0.6.2
 [JsonCpp](https://github.com/open-source-parsers/jsoncpp) | C++ | 1.0.0
 [hjiang/JSON++](https://github.com/hjiang/jsonxx) | C++ | 
 [jsmn](https://github.com/zserge/jsmn) | C | | Not parsing number per se, so do it as post-process.
-[jvar](https://github.com/YasserAsmi/jvar) | C++ | gcc/clang only |
+[jvar](https://github.com/YasserAsmi/jvar) | C++ | v1.0.0 | gcc/clang only |
 [Jzon](https://github.com/Zguy/Jzon) | C++ | v2-1
 [nbsdx/SimpleJSON](https://github.com/nbsdx/SimpleJSON) | C++11 |
 [Nlohmann/json](https://github.com/nlohmann/json) | C++11 | v2.0.3
@@ -88,7 +88,7 @@ Library | Language | Version | Notes
 [pjson](https://github.com/ony/pjson) | C | | No numbers parsing, no DOM interface
 [POCO](https://github.com/pocoproject/poco) | C++ | | Need installation |
 [Qt](http://www.qt.io/) | C++ | 5.5.1 | Need installation |
-[RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.0.1 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
+[RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.1.0 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
 [sajson](https://github.com/chadaustin/sajson) | C++ | 
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
 [sheredom/json.h](https://github.com/sheredom/json.h) | C | | Not parsing number per se, so do it as post-process.
