@@ -117,7 +117,7 @@ public:
         jsmn_init(&parser);
         jsmntok_t tokens[2];
         int count = jsmn_parse(&parser, json, strlen(json), tokens, 2);
-        if (count == 2 && tokens[0].type == JSMN_ARRAY && tokens[0].size == 1 && tokens[1].type == JSMN_PRIMITIVE) {
+        if (count == 2 && tokens[0].type == JSMN_ARRAY && tokens[0].size == 1 && tokens[1].type == JSMN_STRING) {
             s = std::string(json + tokens[1].start, json + tokens[1].end);
             return true;
         }
