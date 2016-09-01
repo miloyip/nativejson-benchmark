@@ -1079,7 +1079,8 @@ static void BenchAllConformance() {
 
     TestList& tests = TestManager::Instance().GetTests();
     for (TestList::iterator itr = tests.begin(); itr != tests.end(); ++itr) {
-        if (strcmp((*itr)->GetName(), "strdup (C)") == 0)
+        if (strcmp((*itr)->GetName(), "strdup (C)") == 0 ||
+            strcmp((*itr)->GetName(), "pjson (C)") == 0)
             continue;
         BenchConformance(**itr, fp);
     }
