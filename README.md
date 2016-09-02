@@ -6,7 +6,7 @@ Copyright(c) 2014-2016 Milo Yip (miloyip@gmail.com)
 
 ## Introduction
 
-This benchmark evaluates the conformance and performance of 39 open-source C/C++ libraries with JSON parsing/generation capabilities. Performance means speed, memory, and code size.
+This benchmark evaluates the conformance and performance of 40 open-source C/C++ libraries with JSON parsing/generation capabilities. Performance means speed, memory, and code size.
 
 Performance should be concerned only if the results are correct. This benchmark also test the conformance of library towards the JSON standards ([RFC7159], [ECMA-404]).
 
@@ -56,13 +56,14 @@ AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new
 
 ## Libraries
 
-Currently 39 libraries are successfully benchmarked. They are listed in alphabetic order:
+Currently 40 libraries are successfully benchmarked. They are listed in alphabetic order:
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
 [ArduinoJson](https://github.com/bblanchon/ArduinoJson) | C++ | 5.6.6
 [CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
 [C++ REST SDK](https://github.com/Microsoft/cpprestsdk) | C++11 | v2.8.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
+[ccan/json](https://github.com/rustyrussell/ccan/) | C | 
 [cJSON](https://github.com/DaveGamble/cJSON) | C | 2013-08-19 |
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
