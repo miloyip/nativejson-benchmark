@@ -1,4 +1,7 @@
 #include "../test.h"
+
+#if !defined(_MSC_VER)
+
 #include "pjson.h"
 #include <array>
 #include <vector>
@@ -199,3 +202,5 @@ public:
 };
 
 REGISTER_TEST(PJsonTest);
+
+#endif

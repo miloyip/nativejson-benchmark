@@ -1,6 +1,14 @@
 #include "../test.h"
 #include <sstream>
 
+#if defined(_MSC_VER)
+#define YY_NO_UNISTD_H
+
+#include <io.h>
+#define isatty _isatty
+#define not !
+#endif
+
 #include "../tunnuz/lex.yy.cc"
 
 #include "../tunnuz/json.tab.cc"
