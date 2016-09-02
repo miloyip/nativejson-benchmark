@@ -104,3 +104,6 @@
 [submodule "thirdparty/cpprestsdk"]
 	path = thirdparty/cpprestsdk
 	url = https://github.com/Microsoft/cpprestsdk.git
+[submodule "thirdparty/ccan"]
+	path = thirdparty/ccan
+	url = https://github.com/rustyrussell/ccan.git
