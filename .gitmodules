@@ -107,3 +107,6 @@
 [submodule "thirdparty/ccan"]
 	path = thirdparty/ccan
 	url = https://github.com/rustyrussell/ccan.git
+[submodule "thirdparty/jute"]
+	path = thirdparty/jute
+	url = https://github.com/amir-s/jute.git
