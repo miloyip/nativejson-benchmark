@@ -1202,7 +1202,7 @@ static void BenchAllConformance() {
 #endif // TEST_CONFORMANCE
 
 static void BenchAll(const TestJsonList& testJsons) {
-    // BenchAllPerformance(testJsons);
+    BenchAllPerformance(testJsons);
 
 #if TEST_CONFORMANCE
     BenchAllConformance();
@@ -1231,7 +1231,7 @@ int main(int, char* argv[]) {
         TestList& tests = TestManager::Instance().GetTests();
         std::sort(tests.begin(), tests.end());
 
-        // VerifyAll(testJsons);
+        VerifyAll(testJsons);
         BenchAll(testJsons);
 
         FreeFiles(testJsons);
