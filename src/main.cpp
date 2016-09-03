@@ -95,6 +95,16 @@ static void makeValidFilename(char *filename) {
     }
 }
 
+static void EscapeString(FILE* fp, const char *s, size_t length) {
+    fputc('"', fp);
+    for (size_t j = 0; j < length; j++)
+        if (s[j] != 0)
+            fputc(s[j], fp);
+        else
+            fputs("\\0", fp);
+    fputc('"', fp);
+}
+
 static bool ReadFiles(const char* path, TestJsonList& testJsons) {
     char fullpath[FILENAME_MAX];
     sprintf(fullpath, path, "data.txt");
@@ -795,8 +805,32 @@ static void BenchAllPerformance(const TestJsonList& testJsons) {
 static void BenchConformance(const TestBase& test, FILE* fp) {
     printf("Benchmarking Conformance of %s\n", test.GetName());
     
+    // Output markdown
+    FILE* md;
+    char testname[FILENAME_MAX];
+    strcpy(testname, test.GetName());
+    makeValidFilename(testname);
+
+    char mdFilename[FILENAME_MAX];
+    sprintf(mdFilename, "../../result/conformance_%s.md", test.GetName());
+    printf("%s\n", mdFilename);
+    if (!(md = fopen(mdFilename, "w"))) {
+        sprintf(mdFilename, "../result/conformance_%s.md", test.GetName());
+        printf("%s\n", mdFilename);
+        md = fopen(mdFilename, "w");
+    }
+
+    if (md)
+        fprintf(md, "# Conformance of %s\n\n", test.GetName());
+
 #if TEST_PARSE
     // Parse Validation, JsonChecker pass
+
+    if (md)
+        fprintf(md, "## 1. Parse Validation\n\n");
+
+    int parseValidationCorrect = 0, parseValidationTotal = 0;
+
     for (int i = 1; i <= 3; i++) {
         MEMORYSTAT_SCOPE();
 
@@ -811,9 +845,17 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         ParseResultBase* pr = test.Parse(json, length);
         bool result = pr != 0;
         fprintf(fp, "1. Parse Validation,%s,pass%02d,%s\n", test.GetName(), i, result ? "true" : "false");
-        printf("pass%02d: %s\n", i, result ? "true" : "false");
+        // printf("pass%02d: %s\n", i, result ? "true" : "false");
         delete pr;
         test.TearDown();
+
+        if (!result) {
+            if (md)
+                fprintf(md, "* `%s` is valid but was mistakenly deemed invalid.\n~~~js\n%s\n~~~\n\n", path, json);
+        }
+        else
+            parseValidationCorrect++;
+        parseValidationTotal++;
 
         free(json);
 
@@ -835,15 +877,33 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         ParseResultBase* pr = test.Parse(json, length);
         bool result = pr == 0;
         fprintf(fp, "1. Parse Validation,%s,fail%02d,%s\n", test.GetName(), i, result ? "true" : "false");
-        printf("fail%02d: %s\n", i, result ? "true" : "false");
+        // printf("fail%02d: %s\n", i, result ? "true" : "false");
         delete pr;
         test.TearDown();
+
+        if (!result) {
+            if (md)
+                fprintf(md, "* `%s` is invalid but was mistakenly deemed valid.\n~~~js\n%s\n~~~\n\n", path, json);
+        }
+        else
+            parseValidationCorrect++;
+        parseValidationTotal++;
 
         free(json);
 
         MEMORYSTAT_CHECKMEMORYLEAK();
     }
+
+    if (md)
+        fprintf(md, "\nSummary: %d of %d are correct.\n\n", parseValidationCorrect, parseValidationTotal);
+
 #endif // TEST_PARSE
+
+    parseValidationTotal = 0;
+    parseValidationCorrect = 0;
+
+    if (md)
+        fprintf(md, "## 2. Parse Double\n\n");
 
     // Parse Double
     {
@@ -856,9 +916,17 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             test.SetUp();\
             if (test.ParseDouble(json, &actual)) \
                 result = Double(expect).Uint64Value() == Double(actual).Uint64Value();\
-            printf("double%02d: %s\n", i, result ? "true" : "false");\
-            if (!result)\
-                printf("JSON: %s\nExpect: %17g\nActual: %17g\n\n", json, expect, actual);\
+            if (!result) {\
+                if (md)\
+                    fprintf(md, "* `%s`\n  * expect: `%.17g (0x016%" PRIX64 ")`\n  * actual: `%.17g (0x016%" PRIX64 ")`\n\n",\
+                        json, expect, Double(expect).Uint64Value(), actual, Double(actual).Uint64Value());\
+            }\
+            else\
+                parseValidationCorrect++;\
+            parseValidationTotal++;\
+            /*printf("double%02d: %s\n", i, result ? "true" : "false");*/\
+            /*if (!result)*/\
+            /*    printf("JSON: %s\nExpect: %17g\nActual: %17g\n\n", json, expect, actual);*/\
             fprintf(fp, "2. Parse Double,%s,double%02d,%s\n", test.GetName(), i, result ? "true" : "false");\
             test.TearDown();\
             i++;\
@@ -974,7 +1042,17 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             2.2250738585072014e-308);
     }
 
+    if (md)
+        fprintf(md, "\nSummary: %d of %d are correct.\n\n", parseValidationCorrect, parseValidationTotal);
+
     // Parse String
+
+    parseValidationTotal = 0;
+    parseValidationCorrect = 0;
+
+    if (md)
+        fprintf(md, "## 3. Parse String\n\n");
+
     {
         int i = 1;
         #define TEST_STRING(json, expect)\
@@ -985,9 +1063,21 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             test.SetUp();\
             if (test.ParseString(json, actual)) \
                 result = (expectLength == actual.size()) && (memcmp(expect, actual.c_str(), expectLength) == 0);\
-            printf("string%02d: %s\n", i, result ? "true" : "false");\
-            if (!result)\
-                printf("JSON: %s\nExpect: %s (%u) \nActual: %s (%u)\n\n", json, expect, (unsigned)expectLength, actual.c_str(), (unsigned)actual.size());\
+            if (!result) {\
+                if (md) {\
+                    fprintf(md, "* `%s`\n  * expect: `", json);\
+                    EscapeString(md, expect, expectLength);\
+                    fprintf(md, "` (length: %d)\n  * actual: `", (int)expectLength);\
+                    EscapeString(md, actual.c_str(), actual.size());\
+                    fprintf(md, "` (length: %d)\n\n", (int)actual.size());\
+                }\
+            }\
+            else\
+                parseValidationCorrect++;\
+            parseValidationTotal++;\
+            /*printf("string%02d: %s\n", i, result ? "true" : "false");*/\
+            /*if (!result)*/\
+            /*    printf("JSON: %s\nExpect: %s (%u) \nActual: %s (%u)\n\n", json, expect, (unsigned)expectLength, actual.c_str(), (unsigned)actual.size());*/\
             fprintf(fp, "3. Parse String,%s,string%02d,%s\n", test.GetName(), i, result ? "true" : "false");\
             test.TearDown();\
             i++;\
@@ -1004,7 +1094,16 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         TEST_STRING("[\"\\uD834\\uDD1E\"]", "\xF0\x9D\x84\x9E");  // G clef sign U+1D11E
     }
 
+    if (md)
+        fprintf(md, "\nSummary: %d of %d are correct.\n\n", parseValidationCorrect, parseValidationTotal);
+
 #if TEST_PARSE && TEST_STRINGIFY
+    parseValidationTotal = 0;
+    parseValidationCorrect = 0;
+
+    if (md)
+        fprintf(md, "## 4. Roundtrip\n\n");
+
     // Roundtrip
     for (int i = 1; i <= 27; i++) {
         MEMORYSTAT_SCOPE();
@@ -1037,10 +1136,18 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
                     }
                 }
 
-                printf("roundtrip%02d: %s\n", i, result ? "true" : "false");
+                // printf("roundtrip%02d: %s\n", i, result ? "true" : "false");
 
-                if (!result)
-                    printf("Expect: %s\nActual: %s\n\n", json, sr->c_str());
+                // if (!result)
+                //     printf("Expect: %s\nActual: %s\n\n", json, sr->c_str());
+            if (!result) {
+                if (md)
+                    fprintf(md, "* Fail:\n~~~js\n%s\n~~~\n\n~~~js\n%s\n~~~\n\n", json, sr ? sr->c_str() : "N/A");\
+            }
+            else
+                parseValidationCorrect++;
+            parseValidationTotal++;
+
                 delete sr;
             }
             else
@@ -1057,6 +1164,10 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
 
         MEMORYSTAT_CHECKMEMORYLEAK();
     }
+
+    if (md)
+        fprintf(md, "\nSummary: %d of %d are correct.\n\n", parseValidationCorrect, parseValidationTotal);
+
 #endif // TEST_PARSE && TEST_STRINGIFY
 
     printf("\n");
@@ -1091,7 +1202,7 @@ static void BenchAllConformance() {
 #endif // TEST_CONFORMANCE
 
 static void BenchAll(const TestJsonList& testJsons) {
-    BenchAllPerformance(testJsons);
+    // BenchAllPerformance(testJsons);
 
 #if TEST_CONFORMANCE
     BenchAllConformance();
@@ -1120,7 +1231,7 @@ int main(int, char* argv[]) {
         TestList& tests = TestManager::Instance().GetTests();
         std::sort(tests.begin(), tests.end());
 
-        VerifyAll(testJsons);
+        // VerifyAll(testJsons);
         BenchAll(testJsons);
 
         FreeFiles(testJsons);
