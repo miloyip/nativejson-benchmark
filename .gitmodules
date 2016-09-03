@@ -107,3 +107,6 @@
 [submodule "thirdparty/ccan"]
 	path = thirdparty/ccan
 	url = https://github.com/rustyrussell/ccan.git
+[submodule "thirdparty/ujson"]
+	path = thirdparty/ujson
+	url = https://bitbucket.org/awangk/ujson.git
