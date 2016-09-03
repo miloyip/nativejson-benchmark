@@ -15,7 +15,10 @@ end
 
 function gmake_common()
     buildoptions "-march=native -Wall -Wextra"
-    links { "boost_system" }
+    if (os.findlib("boost_system")) then
+        defines { "HAS_BOOST=1" }
+        links { "boost_system" }
+    end
 
     -- On some boost distributions, the naming contains -mt suffixes
     if (os.findlib("boost_thread")) then
@@ -125,6 +128,7 @@ solution "benchmark"
             "../thirdparty/include/jeayeson/include/dummy",
 			"../thirdparty/jvar/include",
             "../thirdparty/pjson/inc",
+            "../thirdparty/jbson/include",
         }
 
 		files { 
@@ -178,6 +182,7 @@ solution "jsonstat"
         "../thirdparty/include/jeayeson/include/dummy",
         "../thirdparty/jvar/include",
         "../thirdparty/pjson/inc",
+        "../thirdparty/jbson/include",
     }
 
     configuration "release"
