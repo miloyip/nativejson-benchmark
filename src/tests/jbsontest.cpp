@@ -10,37 +10,44 @@
 
 using namespace jbson;
 
+static void GenStat(Stat& stat, const element& v);
+
+static void GenStat(Stat& stat, const document& d) {
+    for (auto& i : d) {
+        GenStat(stat, i);
+        stat.stringLength += i.name().size();
+        stat.memberCount++;
+        stat.stringCount++;
+    }
+    stat.objectCount++;
+}
+
+static void GenStat(Stat& stat, const array& a) {
+    for (auto &i : a) {
+        GenStat(stat, i);
+        stat.elementCount++;
+    }
+    stat.arrayCount++;
+}
+
 static void GenStat(Stat& stat, const element& v) {
     switch (v.type()) {
-    case element_type::array_element:
-        {
-            auto a = get<element_type::array_element>(v);
-            for (auto &i : a)
-                GenStat(stat, i);
-            stat.arrayCount++;
-            stat.elementCount += v.size();
-        }
+    case element_type::document_element:
+        GenStat(stat, get<element_type::document_element>(v));
         break;
 
-    case element_type::document_element:
-        {
-            auto d = get<element_type::document_element>(v);
-            for (auto& i : d) {
-                GenStat(stat, i);
-                stat.stringLength += i.name().size();
-            }
-            stat.objectCount++;
-            stat.memberCount += v.size();
-            stat.stringCount += v.size();
-        }
+    case element_type::array_element:
+        GenStat(stat, get<element_type::array_element>(v));
         break;
 
     case element_type::string_element:
         stat.stringCount++;
-        stat.stringLength += v.size();
+        stat.stringLength += v.value<std::string>().size();
         break;
 
     case element_type::double_element:
+    case element_type::int32_element:
+    case element_type::int64_element:
         stat.numberCount++;
         break;
 
@@ -137,7 +144,10 @@ public:
     virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
         const JbsonParseResult* pr = static_cast<const JbsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
-        GenStat(*stat, (element&)pr->d);
+        if (pr->isArray)
+            GenStat(*stat, pr->a);
+        else
+            GenStat(*stat, pr->d);
         return true;
     }
 #endif

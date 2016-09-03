@@ -813,10 +813,8 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
 
     char mdFilename[FILENAME_MAX];
     sprintf(mdFilename, "../../result/conformance_%s.md", test.GetName());
-    printf("%s\n", mdFilename);
     if (!(md = fopen(mdFilename, "w"))) {
         sprintf(mdFilename, "../result/conformance_%s.md", test.GetName());
-        printf("%s\n", mdFilename);
         md = fopen(mdFilename, "w");
     }
 
