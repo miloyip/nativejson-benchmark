@@ -813,10 +813,8 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
 
     char mdFilename[FILENAME_MAX];
     sprintf(mdFilename, "../../result/conformance_%s.md", test.GetName());
-    printf("%s\n", mdFilename);
     if (!(md = fopen(mdFilename, "w"))) {
         sprintf(mdFilename, "../result/conformance_%s.md", test.GetName());
-        printf("%s\n", mdFilename);
         md = fopen(mdFilename, "w");
     }
 
@@ -918,7 +916,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
                 result = Double(expect).Uint64Value() == Double(actual).Uint64Value();\
             if (!result) {\
                 if (md)\
-                    fprintf(md, "* `%s`\n  * expect: `%.17g (0x016%" PRIX64 ")`\n  * actual: `%.17g (0x016%" PRIX64 ")`\n\n",\
+                    fprintf(md, "* `%s`\n  * expect: `%.17g (0x%016" PRIX64 ")`\n  * actual: `%.17g (0x%016" PRIX64 ")`\n\n",\
                         json, expect, Double(expect).Uint64Value(), actual, Double(actual).Uint64Value());\
             }\
             else\
