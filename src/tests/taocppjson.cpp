@@ -14,9 +14,9 @@ static void GenStat(Stat& stat, const tao::json::value& v){
          break;
 
       case tao::json::type::OBJECT:
-         for (auto it = v.get_object().begin(); it != v.get_object().end(); ++it) {
-            GenStat(stat, it->second);
-            stat.stringLength += it->first.size();
+         for (auto& element : v.get_object()) {
+            GenStat(stat, element.second);
+            stat.stringLength += element.first.size();
          }
          stat.objectCount++;
          stat.memberCount += v.get_object().size();
@@ -44,6 +44,10 @@ static void GenStat(Stat& stat, const tao::json::value& v){
       case tao::json::type::NULL_:
          stat.nullCount++;
          break;
+
+      case tao::json::type::POINTER:
+         // not applicable in this benchmark
+         throw std::runtime_error( "code should be unreachable" );
    }
 }
 
@@ -111,7 +115,7 @@ public:
    virtual bool ParseDouble(const char* j, double* d) const {
       try {
          auto root = tao::json::from_string(j);
-         *d = root.get_array()[0].get_double();
+         *d = root.at(0).get_double();
          return true;
       }
       catch (...) {
@@ -122,7 +126,7 @@ public:
    virtual bool ParseString(const char* j, std::string& s) const {
       try {
          auto root = tao::json::from_string(j);
-         s = root.get_array()[0].get_string();
+         s = root.at(0).get_string();
          return true;
       }
       catch (...) {
