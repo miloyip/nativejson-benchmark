@@ -6,6 +6,8 @@
 #define _LIB	// static link
 #endif
 
+#include <cctype> // algorithm_compare.cpp(36): error C2039: 'tolower': is not a member of 'std'
+
 #include "json-voorhees/src/jsonv/algorithm_compare.cpp"
 #include "json-voorhees/src/jsonv/algorithm_map.cpp"
 #include "json-voorhees/src/jsonv/algorithm_traverse.cpp"
