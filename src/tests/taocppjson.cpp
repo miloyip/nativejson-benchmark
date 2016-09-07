@@ -115,7 +115,7 @@ public:
    virtual bool ParseDouble(const char* j, double* d) const {
       try {
          auto root = tao::json::from_string(j);
-         *d = root.at(0).get_double();
+         *d = root[0].get_double();
          return true;
       }
       catch (...) {
@@ -126,7 +126,7 @@ public:
    virtual bool ParseString(const char* j, std::string& s) const {
       try {
          auto root = tao::json::from_string(j);
-         s = root.at(0).get_string();
+         s = root[0].get_string();
          return true;
       }
       catch (...) {
