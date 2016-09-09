@@ -87,8 +87,8 @@ Library | Language | Version | Notes
 [parson](https://github.com/kgabis/parson) | C | 
 [picojson](https://github.com/kazuho/picojson) | C++ | 1.3.0
 [pjson](https://github.com/ony/pjson) | C | | No numbers parsing, no DOM interface
-[POCO](https://github.com/pocoproject/poco) | C++ | | Need installation |
-[Qt](http://www.qt.io/) | C++ | 5.5.1 | Need installation |
+[POCO](https://github.com/pocoproject/poco) | C++ | 1.7.5 | Need installation |
+[Qt](http://www.qt.io/) | C++ | 5.6.1-1 | Need installation |
 [RapidJSON](https://github.com/miloyip/rapidjson) | C++ | v1.1.0 | There are four configurations: RapidJSON (default), RapidJSON_AutoUTF (transcoding any UTF JSON), RapidJSON_Insitu (*insitu* parsing) & RapidJSON_FullPrec (full precision number parsing)
 [sajson](https://github.com/chadaustin/sajson) | C++ | 
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
@@ -98,7 +98,7 @@ udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.co
 [tunnuz/JSON++](https://github.com/tunnuz/json) | C++ |
 [ujson](https://bitbucket.org/awangk/ujson/) | C++ | 2015-04-12 |
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
-[V8](https://github.com/v8/v8) | C++ | 4.8.271.17
+[V8](https://github.com/v8/v8) | C++ | 5.1.281.47 | Need installation |
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
 [YAJL](https://github.com/lloyd/yajl) | C | 2.1.0
 
@@ -148,9 +148,11 @@ Boost and POCO need to be installed by user manually.
 
 ## Sample Results
 
+Update on: 2016-9-9
+
 A collection of benchmarks results can be viewed [HERE](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/conformance.html). Select "Benchmark" from the menu to check available benchmark configurations. The presentation is powered by [Google Charts](https://developers.google.com/chart/) with interactivity.
 
-The followings are some snapshots from the results of an iMac (Corei5-3330S@2.70GHz) with clang 6.1_1 64-bit.
+The followings are some snapshots from the results of MacBook Pro (Retina, 15-inch, Mid 2015, Corei7-4980HQ@2.80GHz) with clang 7.0 64-bit.
 
 ### Conformance
 
@@ -160,33 +162,33 @@ This is the average score of 4 conformance benchmarks. Higher is better. [Detail
 
 ### Parsing Time
 
-![Parsing Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Time_(ms).png)
+![Parsing Time](sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0_1._Parse_Time_(ms).png)
 
-This is the total duration of parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#1. Parse)
+This is the total duration of parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0.html#1. Parse)
 
 ### Parsing Memory
 
-![Parsing Memory](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_1._Parse_Memory_(byte).png)
+![Parsing Memory](sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0_1._Parse_Memory_(byte).png)
 
-This is the total memory after parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#1. Parse)
+This is the total memory after parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0.html#1. Parse)
 
 ### Stringify Time
 
-![Stringify Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_2._Stringify_Time_(ms).png)
+![Stringify Time](sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0_2._Stringify_Time_(ms).png)
 
-This is the total duration of stringifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#2. Stringify)
+This is the total duration of stringifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0.html#2. Stringify)
 
 ### Prettify Time
 
-![Prettify Time](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_3._Prettify_Time_(ms).png)
+![Prettify Time](sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0_3._Prettify_Time_(ms).png)
 
-This is the total duration of prettifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#2. Prettify)
+This is the total duration of prettifying 3 DOMs to JSONs, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0.html#2. Prettify)
 
 ### Code Size
 
-![Code Size](sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1_7._Code_size_FileSize_(byte).png)
+![Code Size](sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0_7._Code_size_FileSize_(byte).png)
 
-The is the size of executable program, which parses a JSON from `stdin` to a DOM and then computes the statistics of the DOM. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei5-3330S@2.70GHz_mac64_clang6.1.html#7. Code size)
+The is the size of executable program, which parses a JSON from `stdin` to a DOM and then computes the statistics of the DOM. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0.html#7. Code size)
 
 ## FAQ
 

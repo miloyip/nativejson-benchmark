@@ -191,13 +191,15 @@ function drawTable(type, data) {
 
 function drawBarChart(type, data, div) {
   // Using same colors as in series
-  var colors = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
-  var h = data.getNumberOfRows() * 20;
+  var colors = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411","#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
+  var h = data.getNumberOfRows() * 12;
   var options = { 
     title: type,
-    chartArea: {left: '30%', width: '60%', height: h },
+    chartArea: {left: '20%', width: '70%', height: h },
     width: 800,
     height: h + 100,
+    fontSize: 10,
+    bar: {groupWidth: "80%"},
     hAxis: { title: data.getColumnLabel(1), format: 'percent' },
     legend: { position: "none" },
   };
@@ -343,7 +345,7 @@ body { padding-top: 70px; }
 <form method="post" action="http://export.highcharts.com/" id="imageGetForm">
     <input type="hidden" name="filename" id="imageFilename" value="" />
     <input type="hidden" name="type" id="imageGetFormTYPE" value="" />
-    <input type="hidden" name="width" value="900" />
+    <input type="hidden" name="width" value="1600" />
     <input type="hidden" name="svg" value="" id="imageGetFormSVG" />
 </form>
 </div>
