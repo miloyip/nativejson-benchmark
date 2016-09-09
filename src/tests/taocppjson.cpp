@@ -71,10 +71,9 @@ public:
 
 #if TEST_PARSE
    virtual ParseResultBase* Parse(const char* j, size_t length) const {
-      (void)length;
       TAOCPPJSONParseResult* pr = new TAOCPPJSONParseResult;
       try {
-         pr->root = tao::json::from_string(j);
+         pr->root = tao::json::from_string(j, length);
       }
       catch (...) {
          delete pr;
