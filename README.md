@@ -172,6 +172,8 @@ This is the total duration of parsing 3 JSONs to DOM representation, sorted in a
 
 This is the total memory after parsing 3 JSONs to DOM representation, sorted in ascending order. Lower is better. [Details](https://rawgit.com/miloyip/nativejson-benchmark/master/sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0.html#1. Parse)
 
+(Note: The results for Qt is incorrect as the benchmark failed to hook its memory allocations)
+
 ### Stringify Time
 
 ![Stringify Time](sample/performance_Corei7-4980HQ@2.80GHz_mac64_clang7.0_2._Stringify_Time_(ms).png)
