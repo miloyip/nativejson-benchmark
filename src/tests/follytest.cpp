@@ -130,7 +130,7 @@ public:
     virtual bool ParseString(const char* json, std::string& s) const {
         try {
             dynamic v = parseJson(StringPiece(json));
-            s = v[0].getString().toStdString();
+            s = v[0].getString();
             return true;
         }
         catch (...) {

@@ -68,7 +68,7 @@ Library | Language | Version | Notes
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ | | Not parsing number per se, so do it as post-process.
-[folly](https://github.com/facebook/folly) | C++11 | | Need installation |
+[folly](https://github.com/facebook/folly) | C++11 | 2016.08.29.00 | Need installation |
 [gason](https://github.com/vivkin/gason) | C++11 | 
 [jansson](https://github.com/akheron/jansson) | C | v2.7
 [jeayeson](https://github.com/jeaye/jeayeson) | C++14
