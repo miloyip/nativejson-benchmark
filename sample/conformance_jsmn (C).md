@@ -2,11 +2,6 @@
 
 ## 1. Parse Validation
 
-* `../data/jsonchecker/fail03.json` is invalid but was mistakenly deemed valid.
-~~~js
-{unquoted_key: "keys must be quoted"}
-~~~
-
 * `../data/jsonchecker/fail04.json` is invalid but was mistakenly deemed valid.
 ~~~js
 ["extra comma",]
@@ -37,16 +32,6 @@
 {"Extra value after close": true} "misplaced quoted value"
 ~~~
 
-* `../data/jsonchecker/fail11.json` is invalid but was mistakenly deemed valid.
-~~~js
-{"Illegal expression": 1 + 2}
-~~~
-
-* `../data/jsonchecker/fail12.json` is invalid but was mistakenly deemed valid.
-~~~js
-{"Illegal invocation": alert()}
-~~~
-
 * `../data/jsonchecker/fail13.json` is invalid but was mistakenly deemed valid.
 ~~~js
 {"Numbers cannot have leading zeroes": 013}
@@ -57,24 +42,9 @@
 {"Numbers cannot be hex": 0x14}
 ~~~
 
-* `../data/jsonchecker/fail16.json` is invalid but was mistakenly deemed valid.
-~~~js
-[\naked]
-~~~
-
-* `../data/jsonchecker/fail19.json` is invalid but was mistakenly deemed valid.
-~~~js
-{"Missing colon" null}
-~~~
-
 * `../data/jsonchecker/fail20.json` is invalid but was mistakenly deemed valid.
 ~~~js
 {"Double colon":: null}
-~~~
-
-* `../data/jsonchecker/fail21.json` is invalid but was mistakenly deemed valid.
-~~~js
-{"Comma instead of colon", null}
 ~~~
 
 * `../data/jsonchecker/fail22.json` is invalid but was mistakenly deemed valid.
@@ -85,11 +55,6 @@
 * `../data/jsonchecker/fail23.json` is invalid but was mistakenly deemed valid.
 ~~~js
 ["Bad value", truth]
-~~~
-
-* `../data/jsonchecker/fail24.json` is invalid but was mistakenly deemed valid.
-~~~js
-['single quote']
 ~~~
 
 * `../data/jsonchecker/fail25.json` is invalid but was mistakenly deemed valid.
@@ -119,7 +84,7 @@ break"]
 ~~~
 
 
-Summary: 11 of 34 are correct.
+Summary: 18 of 34 are correct.
 
 ## 2. Parse Double
 
