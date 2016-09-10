@@ -2,33 +2,8 @@
 
 ## 1. Parse Validation
 
-* `../data/jsonchecker/fail04.json` is invalid but was mistakenly deemed valid.
-~~~js
-["extra comma",]
-~~~
 
-* `../data/jsonchecker/fail09.json` is invalid but was mistakenly deemed valid.
-~~~js
-{"Extra comma": true,}
-~~~
-
-* `../data/jsonchecker/fail13.json` is invalid but was mistakenly deemed valid.
-~~~js
-{"Numbers cannot have leading zeroes": 013}
-~~~
-
-* `../data/jsonchecker/fail29.json` is invalid but was mistakenly deemed valid.
-~~~js
-[0e]
-~~~
-
-* `../data/jsonchecker/fail30.json` is invalid but was mistakenly deemed valid.
-~~~js
-[0e+]
-~~~
-
-
-Summary: 29 of 34 are correct.
+Summary: 34 of 34 are correct.
 
 ## 2. Parse Double
 
