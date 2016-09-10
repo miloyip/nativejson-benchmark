@@ -506,11 +506,16 @@ public:
         bool ret = false;
         if (pr && 
             pr->root->type == JSON_ARRAY_BEGIN &&
-            pr->root->length == 1 &&
-            pr->root->u.array[0]->type == JSON_FLOAT)
+            pr->root->length == 1)
         {
-            *d = pr->root->u.array[0]->u.float_val;
-            ret = true;
+            if (pr->root->u.array[0]->type == JSON_FLOAT) {
+                *d = pr->root->u.array[0]->u.float_val;
+                ret = true;
+            }
+            else if (pr->root->u.array[0]->type == JSON_INT) {
+                *d = (double)pr->root->u.array[0]->u.int_val;
+                ret = true;
+            }
         }
         delete pr;
         return ret;
