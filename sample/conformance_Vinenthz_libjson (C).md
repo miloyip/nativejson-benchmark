@@ -2,18 +2,8 @@
 
 ## 1. Parse Validation
 
-* `../data/jsonchecker/fail02.json` is invalid but was mistakenly deemed valid.
-~~~js
-["Unclosed array"
-~~~
 
-* `../data/jsonchecker/fail32.json` is invalid but was mistakenly deemed valid.
-~~~js
-{"Comma instead if closing brace": true,
-~~~
-
-
-Summary: 32 of 34 are correct.
+Summary: 34 of 34 are correct.
 
 ## 2. Parse Double
 
