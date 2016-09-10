@@ -144,7 +144,7 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 
 For simplicity, on Linux/OSX users can simply run `make` (or `make CONFIG=release_x32`) at project root to run 4-10 above.
 
-Boost and POCO need to be installed by user manually.
+Some libraries, such as Boost, POCO, V8, etc., need to be installed by user manually.
 
 ## Sample Results
 
@@ -217,6 +217,10 @@ The is the size of executable program, which parses a JSON from `stdin` to a DOM
 3. On which platform the benchmark can be run?
 
    The author tests it on OSX/clang, Winwdows/vs2015, Ubuntu/clang3.7+gcc5.0 (via Travis CI). The benchmark may work in other platforms as well but you will need to generate the build files via premake5, and resolve any potential issues.
+
+4. How to reduce the build process time?
+
+   You can preserve the tests of libaries that you only need, as in question 2. You can also use `make ARGS=--verify-only`, `make ARGS=--performance-only`, `make ARGS=--conformance-only` to execute the required part.
 
 ## Other native JSON benchmarks
 

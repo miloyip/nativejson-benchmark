@@ -1199,21 +1199,34 @@ static void BenchAllConformance() {
 
 #endif // TEST_CONFORMANCE
 
-static void BenchAll(const TestJsonList& testJsons) {
-    BenchAllPerformance(testJsons);
-
-#if TEST_CONFORMANCE
-    BenchAllConformance();
-#endif
-
-    printf("\n");
-}
-
-int main(int, char* argv[]) {
+int main(int argc, char* argv[]) {
 #if _MSC_VER
     //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     //void *testWhetherMemoryLeakDetectionWorks = malloc(1);
 #endif
+
+    bool doVerify = true;
+    bool doPerformance = true;
+    bool doConformance = true;
+
+    if (argc == 2) {
+        if (strcmp(argv[1], "--verify-only") == 0) {
+            doVerify = true;
+            doPerformance = doConformance = false;
+        }
+        else if (strcmp(argv[1], "--performance-only") == 0) {
+            doPerformance = true;
+            doVerify = doConformance = false;
+        }
+        else if (strcmp(argv[1], "--conformance-only") == 0) {
+            doConformance = true;
+            doVerify = doPerformance = false;
+        }
+        else {
+            fprintf(stderr, "Invalid option\n");
+            exit(1);
+        }
+    }
 
     gProgramName = argv[0];
 
@@ -1229,8 +1242,18 @@ int main(int, char* argv[]) {
         TestList& tests = TestManager::Instance().GetTests();
         std::sort(tests.begin(), tests.end());
 
-        VerifyAll(testJsons);
-        BenchAll(testJsons);
+        if (doVerify)
+            VerifyAll(testJsons);
+
+        if (doPerformance)
+            BenchAllPerformance(testJsons);
+
+#if TEST_CONFORMANCE
+        if (doConformance)
+            BenchAllConformance();
+#endif
+
+        printf("\n");
 
         FreeFiles(testJsons);
     }
