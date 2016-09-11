@@ -1,3 +1,4 @@
+#include <memory>
 #include "../test.h"
 
 #include "jsoncpp/src/lib_json/json_reader.cpp"
@@ -71,8 +72,12 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         JsoncppParseResult* pr = new JsoncppParseResult;
-        Reader reader;
-        if (!reader.parse(json, pr->root)) {
+        Json::CharReaderBuilder rbuilder;
+        Json::Value settings;
+        rbuilder.strictMode(&rbuilder.settings_);
+        std::unique_ptr<CharReader> const reader(rbuilder.newCharReader());
+        std::string errs;
+        if (!reader->parse(json, json + length, &pr->root, &errs)) {
             delete pr;
             return 0;
         }
@@ -83,10 +88,13 @@ public:
 #if TEST_STRINGIFY
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JsoncppParseResult* pr = static_cast<const JsoncppParseResult*>(parseResult);
-        FastWriter writer;
-        writer.omitEndingLineFeed();
+        //FastWriter writer;
+        Json::StreamWriterBuilder wbuilder;
+        wbuilder.settings_["indentation"] = "";
+        //std::unique_ptr<Json::StreamWriter> const writer(wbuilder.newStreamWriter());
+        //writer->omitEndingLineFeed();
         JsoncppStringResult* sr = new JsoncppStringResult;
-        sr->s = writer.write(pr->root);
+        sr->s = Json::writeString(wbuilder, pr->root);
         return sr;
     }
 #endif
