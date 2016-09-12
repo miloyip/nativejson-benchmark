@@ -110,3 +110,6 @@
 [submodule "thirdparty/ujson"]
 	path = thirdparty/ujson
 	url = https://bitbucket.org/awangk/ujson.git
+[submodule "thirdparty/cJSON"]
+	path = thirdparty/cJSON
+	url = https://github.com/DaveGamble/cJSON.git
