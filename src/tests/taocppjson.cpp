@@ -1,54 +1,42 @@
 #if (defined(__clang__) || defined(__GNUC__)) && defined(__x86_64__)
 
 #include "../test.h"
+
 #include "taocppjson/include/tao/json.hh"
 
+class StatHandler
+{
+public:
+    StatHandler(Stat& stat) : stat_(stat) {}
+
+    void null() { stat_.nullCount++; }
+
+    void boolean(const bool v) { v ? stat_.trueCount++ : stat_.falseCount++; }
+
+    void number(const std::int64_t) { stat_.numberCount++; }
+    void number(const std::uint64_t) { stat_.numberCount++; }
+    void number(const double) { stat_.numberCount++; }
+
+    void string(const std::string & v) { stat_.stringCount++; stat_.stringLength += v.size(); }
+
+    void begin_array() {}
+    void element() { stat_.elementCount++; }
+    void end_array() { stat_.arrayCount++; }
+
+    void begin_object() {}
+    void key(const std::string & v) { stat_.stringCount++; stat_.stringLength += v.size(); }
+    void value() { stat_.memberCount++; }
+    void end_object() { stat_.objectCount++; }
+
+private:
+    StatHandler& operator=(const StatHandler&);
+
+    Stat& stat_;
+};
+
 static void GenStat(Stat& stat, const tao::json::value& v){
-   switch (v.type()) {
-      case tao::json::type::ARRAY:
-         for (auto& element : v.get_array()) {
-            GenStat(stat, element);
-         }
-         stat.arrayCount++;
-         stat.elementCount += v.get_array().size();
-         break;
-
-      case tao::json::type::OBJECT:
-         for (auto& element : v.get_object()) {
-            GenStat(stat, element.second);
-            stat.stringLength += element.first.size();
-         }
-         stat.objectCount++;
-         stat.memberCount += v.get_object().size();
-         stat.stringCount += v.get_object().size();
-         break;
-
-      case tao::json::type::STRING:
-         stat.stringCount++;
-         stat.stringLength += v.get_string().size();
-         break;
-
-      case tao::json::type::SIGNED:
-      case tao::json::type::UNSIGNED:
-      case tao::json::type::DOUBLE:
-         stat.numberCount++;
-         break;
-
-      case tao::json::type::BOOL:
-         if (v.get_bool())
-            stat.trueCount++;
-         else
-            stat.falseCount++;
-         break;
-
-      case tao::json::type::NULL_:
-         stat.nullCount++;
-         break;
-
-      case tao::json::type::POINTER:
-         // not applicable in this benchmark
-         throw std::runtime_error( "code should be unreachable" );
-   }
+   StatHandler statHandler(stat);
+   tao::json::sax::traverse_value(v, statHandler);
 }
 
 class TAOCPPJSONParseResult : public ParseResultBase {
@@ -70,14 +58,14 @@ public:
 #endif
 
 #if TEST_PARSE
-   virtual ParseResultBase* Parse(const char* j, size_t length) const {
+   virtual ParseResultBase* Parse(const char* json, size_t length) const {
       TAOCPPJSONParseResult* pr = new TAOCPPJSONParseResult;
       try {
-         pr->root = tao::json::from_string(j, length);
+         pr->root = tao::json::from_string(json, length);
       }
       catch (...) {
          delete pr;
-         return 0;
+         return nullptr;
       }
       return pr;
    }
@@ -110,10 +98,30 @@ public:
    }
 #endif
 
+#if TEST_SAXROUNDTRIP
+    virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
+        TAOCPPJSONStringResult* sr = new TAOCPPJSONStringResult;
+        std::ostringstream oss;
+        tao::json::sax::to_stream handler( oss );
+        tao::json::sax::from_string(json, length, handler);
+        sr->s = oss.str();
+        return sr;
+    }
+#endif
+
+#if TEST_SAXSTATISTICS
+    virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
+        memset(stat, 0, sizeof(Stat));
+        StatHandler handler(*stat);
+        tao::json::sax::from_string(json, length, handler);
+        return true;
+    }
+#endif
+
 #if TEST_CONFORMANCE
-   virtual bool ParseDouble(const char* j, double* d) const {
+   virtual bool ParseDouble(const char* json, double* d) const {
       try {
-         auto root = tao::json::from_string(j);
+         auto root = tao::json::from_string(json);
          *d = root[0].get_double();
          return true;
       }
