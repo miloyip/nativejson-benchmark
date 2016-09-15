@@ -132,7 +132,7 @@ public:
 class SheredomTest : public TestBase {
 public:
 #if TEST_INFO
-    virtual const char* GetName() const { return "Scheredom json.h (C)"; }
+    virtual const char* GetName() const { return "Sheredom json.h (C)"; }
     virtual const char* GetFilename() const { return __FILE__; }
 #endif
 	
