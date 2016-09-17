@@ -25,7 +25,7 @@ public:
 
     void begin_object() {}
     void key(const std::string & v) { stat_.stringCount++; stat_.stringLength += v.size(); }
-    void value() { stat_.memberCount++; }
+    void member() { stat_.memberCount++; }
     void end_object() { stat_.objectCount++; }
 
 private:
