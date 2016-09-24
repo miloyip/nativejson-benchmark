@@ -115,4 +115,4 @@
 	url = https://github.com/DaveGamble/cJSON.git
 [submodule "thirdparty/juson"]
 	path = thirdparty/juson
-	url = https://www.github.com/wgtdkp/juson.git
+	url = https://github.com/wgtdkp/juson.git
