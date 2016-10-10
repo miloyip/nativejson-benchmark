@@ -73,7 +73,7 @@ public:
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         CjsonParseResult* pr = new CjsonParseResult;
-        pr->root = cJSON_Parse(json);
+        pr->root = cJSON_ParseWithOpts(json,0,1);
         if (!pr->root) {
             delete pr;
             return 0;
@@ -86,7 +86,7 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const CjsonParseResult* pr = static_cast<const CjsonParseResult*>(parseResult);
         CjsonStringResult* sr = new CjsonStringResult;
-        sr->s = cJSON_PrintUnformatted(pr->root);
+        sr->s = cJSON_PrintBuffered(pr->root,4096,0);
         return sr;
     }
 #endif
@@ -95,7 +95,7 @@ public:
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const CjsonParseResult* pr = static_cast<const CjsonParseResult*>(parseResult);
         CjsonStringResult* sr = new CjsonStringResult;
-        sr->s = cJSON_Print(pr->root);
+        sr->s = cJSON_PrintBuffered(pr->root,4096,1);
         return sr;
     }
 #endif
