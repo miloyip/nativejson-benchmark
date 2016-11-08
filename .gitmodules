@@ -116,3 +116,6 @@
 [submodule "thirdparty/juson"]
 	path = thirdparty/juson
 	url = https://github.com/wgtdkp/juson.git
+[submodule "thirdparty/ULib"]
+	path = thirdparty/ULib
+	url = https://github.com/stefanocasazza/ULib.git
