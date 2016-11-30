@@ -7,7 +7,7 @@
 #include "taocppjson/include/tao/json.hh"
 
 #include "taocppjson/contrib/nlohmann/to_value.hh"
-#include "taocppjson/contrib/nlohmann/traverse_value.hh"
+#include "taocppjson/contrib/nlohmann/from_value.hh"
 
 using namespace nlohmann;
 
@@ -51,6 +51,9 @@ static void GenStat(Stat& stat, const json& v) {
     case json::value_t::null:
         stat.nullCount++;
         break;
+
+    case json::value_t::discarded:
+        throw std::logic_error( "code should be unreachable" );
     }
 }
 
@@ -95,7 +98,7 @@ public:
         NlohmannStringResult* sr = new NlohmannStringResult;
         std::ostringstream oss;
         tao::json::sax::to_stream oss_handler(oss);
-        tao::json::nlohmann::traverse_value(pr->root, oss_handler);
+        tao::json::nlohmann::from_value(pr->root, oss_handler);
         sr->s = oss.str();
         return sr;
     }
@@ -107,7 +110,7 @@ public:
         NlohmannStringResult* sr = new NlohmannStringResult;
         std::ostringstream oss;
         tao::json::sax::to_pretty_stream oss_handler(oss, 4);
-        tao::json::nlohmann::traverse_value(pr->root, oss_handler);
+        tao::json::nlohmann::from_value(pr->root, oss_handler);
         sr->s = oss.str();
         return sr;
     }
