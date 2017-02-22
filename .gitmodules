@@ -116,3 +116,7 @@
 [submodule "thirdparty/juson"]
 	path = thirdparty/juson
 	url = https://github.com/wgtdkp/juson.git
+[submodule "thirdparty/qajson4c"]
+	path = thirdparty/qajson4c
+	url = https://github.com/USESystemEngineeringBV/qajson4c.git
+	branch = ansi-fying
