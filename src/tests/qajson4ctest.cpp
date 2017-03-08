@@ -57,7 +57,7 @@ public:
 	}
 
 	Qajson4cParseResult(const char* json ) :
-			root(QAJ4C_parse_opt_dynamic(json, 0, QAJ4C_PARSE_OPTS_STRICT, realloc)),
+			root(QAJ4C_parse_opt_dynamic(json, SIZE_MAX, QAJ4C_PARSE_OPTS_STRICT, realloc)),
 			len(0) {
 	}
 
@@ -129,8 +129,9 @@ public:
             *d = QAJ4C_get_double(QAJ4C_array_get(pr.root, 0));
             return true;
         }
-        else
+        else {
             return false;
+		}
     }
 
     virtual bool ParseString(const char* json, std::string& s) const {
@@ -139,11 +140,13 @@ public:
 			QAJ4C_array_size(pr.root) == 1 &&
 			QAJ4C_is_string(QAJ4C_array_get(pr.root, 0)))
         {
-            s = QAJ4C_get_string(QAJ4C_array_get(pr.root, 0));
+            const QAJ4C_Value* str_val = QAJ4C_array_get(pr.root, 0);
+            s = {QAJ4C_get_string(str_val), QAJ4C_get_string_length(str_val)};
             return true;
         }
-        else
+        else {
             return false;
+        }
     }
 #endif
 };
