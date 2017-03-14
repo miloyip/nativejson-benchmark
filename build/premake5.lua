@@ -128,7 +128,10 @@ solution "benchmark"
             "../thirdparty/include/jeayeson/include/dummy",
 			"../thirdparty/jvar/include",
             "../thirdparty/pjson/inc",
+            "../thirdparty/ULib/include",
         }
+
+      linkoptions { "-ldl" }
 
 		files { 
 			"../src/*.h",
@@ -181,6 +184,7 @@ solution "jsonstat"
         "../thirdparty/include/jeayeson/include/dummy",
         "../thirdparty/jvar/include",
         "../thirdparty/pjson/inc",
+        "../thirdparty/ULib/include",
     }
 
     configuration "release"
@@ -223,6 +227,8 @@ solution "jsonstat"
 			libdirs { "../bin/jsonstat" }
 			links "jsonclibs2"
             setTargetObjDir("../bin/jsonstat")
+
+      linkoptions { "-ldl" }
 
 			configuration "gmake"
 				buildoptions "-std=c++14"

@@ -101,6 +101,7 @@ udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.co
 [V8](https://github.com/v8/v8) | C++ | 5.1.281.47 | Need installation |
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
 [YAJL](https://github.com/lloyd/yajl) | C | 2.1.0
+[ULib](https://github.com/stefanocasazza/ULib/tree/master) | C++ | v1.4.2
 
 Libraries with Git repository are included as submodule in `thirdparty` path. Other libraries are add as files in `thirdparty` path.
 
