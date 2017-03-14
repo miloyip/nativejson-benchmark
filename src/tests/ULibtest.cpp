@@ -1,10 +1,18 @@
-// NB: to use with ULib compiled in this way: ./configure --disable-shared && make
-
 #include "../test.h"
 
-#define HAVE_CONFIG_H
-#include <ulib/json/value.h>
-#undef  HAVE_CONFIG_H
+/**
+ * NB: if ULib is configured and compiled (./configure --disable-shared && make) use this way:
+ *
+ * #define HAVE_CONFIG_H
+ * #include <ulib/json/value.h>
+ * #undef HAVE_CONFIG_H
+ *
+ * otherwise:
+ *
+ * #include <ULib/src/ulib/all_cpp.cpp>
+ */
+
+#include <ULib/src/ulib/all_cpp.cpp>
 
 static ULib ulib("167193,0,0,0,-30,-31,-30,-31,0");
 

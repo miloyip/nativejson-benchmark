@@ -131,7 +131,7 @@ solution "benchmark"
             "../thirdparty/ULib/include",
         }
 
-      linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a" }
+      linkoptions { "-ldl" }
 
 		files { 
 			"../src/*.h",
@@ -228,7 +228,7 @@ solution "jsonstat"
 			links "jsonclibs2"
             setTargetObjDir("../bin/jsonstat")
 
-      linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a" }
+      linkoptions { "-ldl" }
 
 			configuration "gmake"
 				buildoptions "-std=c++14"
