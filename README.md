@@ -64,7 +64,7 @@ Library | Language | Version | Notes
 [CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
 [C++ REST SDK](https://github.com/Microsoft/cpprestsdk) | C++11 | v2.8.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
 [ccan/json](https://github.com/rustyrussell/ccan/) | C | 
-[cJSON](https://github.com/DaveGamble/cJSON) | C | 2016-05-30 |
+[cJSON](https://github.com/DaveGamble/cJSON) | C | 1.5.0 |
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ | | Not parsing number per se, so do it as post-process.
