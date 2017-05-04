@@ -2,8 +2,7 @@
 #include "cJSON/cJSON.h"
 
 static void GenStat(Stat* s, const cJSON* v) {
-    switch (v->type) {
-    case cJSON_Object:    
+    if (cJSON_IsObject(v)) {
         for (cJSON* child = v->child; child != 0; child = child->next) {
             GenStat(s, child);
             s->stringCount++;
@@ -11,36 +10,23 @@ static void GenStat(Stat* s, const cJSON* v) {
             s->memberCount++;
         }
         s->objectCount++;
-        break;
-
-    case cJSON_Array:
+    } else if (cJSON_IsArray(v)) {
         for (cJSON* child = v->child; child != 0; child = child->next) {
             GenStat(s, child);
             s->elementCount++;
         }
         s->arrayCount++;
-        break;
-
-    case cJSON_String:
+    } else if (cJSON_IsString(v)) {
         s->stringCount++;
         s->stringLength += strlen(v->valuestring);
-        break;
-
-    case cJSON_Number:
-        s->numberCount++; 
-        break;
-
-    case cJSON_True:
+    } else if (cJSON_IsNumber(v)) {
+        s->numberCount++;
+    } else if (cJSON_IsTrue(v)) {
         s->trueCount++;
-        break;
-
-    case cJSON_False:
+    } else if (cJSON_IsFalse(v)) {
         s->falseCount++;
-        break;
-
-    case cJSON_NULL:
+    } else if (cJSON_IsNull(v)) {
         s->nullCount++;
-        break;
     }
 }
 
@@ -68,15 +54,15 @@ public:
     virtual const char* GetName() const { return "cJSON (C)"; }
     virtual const char* GetFilename() const { return __FILE__; }
 #endif
-	
+
 #if TEST_PARSE
     virtual ParseResultBase* Parse(const char* json, size_t length) const {
         (void)length;
         CjsonParseResult* pr = new CjsonParseResult;
-        pr->root = cJSON_ParseWithOpts(json,0,1);
-        if (!pr->root) {
+        pr->root = cJSON_ParseWithOpts(json, nullptr, static_cast<cJSON_bool>(true));
+        if (pr->root == nullptr) {
             delete pr;
-            return 0;
+            return nullptr;
         }
     	return pr;
     }
@@ -86,7 +72,7 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const CjsonParseResult* pr = static_cast<const CjsonParseResult*>(parseResult);
         CjsonStringResult* sr = new CjsonStringResult;
-        sr->s = cJSON_PrintBuffered(pr->root,4096,0);
+        sr->s = cJSON_PrintBuffered(pr->root, 4096, static_cast<cJSON_bool>(false));
         return sr;
     }
 #endif
@@ -95,7 +81,7 @@ public:
     virtual StringResultBase* Prettify(const ParseResultBase* parseResult) const {
         const CjsonParseResult* pr = static_cast<const CjsonParseResult*>(parseResult);
         CjsonStringResult* sr = new CjsonStringResult;
-        sr->s = cJSON_PrintBuffered(pr->root,4096,1);
+        sr->s = cJSON_PrintBuffered(pr->root, 4096, static_cast<cJSON_bool>(true));
         return sr;
     }
 #endif
@@ -113,7 +99,7 @@ public:
     virtual bool ParseDouble(const char* json, double* d) const {
         CjsonParseResult pr;
         pr.root = cJSON_Parse(json);
-        if (pr.root && pr.root->type == cJSON_Array && pr.root->child && pr.root->child->type == cJSON_Number) {
+        if ((pr.root != nullptr) && cJSON_IsArray(pr.root) && cJSON_IsNumber(pr.root->child)) {
             *d = pr.root->child->valuedouble;
             return true;
         }
@@ -124,7 +110,7 @@ public:
     virtual bool ParseString(const char* json, std::string& s) const {
         CjsonParseResult pr;
         pr.root = cJSON_Parse(json);
-        if (pr.root && pr.root->type == cJSON_Array && pr.root->child && pr.root->child->type == cJSON_String) {
+        if ((pr.root != nullptr) && cJSON_IsArray(pr.root) && cJSON_IsString(pr.root->child)) {
             s = pr.root->child->valuestring;
             return true;
         }
