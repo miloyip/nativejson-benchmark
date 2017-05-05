@@ -64,7 +64,7 @@ Library | Language | Version | Notes
 [CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
 [C++ REST SDK](https://github.com/Microsoft/cpprestsdk) | C++11 | v2.8.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
 [ccan/json](https://github.com/rustyrussell/ccan/) | C | 
-[cJSON](https://github.com/DaveGamble/cJSON) | C | 2016-05-30 |
+[cJSON](https://github.com/DaveGamble/cJSON) | C | 1.5.0 |
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ | | Not parsing number per se, so do it as post-process.
@@ -95,13 +95,14 @@ Library | Language | Version | Notes
 [SimpleJSON](https://github.com/MJPA/SimpleJSON) | C++ | 
 [sheredom/json.h](https://github.com/sheredom/json.h) | C | | Not parsing number per se, so do it as post-process.
 udp/json | C | 1.1.0 | Actually 2 libraries: [udp/json-parser](https://github.com/udp/json-parser) & [udp/json-builder](https://github.com/udp/json-builder).
-[taocpp/json](https://github.com/taocpp/json) | C++11 | 1.0.0-beta.5 | Uses [PEGTL](https://github.com/ColinH/PEGTL) for parsing
+[taocpp/json](https://github.com/taocpp/json) | C++11 | 1.0.0-beta.6 | Uses [PEGTL](https://github.com/ColinH/PEGTL) for parsing
 [tunnuz/JSON++](https://github.com/tunnuz/json) | C++ |
 [ujson](https://bitbucket.org/awangk/ujson/) | C++ | 2015-04-12 |
 [ujson4c](https://github.com/esnme/ujson4c) | C | 
 [V8](https://github.com/v8/v8) | C++ | 5.1.281.47 | Need installation |
 [vincenthz/libjson](https://github.com/vincenthz/libjson) | C | 0.8
 [YAJL](https://github.com/lloyd/yajl) | C | 2.1.0
+[ULib](https://github.com/stefanocasazza/ULib/tree/master) | C++ | v1.4.2 | Need building: (./configure --disable-shared && make) |
 
 Libraries with Git repository are included as submodule in `thirdparty` path. Other libraries are add as files in `thirdparty` path.
 

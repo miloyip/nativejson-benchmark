@@ -36,7 +36,7 @@ private:
 
 static void GenStat(Stat& stat, const tao::json::value& v){
    StatHandler statHandler(stat);
-   tao::json::sax::traverse_value(v, statHandler);
+   tao::json::sax::from_value(v, statHandler);
 }
 
 class TAOCPPJSONParseResult : public ParseResultBase {
