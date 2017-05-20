@@ -2,7 +2,7 @@
 
 #include "../test.h"
 
-#include "taocppjson/include/tao/json.hh"
+#include "taocppjson/include/tao/json.hpp"
 
 class StatHandler
 {
