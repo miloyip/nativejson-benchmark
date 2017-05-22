@@ -4,10 +4,10 @@
 
 #include "nlohmann/src/json.hpp"
 
-#include "taocppjson/include/tao/json.hh"
+#include "taocppjson/include/tao/json.hpp"
 
-#include "taocppjson/contrib/nlohmann/to_value.hh"
-#include "taocppjson/contrib/nlohmann/from_value.hh"
+#include "taocppjson/contrib/nlohmann/to_value.hpp"
+#include "taocppjson/contrib/nlohmann/from_value.hpp"
 
 using namespace nlohmann;
 
