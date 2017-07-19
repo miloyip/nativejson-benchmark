@@ -122,3 +122,6 @@
 [submodule "thirdparty/qajson4c"]
 	path = thirdparty/qajson4c
 	url = https://github.com/USESystemEngineeringBV/qajson4c.git
+[submodule "thirdparty/facil.io"]
+	path = thirdparty/facil.io
+	url = https://github.com/boazsegev/facil.io.git
