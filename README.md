@@ -56,7 +56,7 @@ AllocCount  | Number of memory allocation (including `malloc`, `realloc()`, `new
 
 ## Libraries
 
-Currently 42 libraries are successfully benchmarked. They are listed in alphabetic order:
+Currently 43 libraries are successfully benchmarked. They are listed in alphabetic order:
 
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
@@ -67,6 +67,7 @@ Library | Language | Version | Notes
 [cJSON](https://github.com/DaveGamble/cJSON) | C | 1.5.0 |
 [Configuru](https://github.com/emilk/Configuru) | C++ | 2015-12-18 | gcc/clang only |
 [dropbox/json11](https://github.com/dropbox/json11) | C++11 | 
+[Facil.io](https://github.com/boazsegev/facil.io) | C | 0.5.3 | 
 [FastJson](https://github.com/mikeando/fastjson) | C++ | | Not parsing number per se, so do it as post-process.
 [folly](https://github.com/facebook/folly) | C++11 | 2016.08.29.00 | Need installation |
 [gason](https://github.com/vivkin/gason) | C++11 | 

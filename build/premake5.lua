@@ -7,7 +7,7 @@ end
 function copyfiles(dstDir, srcWildcard)
 	os.mkdir(dstDir)
 	local matches = os.matchfiles(srcWildcard)
-	for _, f in ipairs(matches) do 
+	for _, f in ipairs(matches) do
 		local filename = string.match(f, ".-([^\\/]-%.?[^%.\\/]*)$")
 		os.copyfile(f, dstDir .. "/" .. filename)
 	end
@@ -80,14 +80,14 @@ solution "benchmark"
 	language "C++"
 	flags { "ExtraWarnings" }
 	defines { "__STDC_FORMAT_MACROS=1" }
-	
+
 	configuration "release"
 		defines { "NDEBUG" }
 		optimize "Full"
 
 	configuration "vs*"
 		defines { "_CRT_SECURE_NO_WARNINGS" }
-		
+
 	configuration "gmake"
 		gmake_common()
 
@@ -99,10 +99,12 @@ solution "benchmark"
             "../thirdparty/include/",
             "../thirdparty/ujson4c/3rdparty/",
             "../thirdparty/pjson/inc/",
-			"../thirdparty/udp-json-parser/"
+  			"../thirdparty/udp-json-parser/",
+            "../thirdparty/facil.io/lib/facil/core/types",
+            "../thirdparty/facil.io/lib/facil/core/types/fiobj",
         }
 
-		files { 
+		files {
 			"../src/**.c",
 		}
 
@@ -126,14 +128,16 @@ solution "benchmark"
             "../thirdparty/jsoncons/src",
             "../thirdparty/ArduinoJson/include",
             "../thirdparty/include/jeayeson/include/dummy",
-			"../thirdparty/jvar/include",
+  			"../thirdparty/jvar/include",
             "../thirdparty/pjson/inc",
             "../thirdparty/ULib/include",
+            "../thirdparty/facil.io/lib/facil/core/types",
+            "../thirdparty/facil.io/lib/facil/core/types/fiobj",
         }
 
       linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a" }
 
-		files { 
+		files {
 			"../src/*.h",
 			"../src/*.cpp",
 			"../src/tests/*.cpp",
@@ -185,6 +189,8 @@ solution "jsonstat"
         "../thirdparty/jvar/include",
         "../thirdparty/pjson/inc",
         "../thirdparty/ULib/include",
+        "../thirdparty/facil.io/lib/facil/core/types",
+        "../thirdparty/facil.io/lib/facil/core/types/fiobj",
     }
 
     configuration "release"
@@ -204,10 +210,12 @@ solution "jsonstat"
             "../thirdparty/",
             "../thirdparty/include/",
             "../thirdparty/ujson4c/3rdparty/",
-			"../thirdparty/udp-json-parser/"
+  			"../thirdparty/udp-json-parser/",
+            "../thirdparty/facil.io/lib/facil/core/types",
+            "../thirdparty/facil.io/lib/facil/core/types/fiobj",
         }
 
-		files { 
+		files {
 			"../src/**.c",
 		}
 
@@ -219,7 +227,7 @@ solution "jsonstat"
     for _, testfile in ipairs(testfiles) do
         project("jsonstat_" .. path.getbasename(testfile))
             kind "ConsoleApp"
-            files { 
+            files {
             	"../src/jsonstat/jsonstatmain.cpp",
             	"../src/memorystat.cpp",
             	testfile
