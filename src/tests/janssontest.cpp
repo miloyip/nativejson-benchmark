@@ -98,7 +98,7 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const {
         const JanssonParseResult* pr = static_cast<const JanssonParseResult*>(parseResult);
         JanssonStringResult* sr = new JanssonStringResult;
-        sr->s = json_dumps(pr->root, 0);
+        sr->s = json_dumps(pr->root, JSON_COMPACT);
         if (!sr->s) {
             delete sr;
             return 0;
@@ -149,7 +149,7 @@ public:
     virtual bool ParseString(const char* json, std::string& s) const {
         JanssonParseResult pr;
         json_error_t error;
-        pr.root = json_loads(json, 0, &error);
+        pr.root = json_loads(json, JSON_ALLOW_NUL, &error);
         if (pr.root && 
             json_is_array(pr.root) && 
             json_array_size(pr.root) == 1 &&
