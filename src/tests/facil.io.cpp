@@ -4,26 +4,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int GenStat_task(fiobj_s *obj, void *arg) {
+static int GenStat_task(FIOBJ obj, void *arg) {
   Stat *s = (Stat *)arg;
-  switch (obj->type) {
+  if (fiobj_hash_key_in_loop()) {
+    s->stringCount++;
+    s->stringLength += fiobj_obj2cstr(fiobj_hash_key_in_loop()).len;
+  }
+  switch (FIOBJ_TYPE(obj)) {
   case FIOBJ_T_NULL:
     s->nullCount++;
     break;
-  case FIOBJ_T_TRUE:
-    s->trueCount++;
-    break;
-  case FIOBJ_T_FALSE:
-    s->falseCount++;
+  case FIOBJ_T_STRING:
+  case FIOBJ_T_DATA:
+  case FIOBJ_T_UNKNOWN:
+    s->stringCount++;
+    s->stringLength += fiobj_obj2cstr(obj).len;
     break;
   case FIOBJ_T_FLOAT:
   case FIOBJ_T_NUMBER:
     s->numberCount++;
-    break;
-  case FIOBJ_T_SYMBOL:
-  case FIOBJ_T_STRING:
-    s->stringCount++;
-    s->stringLength += fiobj_obj2cstr(obj).len;
     break;
   case FIOBJ_T_ARRAY:
     s->elementCount += fiobj_ary_count(obj);
@@ -33,13 +32,11 @@ static int GenStat_task(fiobj_s *obj, void *arg) {
     s->memberCount += fiobj_hash_count(obj);
     s->objectCount++;
     break;
-  case FIOBJ_T_COUPLET:
-    GenStat_task(fiobj_couplet2key(obj), arg);
-    GenStat_task(fiobj_couplet2obj(obj), arg);
+  case FIOBJ_T_TRUE:
+    s->trueCount++;
     break;
-  case FIOBJ_T_IO:
-    /* invalid */
-    return -1;
+  case FIOBJ_T_FALSE:
+    s->falseCount++;
     break;
   }
   return 0;
@@ -50,7 +47,7 @@ public:
   FacilParseResult() : root() {}
   ~FacilParseResult() { fiobj_free(root); }
 
-  fiobj_s *root;
+  FIOBJ root;
 };
 
 class FacilStringResult : public StringResultBase {
@@ -60,7 +57,7 @@ public:
 
   virtual const char *c_str() const { return fiobj_obj2cstr(str).data; }
 
-  fiobj_s *str;
+  FIOBJ str;
 };
 
 class FacilTest : public TestBase {
@@ -74,8 +71,15 @@ public:
   virtual ParseResultBase *Parse(const char *json, size_t length) const {
     (void)length;
     FacilParseResult *pr = new FacilParseResult;
-    fiobj_json2obj(&pr->root, json, length);
-    if (pr->root == nullptr) {
+    size_t consumed = fiobj_json2obj(&pr->root, json, length);
+    if (pr->root == 0) {
+      delete pr;
+      return nullptr;
+    }
+    if (consumed < length &&
+        (json[consumed] != ' ' && json[consumed] != 0x09 &&
+         json[consumed] != 0x0A && json[consumed] != 0x0D &&
+         json[consumed] != 0x20 && json[consumed] != 0x2C)) {
       delete pr;
       return nullptr;
     }
@@ -118,17 +122,16 @@ public:
 
 #if TEST_CONFORMANCE
   virtual bool ParseDouble(const char *json, double *d) const {
-    fiobj_s *tmp;
-    fiobj_json2obj(&tmp, json, 999);
-    if (tmp == NULL)
+    FIOBJ tmp = 0;
+    if (!fiobj_json2obj(&tmp, json, 999) || tmp == 0)
       return false;
-    if (tmp->type == FIOBJ_T_FLOAT) {
+    if (FIOBJ_TYPE_IS(tmp, FIOBJ_T_FLOAT)) {
       *d = fiobj_obj2float(tmp);
       fiobj_free(tmp);
       return true;
     }
-    if (tmp->type == FIOBJ_T_ARRAY && fiobj_ary_entry(tmp, 0) &&
-        fiobj_ary_entry(tmp, 0)->type == FIOBJ_T_FLOAT) {
+    if (FIOBJ_TYPE_IS(tmp, FIOBJ_T_ARRAY) && fiobj_ary_entry(tmp, 0) &&
+        FIOBJ_TYPE_IS(fiobj_ary_entry(tmp, 0), FIOBJ_T_FLOAT)) {
       *d = fiobj_obj2float(fiobj_ary_entry(tmp, 0));
       fiobj_free(tmp);
       return true;
@@ -138,26 +141,26 @@ public:
   }
 
   virtual bool ParseString(const char *json, std::string &s) const {
-    fiobj_s *tmp;
+    FIOBJ tmp = 0;
     fiobj_json2obj(&tmp, json, 999);
-    if (tmp == NULL)
+    if (tmp == 0)
       return false;
 
-    if (tmp->type == FIOBJ_T_STRING) {
+    if (FIOBJ_TYPE_IS(tmp, FIOBJ_T_STRING)) {
       s = std::string(fiobj_obj2cstr(tmp).data, fiobj_obj2cstr(tmp).len + 1);
       fiobj_free(tmp);
       return true;
     }
-    if (tmp->type == FIOBJ_T_ARRAY && fiobj_ary_entry(tmp, 0) &&
-        fiobj_ary_entry(tmp, 0)->type == FIOBJ_T_STRING) {
+    if (FIOBJ_TYPE_IS(tmp, FIOBJ_T_ARRAY) && fiobj_ary_entry(tmp, 0) &&
+        FIOBJ_TYPE_IS(fiobj_ary_entry(tmp, 0), FIOBJ_T_STRING)) {
       s = std::string(fiobj_obj2cstr(fiobj_ary_entry(tmp, 0)).data,
                       fiobj_obj2cstr(fiobj_ary_entry(tmp, 0)).len);
       fiobj_free(tmp);
-      tmp = nullptr;
+      tmp = 0;
       return true;
     }
     fiobj_free(tmp);
-    tmp = nullptr;
+    tmp = 0;
     return false;
   }
 #endif
