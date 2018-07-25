@@ -43,7 +43,7 @@ Prettify       | Serialize DOM into prettified (with indentation and new lines) 
 Statistics     | Traverse DOM and count the number of JSON types, total length of string, and total numbers of elements/members in array/objects.
 Sax Round-trip | Parse in-memory JSON into events and use events to generate JSON in memory.
 Sax Statistics | Parse in-memory JSON into events and use events to conduct the statistics.
-Code size      | Executable size in byte. (Currently only support `jsonstat` program, which calls "Parse" and "Staistics" to print out statistics of a JSON file. )
+Code size      | Executable size in byte. (Currently only support `jsonstat` program, which calls "Parse" and "Statistics" to print out statistics of a JSON file. )
 
 All benchmarks contain the following measurements:
 
