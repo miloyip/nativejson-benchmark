@@ -71,12 +71,15 @@ before_install:
   # - mv premake-5.0.0-alpha6/bin/release/premake5 build/premake5
 
 install:
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
-    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5" COV="gcov"; fi
+    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7" COV="llvm-cov"; fi
 
 before_script:
   - cd ${TRAVIS_BUILD_DIR}/thirdparty/ULib
   - ./configure --disable-shared
+  - make
+  - cd ${TRAVIS_BUILD_DIR}/thirdparty/ThorsSerializer
+  - ./configure --disable-binary --disable-yaml --disable-vera --enable-static
   - make
   - cd ${TRAVIS_BUILD_DIR}
 

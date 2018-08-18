@@ -102,6 +102,7 @@ solution "benchmark"
   			"../thirdparty/udp-json-parser/",
             "../thirdparty/facil.io/lib/facil/core/types",
             "../thirdparty/facil.io/lib/facil/core/types/fiobj",
+            "../thirdparty/ThorsSerializer/build/include",
         }
 
 		files {
@@ -133,9 +134,10 @@ solution "benchmark"
             "../thirdparty/ULib/include",
             "../thirdparty/facil.io/lib/facil/core/types",
             "../thirdparty/facil.io/lib/facil/core/types/fiobj",
+            "../thirdparty/ThorsSerializer/build/include",
         }
 
-      linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a" }
+      linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a", "../../thirdparty/ThorsSerializer/build/lib/libThorSerialize17.a", "-pthread", "-ldl" }
 
 		files {
 			"../src/*.h",
@@ -191,6 +193,7 @@ solution "jsonstat"
         "../thirdparty/ULib/include",
         "../thirdparty/facil.io/lib/facil/core/types",
         "../thirdparty/facil.io/lib/facil/core/types/fiobj",
+        "../thirdparty/ThorsSerializer/build/include",
     }
 
     configuration "release"
@@ -213,6 +216,7 @@ solution "jsonstat"
   			"../thirdparty/udp-json-parser/",
             "../thirdparty/facil.io/lib/facil/core/types",
             "../thirdparty/facil.io/lib/facil/core/types/fiobj",
+            "../thirdparty/ThorsSerializer/build/include",
         }
 
 		files {
@@ -236,7 +240,7 @@ solution "jsonstat"
 			links "jsonclibs2"
             setTargetObjDir("../bin/jsonstat")
 
-      linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a" }
+      linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a", "../../thirdparty/ThorsSerializer/build/lib/libThorSerialize17.a", "-pthread", "-ldl" }
 
 			configuration "gmake"
 				buildoptions "-std=c++14"
