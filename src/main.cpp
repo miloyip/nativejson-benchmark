@@ -1208,6 +1208,7 @@ int main(int argc, char* argv[]) {
     bool doVerify = true;
     bool doPerformance = true;
     bool doConformance = true;
+    std::string parserName;
 
     if (argc == 2) {
         if (strcmp(argv[1], "--verify-only") == 0) {
@@ -1221,6 +1222,9 @@ int main(int argc, char* argv[]) {
         else if (strcmp(argv[1], "--conformance-only") == 0) {
             doConformance = true;
             doVerify = doPerformance = false;
+        }
+        else if (strncmp(argv[1], "--parser=", 9) == 0) {
+            parserName = argv[1] + 9;
         }
         else {
             fprintf(stderr, "Invalid option\n");
@@ -1240,6 +1244,27 @@ int main(int argc, char* argv[]) {
 
         // sort tests
         TestList& tests = TestManager::Instance().GetTests();
+
+        // See if we want to use only one test.
+        if (parserName != "") {
+            bool foundParser = false;
+            for(TestBase const* item: tests) {
+                if (parserName == item->GetName()) {
+                    tests.clear();
+                    tests.push_back(item);
+                    foundParser = true;
+                    break;
+                }
+            }
+            if (!foundParser) {
+                fprintf(stderr, "Unknown Parser : %s\n", parserName.c_str());
+                for(TestBase const* item: tests) {
+                    fprintf(stderr, "\t%s\n", item->GetName());
+                }
+                exit(1);
+            }
+        }
+
         std::sort(tests.begin(), tests.end());
 
         if (doVerify)
