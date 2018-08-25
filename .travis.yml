@@ -79,6 +79,9 @@ before_script:
   - ./configure --disable-shared
   - make
   - cd ${TRAVIS_BUILD_DIR}
+  - cd ${TRAVIS_BUILD_DIR}/thirdparty/ThorsSerializer
+  - ./configure --disable-binary --disable-yaml --disable-vera
+  - make install
 
 script:
   - make CONFIG=$CONFIG

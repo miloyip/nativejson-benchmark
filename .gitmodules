@@ -127,4 +127,4 @@
 	url = https://github.com/boazsegev/facil.io.git
 [submodule "thirdparty/ThorsSerializer"]
 	path = thirdparty/ThorsSerializer
-	url = https://github.com/Loki-Astari/ThorsSerializer.git
+	url = git@github.com:Loki-Astari/ThorsSerializer.git
