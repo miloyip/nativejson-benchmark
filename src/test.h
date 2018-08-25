@@ -123,6 +123,12 @@ public:
     // It is mainly for libraries require huge initialize time (e.g. Creating Isolate in V8).
     virtual void SetUp() const {}
     virtual void TearDown() const {}
+    // Some parsers need more information for setup.
+    // Pass in the name of the test. The default action
+    // Is to call the original SetUp() method to maintain
+    // backwards compatability.
+    virtual void SetUp(char const*)     const {SetUp();}
+    virtual void TearDown(char const*)  const {TearDown();}
 
 #if TEST_INFO
     virtual const char* GetName() const = 0;
