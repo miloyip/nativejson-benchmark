@@ -206,12 +206,12 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
     for (TestJsonList::const_iterator itr = testJsons.begin(); itr != testJsons.end(); ++itr) {
         MEMORYSTAT_SCOPE();
 
-        test.SetUp();
+        test.SetUp(itr->fullpath);
         ParseResultBase* dom1 = test.Parse(itr->json, itr->length);
         if (!dom1) {
             printf("\nFailed to parse '%s'\n", itr->filename);
             failed = true;
-            test.TearDown();
+            test.TearDown(itr->fullpath);
             continue;
         }
 
@@ -219,7 +219,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
         if (!test.Statistics(dom1, &stat1)) {
             printf("Not support Statistics\n");
             delete dom1;
-            test.TearDown();
+            test.TearDown(itr->fullpath);
             continue;
         }
 
@@ -239,7 +239,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
                 printf("\n");
                 failed = true;
             }
-            test.TearDown();
+            test.TearDown(itr->fullpath);
             continue;
         }
 
@@ -257,7 +257,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
             fclose(fp);
 
             delete json1;
-            test.TearDown();
+            test.TearDown(itr->fullpath);
             continue;
         }
 
@@ -303,7 +303,7 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
 
         delete json1;
         delete json2;
-        test.TearDown();
+        test.TearDown(itr->fullpath);
 
         MEMORYSTAT_CHECKMEMORYLEAK();
     }
@@ -366,7 +366,7 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
         BENCH_MEMORYSTAT_INIT();
         bool supported = true;
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
-            test.SetUp();
+            test.SetUp(itr->fullpath);
             Timer timer;
             ParseResultBase* dom;
             {
@@ -383,13 +383,13 @@ static void BenchParse(const TestBase& test, const TestJsonList& testJsons, FILE
 
             if (!dom) {
                 supported = false;
-                test.TearDown();
+                test.TearDown(itr->fullpath);
                 break;
             }
 
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
-            test.TearDown();
+            test.TearDown(itr->fullpath);
         }
 
         if (!supported)
@@ -418,7 +418,7 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
         printf("%15s %-20s ... ", "Stringify", itr->filename);
         fflush(stdout);
 
-        test.SetUp();
+        test.SetUp(itr->fullpath);
         double minDuration = DBL_MAX;
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
@@ -449,7 +449,7 @@ static void BenchStringify(const TestBase& test, const TestJsonList& testJsons, 
         }
 
         delete dom;
-        test.TearDown();
+        test.TearDown(itr->fullpath);
 
         if (!supported)
             printf("Not support\n");
@@ -477,7 +477,7 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
         printf("%15s %-20s ... ", "Prettify", itr->filename);
         fflush(stdout);
 
-        test.SetUp();
+        test.SetUp(itr->fullpath);
         double minDuration = DBL_MAX;
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
@@ -508,7 +508,7 @@ static void BenchPrettify(const TestBase& test, const TestJsonList& testJsons, F
         }
 
         delete dom;
-        test.TearDown();
+        test.TearDown(itr->fullpath);
 
         if (!supported)
             printf("Not support\n");
@@ -536,7 +536,7 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
         printf("%15s %-20s ... ", "Statistics", itr->filename);
         fflush(stdout);
 
-        test.SetUp();
+        test.SetUp(itr->fullpath);
         double minDuration = DBL_MAX;
         ParseResultBase* dom = test.Parse(itr->json, itr->length);
 
@@ -563,7 +563,7 @@ static void BenchStatistics(const TestBase& test, const TestJsonList& testJsons,
         }
 
         delete dom;
-        test.TearDown();
+        test.TearDown(itr->fullpath);
 
         if (!supported)
             printf("Not support\n");
@@ -596,7 +596,7 @@ static void BenchSaxRoundtrip(const TestBase& test, const TestJsonList& testJson
         BENCH_MEMORYSTAT_INIT();
         bool supported = true;
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
-            test.SetUp();
+            test.SetUp(itr->fullpath);
             Timer timer;
             StringResultBase* json;
             {
@@ -613,13 +613,13 @@ static void BenchSaxRoundtrip(const TestBase& test, const TestJsonList& testJson
 
             if (!json) {
                 supported = false;
-                test.TearDown();
+                test.TearDown(itr->fullpath);
                 break;
             }
 
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
-            test.TearDown();
+            test.TearDown(itr->fullpath);
         }
 
         if (!supported)
@@ -653,7 +653,7 @@ static void BenchSaxStatistics(const TestBase& test, const TestJsonList& testJso
         BENCH_MEMORYSTAT_INIT();
         bool supported = true;
         for (unsigned trial = 0; trial < cTrialCount; trial++) {
-            test.SetUp();
+            test.SetUp(itr->fullpath);
             Timer timer;
             {
                 MEMORYSTAT_SCOPE();
@@ -667,13 +667,13 @@ static void BenchSaxStatistics(const TestBase& test, const TestJsonList& testJso
             }
 
             if (!supported) {
-                test.TearDown();
+                test.TearDown(itr->fullpath);
                 break;
             }
 
             double duration = timer.GetElapsedMilliseconds();
             minDuration = std::min(minDuration, duration);
-            test.TearDown();
+            test.TearDown(itr->fullpath);
         }
 
         if (!supported)
@@ -839,13 +839,13 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         if (!json)
             continue;
 
-        test.SetUp();
+        test.SetUp(path);
         ParseResultBase* pr = test.Parse(json, length);
         bool result = pr != 0;
         fprintf(fp, "1. Parse Validation,%s,pass%02d,%s\n", test.GetName(), i, result ? "true" : "false");
         // printf("pass%02d: %s\n", i, result ? "true" : "false");
         delete pr;
-        test.TearDown();
+        test.TearDown(path);
 
         if (!result) {
             if (md)
@@ -871,13 +871,13 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         if (!json)
             continue;
 
-        test.SetUp();
+        test.SetUp(path);
         ParseResultBase* pr = test.Parse(json, length);
         bool result = pr == 0;
         fprintf(fp, "1. Parse Validation,%s,fail%02d,%s\n", test.GetName(), i, result ? "true" : "false");
         // printf("fail%02d: %s\n", i, result ? "true" : "false");
         delete pr;
-        test.TearDown();
+        test.TearDown(path);
 
         if (!result) {
             if (md)
@@ -911,7 +911,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         {\
             bool result = false;\
             double actual = 0.0;\
-            test.SetUp();\
+            test.SetUp("vector-double");\
             if (test.ParseDouble(json, &actual)) \
                 result = Double(expect).Uint64Value() == Double(actual).Uint64Value();\
             if (!result) {\
@@ -926,7 +926,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             /*if (!result)*/\
             /*    printf("JSON: %s\nExpect: %17g\nActual: %17g\n\n", json, expect, actual);*/\
             fprintf(fp, "2. Parse Double,%s,double%02d,%s\n", test.GetName(), i, result ? "true" : "false");\
-            test.TearDown();\
+            test.TearDown("vector-double");\
             i++;\
         }
         TEST_DOUBLE("[0.0]", 0.0);
@@ -1058,7 +1058,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             bool result = false;\
             size_t expectLength = sizeof(expect) - 1;\
             std::string actual;\
-            test.SetUp();\
+            test.SetUp("vector-string");\
             if (test.ParseString(json, actual)) \
                 result = (expectLength == actual.size()) && (memcmp(expect, actual.c_str(), expectLength) == 0);\
             if (!result) {\
@@ -1077,7 +1077,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
             /*if (!result)*/\
             /*    printf("JSON: %s\nExpect: %s (%u) \nActual: %s (%u)\n\n", json, expect, (unsigned)expectLength, actual.c_str(), (unsigned)actual.size());*/\
             fprintf(fp, "3. Parse String,%s,string%02d,%s\n", test.GetName(), i, result ? "true" : "false");\
-            test.TearDown();\
+            test.TearDown("vector-string");\
             i++;\
         }
 
@@ -1113,7 +1113,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
         if (!json)
             continue;
 
-        test.SetUp();
+        test.SetUp(path);
         ParseResultBase* pr = test.Parse(json, length);
         bool result = false;
         bool terminate = false;
@@ -1152,7 +1152,7 @@ static void BenchConformance(const TestBase& test, FILE* fp) {
                 terminate = true; // This library does not support stringify, terminate this test
         }
 
-        test.TearDown();
+        test.TearDown(path);
         free(json);
 
         if (terminate)
@@ -1208,6 +1208,7 @@ int main(int argc, char* argv[]) {
     bool doVerify = true;
     bool doPerformance = true;
     bool doConformance = true;
+    std::string parserName;
 
     if (argc == 2) {
         if (strcmp(argv[1], "--verify-only") == 0) {
@@ -1221,6 +1222,9 @@ int main(int argc, char* argv[]) {
         else if (strcmp(argv[1], "--conformance-only") == 0) {
             doConformance = true;
             doVerify = doPerformance = false;
+        }
+        else if (strncmp(argv[1], "--parser=", 9) == 0) {
+            parserName = argv[1] + 9;
         }
         else {
             fprintf(stderr, "Invalid option\n");
@@ -1240,6 +1244,27 @@ int main(int argc, char* argv[]) {
 
         // sort tests
         TestList& tests = TestManager::Instance().GetTests();
+
+        // See if we want to use only one test.
+        if (parserName != "") {
+            bool foundParser = false;
+            for(TestBase const* item: tests) {
+                if (parserName == item->GetName()) {
+                    tests.clear();
+                    tests.push_back(item);
+                    foundParser = true;
+                    break;
+                }
+            }
+            if (!foundParser) {
+                fprintf(stderr, "Unknown Parser : %s\n", parserName.c_str());
+                for(TestBase const* item: tests) {
+                    fprintf(stderr, "\t%s\n", item->GetName());
+                }
+                exit(1);
+            }
+        }
+
         std::sort(tests.begin(), tests.end());
 
         if (doVerify)

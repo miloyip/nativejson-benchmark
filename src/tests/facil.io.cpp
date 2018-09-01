@@ -1,3 +1,4 @@
+#if GCC_VERSION > 5
 #include "../test.h"
 #include "facil.io/lib/facil/core/types/fiobj.h"
 
@@ -167,3 +168,4 @@ public:
 };
 
 REGISTER_TEST(FacilTest);
+#endif
