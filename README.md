@@ -140,7 +140,7 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 4. Run `premake.bat` or `premake.sh` in `build/`
 5. On Windows, build the solution at `build/vs2015/`.
 6. On other platforms, run GNU `make -f benchmark.make config=release_x32 && make -f nativejson.make config=release_x32` (or `release_x64`) at `build/gmake/`
-7. Optional: run `buuild/machine.sh` for UNIX or CYGWIN to use CPU info to generate prefix of result filename.
+7. Optional: run `build/machine.sh` for UNIX or CYGWIN to use CPU info to generate prefix of result filename.
 8. Run the `nativejson_release_...` executable is generated at `bin/`
 9. The results in CSV format will be written to `result/`.
 10. Run GNU `make` in `result/` to generate results in HTML.
