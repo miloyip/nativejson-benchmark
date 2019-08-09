@@ -275,8 +275,8 @@ static void Verify(const TestBase& test, const TestJsonList& testJsons) {
             statProblem = &stat1;
             statProblemWhich = 1;
         }
-        else if (memcmp(&stat1, &itr->stat,      sizeof(Stat)) != 0 &&
-                 memcmp(&stat1, &itr->statUTF16, sizeof(Stat)) != 0)
+        else if (memcmp(&stat2, &itr->stat,      sizeof(Stat)) != 0 &&
+                 memcmp(&stat2, &itr->statUTF16, sizeof(Stat)) != 0)
         {
             statProblem = &stat2;
             statProblemWhich = 2;
