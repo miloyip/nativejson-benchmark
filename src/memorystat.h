@@ -137,23 +137,31 @@ extern void MemoryStatFree(void* ptr);
 }
 #endif
 
-#define malloc MemoryStatMalloc
-#define calloc MemoryStatCalloc
-#define realloc MemoryStatRealloc
-#define free MemoryStatFree
-
 #ifdef __cplusplus
 namespace std {
-    inline void* MemoryStatMalloc(size_t size) {
+    inline void* StdMemoryStatMalloc(size_t size) {
         return ::MemoryStatMalloc(size);
     }
-    inline void* MemoryStatRealloc(void* ptr, size_t size) {
+    inline void* StdMemoryStatCalloc(size_t num, size_t size) {
+        return ::MemoryStatCalloc(num, size);
+    }
+    inline void* StdMemoryStatRealloc(void* ptr, size_t size) {
         return ::MemoryStatRealloc(ptr, size);
     }
-    inline void MemoryStatFree(void* ptr) {
+    inline void StdMemoryStatFree(void* ptr) {
         return ::MemoryStatFree(ptr);
     }
+
+    #define malloc StdMemoryStatMalloc
+    #define calloc StdMemoryStatCalloc
+    #define realloc StdMemoryStatRealloc
+    #define free StdMemoryStatFree
 };
+#else
+    #define malloc MemoryStatMalloc
+    #define calloc MemoryStatCalloc
+    #define realloc MemoryStatRealloc
+    #define free MemoryStatFree
 #endif
 
 #else // USE_MEMORYSTAT
