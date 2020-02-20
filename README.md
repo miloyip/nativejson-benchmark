@@ -230,7 +230,7 @@ The is the size of executable program, which parses a JSON from `stdin` to a DOM
 * [Basic benchmarks for miscellaneous C++ JSON parsers and generators](https://github.com/mloskot/json_benchmark) by Mateusz Loskot (Jun 2013)
  * [Casablanca](https://casablanca.codeplex.com/)
  * [json spirit](https://github.com/cierelabs/json_spirit)
- * [JsonCpp](http://jsoncpp.sourceforge.net/)
+ * [JsonCpp](https://github.com/open-source-parsers/jsoncpp)
  * [libjson](http://sourceforge.net/projects/libjson/)
  * [rapidjson](https://github.com/miloyip/rapidjson/)
  * [QJsonDocument](http://qt-project.org/doc/qt-5.0/qtcore/qjsondocument.html)
