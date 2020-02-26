@@ -47,7 +47,13 @@
 #define STR(x) STR_HELPER(x)
 
 #if defined(_MSC_VER)
-#	if _MSC_VER >= 1800
+#	if _MSC_VER >= 1920
+#		define COMPILER "vc2019"
+#	elif _MSC_VER >= 1910
+#		define COMPILER "vc2017"
+#	elif _MSC_VER >= 1900
+#		define COMPILER "vc2015"
+#	elif _MSC_VER >= 1800
 #		define COMPILER "vc2013"
 #	elif _MSC_VER >= 1700
 #		define COMPILER "vc2012"
