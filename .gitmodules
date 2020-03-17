@@ -125,3 +125,6 @@
 [submodule "thirdparty/facil.io"]
 	path = thirdparty/facil.io
 	url = https://github.com/boazsegev/facil.io.git
+[submodule "thirdparty/centijson"]
+	path = thirdparty/centijson
+	url = https://github.com/mity/centijson
