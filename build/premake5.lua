@@ -110,7 +110,7 @@ solution "benchmark"
 
 		setTargetObjDir("../bin")
 
-		copyfiles("../thirdparty/include/yajl", "../thirdparty/yajl/src/api/*.h")
+		copyfiles("../thirdparty/include/yajl", "../thirdparty/yajl/src/api/*.h" )
 
 	project "nativejson"
 		kind "ConsoleApp"
@@ -133,6 +133,7 @@ solution "benchmark"
             "../thirdparty/ULib/include",
             "../thirdparty/facil.io/lib/facil/core/types",
             "../thirdparty/facil.io/lib/facil/core/types/fiobj",
+            "../thirdparty/simdjson/singleheader",
         }
 
       linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a" }
@@ -140,10 +141,12 @@ solution "benchmark"
 		files {
 			"../src/*.h",
 			"../src/*.cpp",
-			"../src/tests/*.cpp",
+			"../src/tests/*.cpp"
 		}
 
-		libdirs { "../bin" }
+		libdirs { "../bin",
+                "../thirdparty/simdjson"  
+                }
 
 		setTargetObjDir("../bin")
 
@@ -191,6 +194,7 @@ solution "jsonstat"
         "../thirdparty/ULib/include",
         "../thirdparty/facil.io/lib/facil/core/types",
         "../thirdparty/facil.io/lib/facil/core/types/fiobj",
+        "../thirdparty/simdjson/singleheader",
     }
 
     configuration "release"
@@ -221,7 +225,7 @@ solution "jsonstat"
 
         setTargetObjDir("../bin/jsonstat")
 
-		copyfiles("../thirdparty/include/yajl", "../thirdparty/yajl/src/api/*.h")
+		copyfiles("../thirdparty/include/yajl", "../thirdparty/yajl/src/api/*.h", "../thirdparty/simdjson/src/simdjson.cpp")
 
     local testfiles = os.matchfiles("../src/tests/*.cpp")
     for _, testfile in ipairs(testfiles) do
