@@ -12,23 +12,21 @@ static void GenStat(Stat &stat, const dom::element &v) {
   switch (v.type()) {
     case dom::element_type::ARRAY:
       for (dom::element child : dom::array(v)) {
+        stat.elementCount++;
         GenStat(stat, child);
       }
       stat.arrayCount++;
-      stat.elementCount += dom::array(v).size();
       break;
     case dom::element_type::OBJECT:
       for (dom::key_value_pair kv : dom::object(v)) {
         GenStat(stat, dom::element(kv.value));
+        stat.memberCount++;
+        stat.stringCount++;
       }
       stat.objectCount++;
-      stat.memberCount += dom::object(v).size();
-      stat.stringCount += dom::object(v).size();
       break;
     case dom::element_type::INT64:
-      break;
     case dom::element_type::UINT64:
-      break;
     case dom::element_type::DOUBLE:
       stat.numberCount++;
       break;
@@ -107,7 +105,6 @@ class SimdTest : public TestBase {
                   Stat *stat) const override {
     auto pr = static_cast<const SimdJsonParseResult *>(parseResult);
     memset(stat, 0, sizeof(Stat));
-
     GenStat(*stat, pr->root);
     return true;
   }
@@ -121,24 +118,18 @@ class SimdTest : public TestBase {
     if (error) {
       return false;
     }
-
     return true;
   }
 
   bool ParseString(const char *j, std::string &s) const override {
     simdjson::error_code error;
-
-    simdjson::dom::parser parser;
     dom::element element;
-    parser.parse(j, std::strlen(j)).tie(element, error);
-    std::stringstream ss;
-    ss << element.at(0);
-    s = ss.str();
-
+    simdjson::dom::parser parser;
+    parser.parse(j, std::strlen(j)).tie(element, error);;
     if (error) {
       return false;
     }
-
+    s = element;
     return true;
   }
 #endif
