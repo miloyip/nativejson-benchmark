@@ -123,13 +123,15 @@ class SimdTest : public TestBase {
 
   bool ParseString(const char *j, std::string &s) const override {
     simdjson::error_code error;
-    dom::element element;
-    simdjson::dom::parser parser;
-    parser.parse(j, std::strlen(j)).tie(element, error);;
+    std::string_view answer;
+    parser.parse(j,strlen(j))
+        .at(0)
+        .get<std::string_view>()
+        .tie(answer, error);
     if (error) {
       return false;
     }
-    s = element;
+    s = answer;
     return true;
   }
 #endif
