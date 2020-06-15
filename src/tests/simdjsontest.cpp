@@ -131,7 +131,7 @@ class SimdTest : public TestBase {
     if (error) {
       return false;
     }
-    s = answer;
+    s.assign(answer.data(), answer.size());
     return true;
   }
 #endif
