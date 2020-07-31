@@ -8,7 +8,7 @@
 
 using namespace simdjson;
 
-static void GenStat(Stat &stat, const dom::element &v) {
+static void GenStat(Stat &stat, const dom::element v) {
   switch (v.type()) {
     case dom::element_type::ARRAY:
       for (dom::element child : dom::array(v)) {
@@ -19,7 +19,8 @@ static void GenStat(Stat &stat, const dom::element &v) {
       break;
     case dom::element_type::OBJECT:
       for (dom::key_value_pair kv : dom::object(v)) {
-        GenStat(stat, dom::element(kv.value));
+        GenStat(stat, kv.value);
+        stat.stringLength += kv.key.size();
         stat.memberCount++;
         stat.stringCount++;
       }
