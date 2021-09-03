@@ -128,3 +128,6 @@
 [submodule "thirdparty/simdjson"]
 	path = thirdparty/simdjson
 	url = https://github.com/simdjson/simdjson
+[submodule "thirdparty/join"]
+	path = thirdparty/join
+	url = https://github.com/joinframework/join.git

@@ -102,6 +102,8 @@ solution "benchmark"
   			"../thirdparty/udp-json-parser/",
             "../thirdparty/facil.io/lib/facil/core/types",
             "../thirdparty/facil.io/lib/facil/core/types/fiobj",
+            "../thirdparty/join/join/core/include",
+            "../thirdparty/join/join/sax/include",
         }
 
 		files {
@@ -134,6 +136,8 @@ solution "benchmark"
             "../thirdparty/facil.io/lib/facil/core/types",
             "../thirdparty/facil.io/lib/facil/core/types/fiobj",
             "../thirdparty/simdjson/singleheader",
+            "../thirdparty/join/join/core/include",
+            "../thirdparty/join/join/sax/include",
         }
 
       linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a" }
@@ -195,6 +199,8 @@ solution "jsonstat"
         "../thirdparty/facil.io/lib/facil/core/types",
         "../thirdparty/facil.io/lib/facil/core/types/fiobj",
         "../thirdparty/simdjson/singleheader",
+        "../thirdparty/join/join/core/include",
+        "../thirdparty/join/join/sax/include",
     }
 
     configuration "release"
@@ -217,6 +223,8 @@ solution "jsonstat"
   			"../thirdparty/udp-json-parser/",
             "../thirdparty/facil.io/lib/facil/core/types",
             "../thirdparty/facil.io/lib/facil/core/types/fiobj",
+            "../thirdparty/join/join/core/include",
+            "../thirdparty/join/join/sax/include",
         }
 
 		files {
