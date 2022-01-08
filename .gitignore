@@ -1,9 +1,0 @@
-/bin/*
-/build/gmake
-/build/vs*/
-/intermediate
-/thirdparty/include/yajl
-/result/*.csv
-/result/*.html
-/result/*.md
-src/machine.h
