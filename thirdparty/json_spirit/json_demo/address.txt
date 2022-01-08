@@ -1,5 +1,0 @@
-{
-    "house_number" : 42,
-    "road" : "East Street",
-    "town" : "Newtown"
-}
