@@ -70,12 +70,12 @@ class workflowjsonTest : public TestBase
 {
 public:
 #if TEST_INFO
-	virtual const char *GetName() const { return "C++ Workflow JSON"; }
+	virtual const char *GetName() const { return "C++ Workflow JSON (C)"; }
 	virtual const char *GetFilename() const { return __FILE__; }
 #endif
 
 #if TEST_PARSE
-	virtual ParseResultBase *Parse(const char *json, size_t length) const
+	virtual ParseResultBase *Parse(const char *json, size_t) const
 	{
 		json_value_t *root = json_value_parse(json);
 		workflowjsonParseResult *res;
