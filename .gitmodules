@@ -128,3 +128,6 @@
 [submodule "thirdparty/simdjson"]
 	path = thirdparty/simdjson
 	url = https://github.com/simdjson/simdjson
+[submodule "thirdparty/workflow-json-parser"]
+	path = thirdparty/workflow-json-parser
+	url = https://github.com/barenboim/json-parser.git
