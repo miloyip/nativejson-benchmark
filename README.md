@@ -135,7 +135,7 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 ## Build and Run
 
 1. Execute `git submodule update --init` to download all submodules (libraries).
-2. Obtain [premake5](http://industriousone.com/premake/download).
+2. Obtain [premake5](https://premake.github.io/download).
 3. Copy premake5 executable to `build/` path (or system path).
 4. Run `premake.bat` or `premake.sh` in `build/`
 5. On Windows, build the solution at `build/vs2015/`.
