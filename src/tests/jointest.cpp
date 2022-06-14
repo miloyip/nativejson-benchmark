@@ -3,13 +3,39 @@
 #include "../test.h"
 
 #include "join/join/core/src/error.cpp"
+#include "join/join/sax/src/value.cpp"
 #include "join/join/sax/include/join/json.hpp"
 
 #include <sstream>
+#include <stack>
 
-using join::sax::Value;
-using join::sax::JsonReader;
-using join::sax::JsonWriter;
+using join::Value;
+using join::JsonReader;
+using join::JsonWriter;
+
+class StatHandler : public JsonReader
+{
+public:
+    StatHandler (Value& root, Stat& stat) : JsonReader (root), stat_(stat) {}
+protected:
+    virtual int setNull () override { ++stat_.nullCount; setValue (); return 0; }
+    virtual int setBool (bool b) override { if (b) ++stat_.trueCount; else ++stat_.falseCount; setValue (); return 0; }
+    virtual int setInt (int32_t) override { ++stat_.numberCount; setValue (); return 0; }
+    virtual int setUint (uint32_t) override { ++stat_.numberCount; setValue (); return 0; }
+    virtual int setInt64 (int64_t) override { ++stat_.numberCount; setValue (); return 0; }
+    virtual int setUint64 (uint64_t) override { ++stat_.numberCount; setValue (); return 0; }
+    virtual int setDouble (double) override { ++stat_.numberCount; setValue (); return 0; }
+    virtual int setString (const std::string& s) override { ++stat_.stringCount; stat_.stringLength += s.size (); setValue (); return 0; }
+    virtual int startArray (uint32_t) override { ++stat_.arrayCount; setValue (); stack_.push (0); return 0; }
+    virtual int stopArray () override { stat_.elementCount += stack_.top (); stack_.pop (); return 0; }
+    virtual int startObject (uint32_t) override { ++stat_.objectCount; setValue (); stack_.push (0); return 0; }
+    virtual int setKey (const std::string& s) override { ++stat_.stringCount; stat_.stringLength += s.size (); return 0; }
+    virtual int stopObject () override { stat_.memberCount += stack_.top (); stack_.pop (); return 0; }
+private:
+    void setValue () { if (stack_.size ()) ++stack_.top (); }
+    std::stack <int> stack_;
+    Stat& stat_;
+};
 
 static void GenStat (Stat& stat, const Value& v) 
 {
@@ -75,7 +101,7 @@ class JoinTest : public TestBase {
 public:
 #if TEST_INFO
     virtual const char* GetName () const { 
-        return "Join (C++14)"; 
+        return "join (C++14)"; 
     }
 
     virtual const char* GetFilename () const { 
@@ -123,6 +149,32 @@ public:
         memset (stat, 0, sizeof (Stat));
         GenStat (*stat, pr->root);
         return true;
+    }
+#endif
+
+#if TEST_SAXROUNDTRIP
+    virtual StringResultBase* SaxRoundtrip(const char* json, size_t length) const {
+        Value value;
+        if (value.deserialize <JsonReader> (json, length) == -1) {
+            return 0;
+        }
+        JoinStringResult* sr = new JoinStringResult;
+        std::stringstream ss;
+        if (value.serialize <JsonWriter> (ss) == -1) {
+            delete sr;
+            return 0;
+        }
+        sr->s = ss.str ();
+        return sr;
+    }
+#endif
+
+#if TEST_SAXSTATISTICS
+    virtual bool SaxStatistics(const char* json, size_t length, Stat* stat) const {
+        Value value;
+        memset (stat, 0, sizeof (Stat));
+        StatHandler reader (value, *stat);
+        return reader.deserialize (json, length) == 0;
     }
 #endif
 
