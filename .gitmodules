@@ -67,7 +67,6 @@
 [submodule "thirdparty/ArduinoJson"]
 	path = thirdparty/ArduinoJson
 	url = https://github.com/bblanchon/ArduinoJson.git
-
 [submodule "thirdparty/jeayeson"]
 	path = thirdparty/jeayeson
 	url = https://github.com/jeaye/jeayeson.git
@@ -128,6 +127,9 @@
 [submodule "thirdparty/simdjson"]
 	path = thirdparty/simdjson
 	url = https://github.com/simdjson/simdjson
+[submodule "thirdparty/workflow-json-parser"]
+	path = thirdparty/workflow-json-parser
+	url = https://github.com/barenboim/json-parser.git
 [submodule "thirdparty/join"]
 	path = thirdparty/join
 	url = https://github.com/joinframework/join.git
