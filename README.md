@@ -61,6 +61,7 @@ Currently 43 libraries are successfully benchmarked. They are listed in alphabet
 Library | Language | Version | Notes
 --------|----------|---------|-------------------
 [ArduinoJson](https://github.com/bblanchon/ArduinoJson) | C++ | 5.6.6
+[Boost.JSON](https://github.com/boostorg/json) | C++ | 1.80.0
 [CAJUN](https://github.com/cajun-jsonapi/cajun-jsonapi) | C++ | 2.0.3
 [C++ REST SDK](https://github.com/Microsoft/cpprestsdk) | C++11 | v2.8.0 | Need Boost on non-Windows platform. DOM strings must be UTF16 on Windows and UTF8 on non-Windows platform.
 [ccan/json](https://github.com/rustyrussell/ccan/) | C | 
@@ -134,7 +135,7 @@ The benchmark program reads `data/data.txt` which contains file names of JSON to
 
 ## Build and Run
 
-1. Execute `git submodule update --init` to download all submodules (libraries).
+1. Execute `git submodule update --init` and `git -C thirdparty/boost update --init` to download all submodules (libraries).
 2. Obtain [premake5](https://premake.github.io/download).
 3. Copy premake5 executable to `build/` path (or system path).
 4. Run `premake.bat` or `premake.sh` in `build/`

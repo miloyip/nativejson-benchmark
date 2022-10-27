@@ -134,6 +134,19 @@ solution "benchmark"
             "../thirdparty/facil.io/lib/facil/core/types",
             "../thirdparty/facil.io/lib/facil/core/types/fiobj",
             "../thirdparty/simdjson/singleheader",
+            "../thirdparty/boost/libs/json/include",
+            "../thirdparty/boost/libs/config/include",
+            "../thirdparty/boost/libs/assert/include",
+            "../thirdparty/boost/libs/exception/include",
+            "../thirdparty/boost/libs/throw_exception/include",
+            "../thirdparty/boost/libs/core/include",
+            "../thirdparty/boost/libs/container/include",
+            "../thirdparty/boost/libs/move/include",
+            "../thirdparty/boost/libs/static_assert/include",
+            "../thirdparty/boost/libs/intrusive/include",
+            "../thirdparty/boost/libs/system/include",
+            "../thirdparty/boost/libs/mp11/include",
+            "../thirdparty/boost/libs/align/include",
         }
 
       linkoptions { "../../thirdparty/ULib/src/ulib/.libs/libulib.a" }
@@ -195,6 +208,19 @@ solution "jsonstat"
         "../thirdparty/facil.io/lib/facil/core/types",
         "../thirdparty/facil.io/lib/facil/core/types/fiobj",
         "../thirdparty/simdjson/singleheader",
+        "../thirdparty/boost/libs/json/include",
+        "../thirdparty/boost/libs/config/include",
+        "../thirdparty/boost/libs/assert/include",
+        "../thirdparty/boost/libs/exception/include",
+        "../thirdparty/boost/libs/throw_exception/include",
+        "../thirdparty/boost/libs/core/include",
+        "../thirdparty/boost/libs/container/include",
+        "../thirdparty/boost/libs/move/include",
+        "../thirdparty/boost/libs/static_assert/include",
+        "../thirdparty/boost/libs/intrusive/include",
+        "../thirdparty/boost/libs/system/include",
+        "../thirdparty/boost/libs/mp11/include",
+        "../thirdparty/boost/libs/align/include",
     }
 
     configuration "release"
