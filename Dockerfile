@@ -11,6 +11,7 @@ RUN buildDeps='build-essential gcc-multilib g++-multilib git-core curl ca-certif
 	&& apt-get update && apt-get install --no-install-recommends -y $buildDeps \
 	&& cd /nativejson-benchmark \
 	&& git submodule update --init \
+	&& git -C thirdparty/boost submodule update --init \
 	&& cd build \
 	&& curl -L -s https://github.com/premake/premake-core/releases/download/v5.0.0-alpha7/premake-5.0.0-alpha7-linux.tar.gz | tar -xvz \
 	&& chmod +x premake5 && chmod +x premake.sh && sync && /bin/sh -c ./premake.sh && ./machine.sh \

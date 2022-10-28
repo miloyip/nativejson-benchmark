@@ -131,3 +131,6 @@
 [submodule "thirdparty/workflow-json-parser"]
 	path = thirdparty/workflow-json-parser
 	url = https://github.com/barenboim/json-parser.git
+[submodule "thirdparty/boost"]
+	path = thirdparty/boost
+	url = https://github.com/boostorg/boost.git
