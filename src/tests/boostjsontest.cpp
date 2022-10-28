@@ -121,7 +121,9 @@ public:
         boost::json::error_code ec;
         boost::json::value jv = boost::json::parse(json, ec);
         if(!ec && jv.is_array() && jv.get_array().size() == 1 && jv.get_array()[0].is_string()) {
-            s = jv.get_array()[0].get_string().c_str();
+            const auto &as = jv.get_array()[0].get_string();
+            // do not use `s = as.c_str()` here, it might not copy everything (e.g. if there is a \0 in the string)
+            s = std::string(as.c_str(), as.size());
             return true;
         }
         else
