@@ -3,6 +3,14 @@
 
 #include <boost/json/src.hpp>
 
+#if TEST_STRINGIFY
+#include <sstream>
+
+boost::json::serializer serializer_;
+char buf_[BOOST_JSON_STACK_BUFFER_SIZE];
+std::ostringstream ss_;
+#endif
+
 static void GenStat(Stat& stat, const boost::json::value& v) {
     switch(v.kind()) {
         case boost::json::kind::array: {
@@ -68,9 +76,16 @@ public:
 
 class BoostjsonTest : public TestBase {
 public:
+#if TEST_STRINGIFY
+    virtual void SetUp() const {
+        ss_.str("");
+        ss_.clear();
+    }
+#endif
+
 #if TEST_INFO
-    virtual const char* GetName() const { return "Boost.JSON"; }
-    virtual const char* GetFilename() const { return __FILE__; }
+    virtual const char* GetName() const override { return "Boost.JSON"; }
+    virtual const char* GetFilename() const override { return __FILE__; }
 #endif
 
 #if TEST_PARSE
@@ -91,13 +106,17 @@ public:
     virtual StringResultBase* Stringify(const ParseResultBase* parseResult) const override {
         const BoostjsonParseResult* pr = static_cast<const BoostjsonParseResult*>(parseResult);
         BoostjsonStringResult* sr = new BoostjsonStringResult;
-        sr->s =  boost::json::serialize(pr->root);
+        serializer_.reset(&pr->root);
+        while(!serializer_.done()) {
+            ss_ << serializer_.read(buf_);
+        }
+        sr->s = ss_.str();
         return sr;
     }
 #endif
 
 #if TEST_STATISTICS
-    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const {
+    virtual bool Statistics(const ParseResultBase* parseResult, Stat* stat) const override {
         const BoostjsonParseResult* pr = static_cast<const BoostjsonParseResult*>(parseResult);
         memset(stat, 0, sizeof(Stat));
         GenStat(*stat, pr->root);
@@ -106,7 +125,7 @@ public:
 #endif
 
 #if TEST_CONFORMANCE
-    virtual bool ParseDouble(const char* json, double* d) const {
+    virtual bool ParseDouble(const char* json, double* d) const override {
         boost::json::error_code ec;
         boost::json::value jv = boost::json::parse(json, ec);
         if(!ec && jv.is_array() && jv.get_array().size() == 1 && jv.get_array()[0].is_double()) {
@@ -117,7 +136,7 @@ public:
             return false;
     }
 
-    virtual bool ParseString(const char* json, std::string& s) const {
+    virtual bool ParseString(const char* json, std::string& s) const override {
         boost::json::error_code ec;
         boost::json::value jv = boost::json::parse(json, ec);
         if(!ec && jv.is_array() && jv.get_array().size() == 1 && jv.get_array()[0].is_string()) {
